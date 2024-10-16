@@ -1,9 +1,9 @@
 import React from "react"
 import styled from "styled-components"
 
-import GlobalStyle from "./globalStyle.tsx"
-import Header from "./header.tsx"
-import Footer from "./footer.tsx"
+import GlobalStyle from "./globalStyle"
+import Header from "./header"
+import Footer from "./footer"
 
 
 const StyledLayout = styled.div`
@@ -15,8 +15,9 @@ const StyledLayout = styled.div`
   grid-template-columns: 100%;
   #main-content {
     width: 100%;
-    max-width: 62.5rem;
+    //max-width: 62.5rem;
     margin: 0 auto;
+    margin-top: 100px;
     padding: 0 2.5rem;
   }
 `

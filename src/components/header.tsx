@@ -1,31 +1,27 @@
 import * as React from "react"
-import {Link} from "gatsby"
+import { Link } from "gatsby"
 import styled from "styled-components"
-
-const StyledHeader = styled.header`
-  width: 100%;
-  max-width: 62.5rem;
-  height: 6.25rem;
-  margin: 0 auto;
-  padding: 0 2.5rem;
-  background: white;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-`
-
-const StyledLogo = styled.div`
-  font-size: 2rem;
-  font-weight: 900;
-  color: black;
-`
+import { StyledHeader, StyledLogo, NavContainer, NavLink } from "../components/headercss.tsx"
 
 const Header = () => {
   return (
     <StyledHeader>
-            {/* <Link to="/" aria-label="home"> */}
-            {/* <StyledLogo>km.</StyledLogo> */}
-            {/* </Link> */}
+      <Link to="/" aria-label="home">
+        <StyledLogo>jgs.</StyledLogo>
+
+
+      </Link>
+      <NavContainer>
+          <NavLink>
+            <Link to="/" aria-label="home">About</Link>
+          </NavLink>
+          <NavLink>
+            <Link to="#projects-section" aria-label="home">Projects</Link>
+          </NavLink>
+          <NavLink>
+            <Link to="/" aria-label="home">More</Link>
+          </NavLink>
+      </NavContainer>
     </StyledHeader>
   )
 }
