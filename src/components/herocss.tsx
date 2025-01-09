@@ -8,17 +8,35 @@ export const HeroSection = styled.section`
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-bottom: 80px;
+        margin-bottom: 150px;
         outline: 1px solid black;
+        max-width: 1200 px;
 
         @media (max-width: 768px) {
             display: block;
         }
     }
 
+    .left-banner {
+        display: sticky;
+        width: 300px;
+        padding: 20px;
+        height: 100%;
+        overflow: hidden;
+        outline: 1px solid black;
+    }
+
+    .right-scrollable {
+        overflow-y: auto;
+        padding: 20px;
+        flex: 1;
+
+    }
+
     .title {
         font-size: 3rem;
         margin-bottom: 10px;
+        //color: #ccd6f6;
     }
 
     .subtitle {
@@ -39,6 +57,6 @@ export const HeroSectionPortrait = styled.div`
     //outline: 1px solid black;
     max-width: 300px;
     position: relative;
-    right: 50px;
+    
    
 `

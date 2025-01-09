@@ -13,8 +13,14 @@ const StyledLayout = styled.div`
   display: grid;
   grid-template-rows: auto 1fr auto;
   grid-template-columns: 100%;
+  //color: #ccd6f6;
+  background-color: light-gray;
+  scroll-behavior: smooth;
+  outline: 10px solid black;
+
   #main-content {
-    width: 100%;
+    font-family: "Helvetica Neue", sans-serif;
+    width: 70%;
     //max-width: 62.5rem;
     margin: 0 auto;
     margin-top: 100px;

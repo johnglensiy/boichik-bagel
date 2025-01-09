@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 
 import { myProjects } from "../pages/index"
+import { ProjectsSection, ProjectCard } from './projectscss.tsx'
 import myPortrait from "../codeologyportrait.jpg"
 
 const Projects = (props: any) => {
@@ -24,9 +25,29 @@ const Projects = (props: any) => {
 
     return (
         <div id="projects-section">
-            <h1>These are my projects</h1>
+            <h1>Projects Section</h1>
+            <ProjectsSection>
+                <ProjectCard>
+                    {myProjects[0].title}
+                    <div className="project-descr">
+                        {myProjects[0].description}
+                    </div>
+                </ProjectCard>
+                <ProjectCard>
+                    <div>{myProjects[0].title}</div>
+                </ProjectCard>
+                <ProjectCard>
+                    <div>{myProjects[1].title}</div>
+                </ProjectCard>
+                <div>hi</div>
+                <div>hello</div>
+            </ProjectsSection>
         </div>
-        // <Section>
+        // <div>
+        //     <div id="projects-section">
+        //     <h1>These are my projects</h1>
+        // </div>
+        // <div>
         //      <h2 className="title">
         //         My Projects
         //     </h2>
@@ -49,7 +70,8 @@ const Projects = (props: any) => {
         //     <button onClick={() => handleProjNav("next")}>
 
         //     </button>
-        // </Section>
+        // </div>
+        // </div>
     )
 }
 
