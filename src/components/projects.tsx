@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 
 import { myProjects } from "../pages/index"
-import { ProjectsSection, ProjectCard } from './projectscss.tsx'
+import { ProjectsSection, ProjectCard } from './projectscss'
 import myPortrait from "../codeologyportrait.jpg"
 
 const Projects = (props: any) => {

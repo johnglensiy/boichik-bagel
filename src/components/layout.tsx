@@ -17,25 +17,19 @@ const StyledLayout = styled.div`
   scroll-behavior: smooth;
   outline: 10px solid black;
 
-  #left-banner {
-    flex: 1;
-    padding: 20px;
-    background-color: #f4f4f4;
-    position: sticky;
-  }
-
   #content {
     flex: 1;
     font-family: "Helvetica Neue", sans-serif;
     // margin: 0 auto;
     // margin-top: 100px;
     // padding: 0 2.5rem;
-    outline: 1px solid black;
+    outline: 5px solid black;
+    overflow: scroll;
   }
 
   #main-container {
     margin: 0 auto;
-    margin-top: 100px;
+    // margin-top: 100px;
     width: 80%;
     display: flex;
     flex-direction: row;

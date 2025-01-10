@@ -1,9 +1,9 @@
 import * as React from "react"
 import { Link } from "gatsby"
 import styled from "styled-components"
-import { StyledHeader, StyledLogo, NavContainer, NavLink } from "../components/headercss.tsx"
+import { StyledHeader, StyledLogo, NavContainer, NavLink } from "../components/headercss"
 import myPortrait from "../codeologyportrait.jpg";
-import Icon from "../icons/icon.tsx"; 
+import Icon from "../icons/icon"; 
 
 const Header = () => {
   return (
