@@ -6,6 +6,14 @@ import { StyledHeader, StyledLogo, NavContainer, NavLink } from "../components/h
 const Header = () => {
   return (
     <StyledHeader>
+
+      <h1>
+        John Glen Siy
+      </h1>
+      <h2>
+        johnglen_siy@berkeley.edu
+      </h2>
+      
       <Link to="/" aria-label="home">
         <StyledLogo>jgs.</StyledLogo>
 

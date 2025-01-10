@@ -21,12 +21,12 @@ export const myProjects = [
 export default function Home({ data }) {
   return (
     <Layout>
-        <Hero content = {data.hero.edges[0].node}/>
         <Projects/>
         <Hobbies/>
         {/* <h1>Hi! Boop</h1> */}
     </Layout>
   )
+
 }
 
 export const pageQuery = graphql`

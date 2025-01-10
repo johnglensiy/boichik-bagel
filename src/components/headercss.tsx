@@ -7,14 +7,18 @@ export const StyledHeader = styled.header`
     z-index: 1000;
 
     width: 100%;
-    height: 6.25rem;
+    // height: 6.25rem;
     margin: 0 auto;
     padding: 0 2.5rem;
     background: white;
 
     display: flex;
-    justify-content: space-between;
+    flex: 1;
+    flex-direction: column;
+    // justify-content: space-between;
     align-items: center;
+
+    outline: 1px solid black;
 `
 
 export const StyledLogo = styled.div`

@@ -10,21 +10,35 @@ const StyledLayout = styled.div`
   width: 100%;
   min-height: 100vh;
   margin: 0 auto;
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-  grid-template-columns: 100%;
-  //color: #ccd6f6;
+  display: flex;
+  flex-direction: row;
+  color: #ccd6f6;
   background-color: light-gray;
   scroll-behavior: smooth;
   outline: 10px solid black;
 
-  #main-content {
+  #left-banner {
+    flex: 1;
+    padding: 20px;
+    background-color: #f4f4f4;
+    position: sticky;
+  }
+
+  #content {
+    flex: 1;
     font-family: "Helvetica Neue", sans-serif;
-    width: 70%;
-    //max-width: 62.5rem;
+    // margin: 0 auto;
+    // margin-top: 100px;
+    // padding: 0 2.5rem;
+    outline: 1px solid black;
+  }
+
+  #main-container {
     margin: 0 auto;
     margin-top: 100px;
-    padding: 0 2.5rem;
+    width: 80%;
+    display: flex;
+    flex-direction: row;
   }
 `
 
@@ -32,9 +46,16 @@ const Layout = ({ children }) => {
   return (
     <StyledLayout>
       <GlobalStyle />
-      <Header />
-      <main id="main-content">{children}</main>
-      <Footer />
+      <div id="main-container">
+        <Header />
+        <main>
+          <div id="content">
+            {children}
+          </div>
+        </main>
+      </div>
+
+      {/* <Footer /> */}
     </StyledLayout>
   )
 }
