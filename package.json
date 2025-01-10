@@ -31,6 +31,7 @@
     "url": "https://github.com/gatsbyjs/gatsby/issues"
   },
   "devDependencies": {
+    "babel-preset-gatsby": "^3.14.0",
     "webpack-hot-middleware": "^2.26.1"
   }
 }

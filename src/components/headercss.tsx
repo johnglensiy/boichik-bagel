@@ -16,7 +16,7 @@ export const StyledHeader = styled.header`
     flex: 1;
     flex-direction: column;
     // justify-content: space-between;
-    align-items: center;
+    // align-items: center;
 
     outline: 1px solid black;
 `

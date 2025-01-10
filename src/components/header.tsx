@@ -2,6 +2,8 @@ import * as React from "react"
 import { Link } from "gatsby"
 import styled from "styled-components"
 import { StyledHeader, StyledLogo, NavContainer, NavLink } from "../components/headercss.tsx"
+import myPortrait from "../codeologyportrait.jpg"
+import { Icon } from "../icons"; 
 
 const Header = () => {
   return (
@@ -11,9 +13,12 @@ const Header = () => {
         John Glen Siy
       </h1>
       <h2>
-        johnglen_siy@berkeley.edu
+        johnglen_siy [at] \n 
+        berkeley.edu
       </h2>
-      
+      <img className="portrait" src={myPortrait} alt="My image" width={300}/>
+      <Icon name="Github"></Icon>
+
       <Link to="/" aria-label="home">
         <StyledLogo>jgs.</StyledLogo>
 

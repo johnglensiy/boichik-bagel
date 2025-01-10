@@ -48,10 +48,8 @@ const Layout = ({ children }) => {
       <GlobalStyle />
       <div id="main-container">
         <Header />
-        <main>
-          <div id="content">
+        <main id="content">
             {children}
-          </div>
         </main>
       </div>
 
