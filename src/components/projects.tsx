@@ -39,7 +39,7 @@ const Projects = (props: any) => {
                 <ProjectCard>
                     <div>{myProjects[1].title}</div>
                 </ProjectCard>
-                <div>hi</div>
+                <div>hola</div>
                 <div>hello</div>
             </ProjectsSection>
         </div>

@@ -12,7 +12,7 @@ const StyledLayout = styled.div`
   margin: 0 auto;
   display: flex;
   flex-direction: row;
-  color: #ccd6f6;
+  color: black;
   background-color: light-gray;
   scroll-behavior: smooth;
   outline: 10px solid black;
