@@ -10,6 +10,7 @@ export const StyledHeader = styled.header`
     height: 100vh;
     margin: 0 auto;
     padding: 0 2.5rem;
+    padding-top: 100px;
     // background: white;
 
     display: flex;
@@ -19,7 +20,7 @@ export const StyledHeader = styled.header`
     // align-items: center;
     overflow: hidden;
     
-    outline: 2px solid black;
+    
 `
 
 export const StyledLogo = styled.div`

@@ -1,6 +1,10 @@
 import { createGlobalStyle } from "styled-components"
+import fonts from './fonts';
+import variables from './styleVariables';
 
 const GlobalStyle = createGlobalStyle`
+    ${fonts}
+
     * {
         box-sizing: border-box;
     }
@@ -13,14 +17,15 @@ const GlobalStyle = createGlobalStyle`
         height: 100%;
         margin: 0;
         padding: 0;
-        background-color: white;
-        color: black;
+        background-color: #2b3867;
+        color: #8892b0;
         font-size: 1.125rem;
-        font-family: "Roboto", Arial, Helvetica, sans-serif;
+        font-family: 'Lato';
         line-height: 1.5rem;
         font-weight: 400;
     }
     h1 {
+        font-family: 'Lato', sans-serif;
         font-weight: 700;
         font-size: 2rem;
         line-height: 2.375rem;
@@ -31,6 +36,7 @@ const GlobalStyle = createGlobalStyle`
         }
     }
     h2 {
+        font-family: 
         font-weight: 700;
         font-size: 1.25rem;
         line-height: 1.5rem;

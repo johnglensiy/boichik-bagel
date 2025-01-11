@@ -1,7 +1,7 @@
 import React from "react"
 import styled from "styled-components"
 
-import GlobalStyle from "./globalStyle"
+import GlobalStyle from "../styles/globalStyle"
 import Header from "./header"
 import Footer from "./footer"
 
@@ -12,27 +12,32 @@ const StyledLayout = styled.div`
   margin: 0 auto;
   display: flex;
   flex-direction: row;
-  color: black;
-  background-color: light-gray;
+  color: #beceda;
+  background-color: #fdf0e7;
   scroll-behavior: smooth;
   outline: 10px solid black;
 
   #content {
-    flex: 1;
+    flex: 2;
     font-family: "Helvetica Neue", sans-serif;
     // margin: 0 auto;
     // margin-top: 100px;
     // padding: 0 2.5rem;
-    outline: 5px solid black;
-    overflow: scroll;
+    padding-top: 100px;
+    // outline: 5px solid black;
   }
 
   #main-container {
     margin: 0 auto;
     // margin-top: 100px;
-    width: 80%;
+    width: 60%;
     display: flex;
     flex-direction: row;
+    gap: 100px;
+  }
+
+  h1 {
+    color: #beceda;
   }
 `
 
