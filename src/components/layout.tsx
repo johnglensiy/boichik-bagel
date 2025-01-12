@@ -12,8 +12,8 @@ const StyledLayout = styled.div`
   margin: 0 auto;
   display: flex;
   flex-direction: row;
-  color: #beceda;
-  background-color: #fdf0e7;
+  color: black;
+  background-color: #f1f1ef;
   scroll-behavior: smooth;
   outline: 10px solid black;
 
@@ -34,10 +34,6 @@ const StyledLayout = styled.div`
     display: flex;
     flex-direction: row;
     gap: 100px;
-  }
-
-  h1 {
-    color: #beceda;
   }
 `
 

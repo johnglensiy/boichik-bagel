@@ -4,6 +4,7 @@ import variables from './styleVariables';
 
 const GlobalStyle = createGlobalStyle`
     ${fonts}
+    ${variables}
 
     * {
         box-sizing: border-box;
@@ -17,7 +18,7 @@ const GlobalStyle = createGlobalStyle`
         height: 100%;
         margin: 0;
         padding: 0;
-        background-color: #2b3867;
+        background-color: #f1f1ef;
         color: #8892b0;
         font-size: 1.125rem;
         font-family: 'Lato';

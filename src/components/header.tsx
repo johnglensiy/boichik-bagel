@@ -9,6 +9,7 @@ const Header = () => {
   return (
     <StyledHeader>
 
+      <img className="portrait" src={myPortrait} alt="My image" width={300}/>
       <h1>
         John Glen Siy
       </h1>
@@ -16,7 +17,6 @@ const Header = () => {
         johnglen_siy [at] \n 
         berkeley.edu
       </h2>
-      <img className="portrait" src={myPortrait} alt="My image" width={300}/>
       <Icon name="Github"></Icon>
 
       <Link to="/" aria-label="home">
