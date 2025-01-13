@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const StyledHeader = styled.header`
-    //outline: 1px solid black;
+    outline: 1px solid black;
     position: sticky;
     top: 0;
     z-index: 1000;
@@ -9,7 +9,7 @@ export const StyledHeader = styled.header`
     width: 100%;
     height: 100vh;
     margin: 0 auto;
-    padding: 0 2.5rem;
+    padding: 0 20px;
     padding-top: 100px;
     // background: white;
 
@@ -39,4 +39,8 @@ export const NavLink = styled.div`
     font-size: 1rem;
     font-weight: 300;
     color: black;
+`
+
+export const RoundedImage = styled.img`
+    // border-radius: 50%;
 `

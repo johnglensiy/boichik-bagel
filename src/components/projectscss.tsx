@@ -7,7 +7,6 @@ export const ProjectsSection = styled.section`
     row-gap: 50px;
     margin-bottom: 80px;
     scroll-margin-top: 50px;
-    outline: 1px solid black;
     @media (max-width: 768px) {
         display: block;
     }

@@ -11,12 +11,22 @@ module.exports = {
   plugins: [
     'gatsby-plugin-styled-components',
     {
-      resolve: 'gatsby-source-filesystem',
+      resolve: `gatsby-source-filesystem`,
       options: {
-        name: 'content',
-        path: 'src/content/',
+        name: `content`,
+        path: `${__dirname}/src/images/`,
       },
     },
+    {
+      resolve: `gatsby-source-filesystem`,
+      options: {
+        name: `images`,
+        path: `${__dirname}/src/images/`,
+      }
+    },
     'gatsby-transformer-remark',
+    'gatsby-plugin-image',
+    'gatsby-plugin-sharp',
+    'gatsby-transformer-sharp',
   ],
 }

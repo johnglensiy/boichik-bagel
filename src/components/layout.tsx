@@ -18,22 +18,22 @@ const StyledLayout = styled.div`
   outline: 10px solid black;
 
   #content {
-    flex: 2;
+    flex: 1;
     font-family: "Helvetica Neue", sans-serif;
     // margin: 0 auto;
     // margin-top: 100px;
-    // padding: 0 2.5rem;
+    padding: 0 20px;
     padding-top: 100px;
-    // outline: 5px solid black;
+    outline: 1px solid black;
   }
 
   #main-container {
     margin: 0 auto;
     // margin-top: 100px;
-    width: 60%;
+    width: 70%;
     display: flex;
     flex-direction: row;
-    gap: 100px;
+    gap: 50px;
   }
 `
 

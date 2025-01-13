@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { myProjects } from "../pages/index"
 import { ProjectsSection, ProjectCard } from './projectscss'
 import myPortrait from "../codeologyportrait.jpg"
+import cpuProjectImage from "../content/projects/images/riscvCPU.png"
 
 const Projects = (props: any) => {
 
@@ -26,6 +27,10 @@ const Projects = (props: any) => {
     return (
         <div id="projects-section">
             <h1>Projects Section</h1>
+            <img
+                src={cpuProjectImage} alt="yay" width={800}
+            />
+            <h4>RISC-V CPU</h4>
             <ProjectsSection>
                 <ProjectCard>
                     {myProjects[0].title}

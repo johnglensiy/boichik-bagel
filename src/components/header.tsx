@@ -1,20 +1,28 @@
 import * as React from "react"
 import { Link } from "gatsby"
 import styled from "styled-components"
-import { StyledHeader, StyledLogo, NavContainer, NavLink } from "../components/headercss"
-import myPortrait from "../codeologyportrait.jpg";
+import { StyledHeader, StyledLogo, NavContainer, NavLink, RoundedImage } from "../components/headercss"
+import myPortrait from "../images/codeologyportrait.jpg";
 import Icon from "../icons/icon"; 
+import { StaticImage } from 'gatsby-plugin-image';
 
 const Header = () => {
   return (
     <StyledHeader>
 
-      <img className="portrait" src={myPortrait} alt="My image" width={300}/>
+      <StaticImage 
+        src="../images/test.jpg"
+        alt="A dinosaur"
+        width={200}
+        height={200}
+      />
+      <RoundedImage
+        className="portrait" src={myPortrait} alt="My image" width={200}/> 
       <h1>
         John Glen Siy
       </h1>
       <h2>
-        johnglen_siy [at] \n 
+        johnglen_siy [at] <br></br>
         berkeley.edu
       </h2>
       <Icon name="Github"></Icon>
