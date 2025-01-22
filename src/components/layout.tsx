@@ -19,6 +19,7 @@ const StyledLayout = styled.div`
 
   #content {
     flex: 1;
+    width: 100px;
     font-family: "Helvetica Neue", sans-serif;
     // margin: 0 auto;
     // margin-top: 100px;
@@ -30,7 +31,7 @@ const StyledLayout = styled.div`
   #main-container {
     margin: 0 auto;
     // margin-top: 100px;
-    width: 70%;
+    width: 75%;
     display: flex;
     flex-direction: row;
     gap: 50px;

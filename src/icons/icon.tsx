@@ -1,6 +1,6 @@
 import React from "react";
 
-import IconGithub from "../icons/github.tsx";
+import IconGithub from "../icons/github";
 
 const Icon = ({ name }) => {
     switch (name) {

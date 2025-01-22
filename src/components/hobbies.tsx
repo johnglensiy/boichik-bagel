@@ -1,11 +1,11 @@
 import React from "react";
 import styled from "styled-components";
 
-import { HobbiesSection } from "../components/hobbiescss.tsx"
+import { HobbiesSection } from "../components/hobbiescss"
 
 const Hobbies = (props: any) => {
   return (
-    <HobbiesSection>
+    <HobbiesSection id="hobbies-section">
         <h1>Hobbies Section</h1>
     </HobbiesSection>
   )

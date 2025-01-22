@@ -22,7 +22,7 @@ const GlobalStyle = createGlobalStyle`
         color: #8892b0;
         font-size: 1.125rem;
         font-family: 'Lato';
-        line-height: 1.5rem;
+        line-height: normal;
         font-weight: 400;
     }
     h1 {
