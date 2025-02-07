@@ -28,9 +28,15 @@ const Projects = (props: any) => {
         <div id="projects-section">
             <h1>Projects Section</h1>
             <img
-                src={cpuProjectImage} alt="yay" width={800}
+                src={cpuProjectImage} alt="cpuProjectImage" width={800}
             />
             <h4>RISC-V CPU</h4>
+            <img
+                src={cpuProjectImage} alt="cpuProjectImage" width={800}
+            />
+            <h4>johnglendsiy.me</h4>
+
+            
             <ProjectsSection>
                 <ProjectCard>
                     {myProjects[0].title}
