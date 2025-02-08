@@ -1,5 +1,6 @@
 import React from "react";
-import { StyledAboutMe } from "../components/aboutmecss"
+import { StyledAboutMe } from "../components/aboutmecss";
+import VisitCounter from "../components/visitCounter";
 
 const AboutMe = (props: any) => {
     return (
@@ -17,15 +18,11 @@ const AboutMe = (props: any) => {
                 my half-marathon. If you know how to do either of those things
                 
                 Here are some of the things I've been working on:
-
-
-            
-                
-
             </p>
             <p>
                 Hi
             </p>
+            <VisitCounter></VisitCounter>
             <hr/>
         </StyledAboutMe>
 
