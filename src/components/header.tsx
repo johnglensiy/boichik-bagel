@@ -4,6 +4,7 @@ import styled from "styled-components"
 import { StyledHeader, StyledLogo, NavContainer, NavLink, RoundedImage } from "../components/headercss"
 import myPortrait from "../images/codeologyavatar.png";
 import Icon from "../icons/icon"; 
+import VisitCounter from "./visitCounter";
 
 const Header = () => {
   return (
@@ -54,6 +55,8 @@ const Header = () => {
             <Link to="#hobbies-section" aria-label="home">More</Link>
           </NavLink>
       </div>
+
+      <VisitCounter></VisitCounter>
     </StyledHeader>
   )
 }
