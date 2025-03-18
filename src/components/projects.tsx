@@ -47,28 +47,30 @@ const Projects = ({ content }) => {
                     Projects
                 </h2>
                 <div className="project-grid">
+                    <a href={frontmatter.github} target="_blank" rel="noopener noreferrer"> 
+                        <div className="featured-project">
+                            <div className="project-image">
+                                <img
+                                    src={cpuProjectImage} alt="cpuProjectImage" width={300}
+                                />
+                            </div>
+                            <div className="project-description">
+                                RISC-V CPU <br />
+                                
+                                A virtual CPU that can run arithmetic RISC-V assembly instructions
+                                
+                            </div>
 
-                    <div className="featured-project">
-                        <div className="project-image">
-                            <img
-                                src={cpuProjectImage} alt="cpuProjectImage" width={300}
-                            />
-                        </div>
-                        <div>
-                            RISC-V CPU <br />
-                            
-                            A virtual CPU that can run arithmetic RISC-V assembly instructions
-                            
                             {frontmatter.tech && ( 
-                                <div className="all-techs-container">
-                                    {frontmatter.tech.map((tech, i) => (
-                                        <span className="single-tech" key={i}>{tech}</span> 
-                                    ))}
-                                </div>
-                            )}
+                                    <div className="all-techs-container">
+                                        {frontmatter.tech.map((tech, i) => (
+                                            <span className="single-tech" key={i}>{tech}</span> 
+                                        ))}
+                                    </div>
+                                )}
 
                         </div>
-                    </div>
+                    </a>
 
                     <div className="featured-project">
                         <img

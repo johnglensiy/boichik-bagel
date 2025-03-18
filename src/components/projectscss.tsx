@@ -57,6 +57,14 @@ export const StyledProjectsSection = styled.section`
 		@media (max-width: 1080px) {
 			grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
 		}
+		
+		a {
+			text-decoration: none;
+		}
+
+		a:hover .project-description {
+			text-decoration: underline;
+		}
 
 		.featured-project {
 			// outline: 1px solid black;
