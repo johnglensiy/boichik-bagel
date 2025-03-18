@@ -38,6 +38,8 @@ const Projects = ({ content }) => {
         );
     };
 
+    const {frontmatter, rawMarkdownBody} = content.projects.edges[2].node;
+
     return (
         <>
             <StyledProjectsSection>
@@ -56,10 +58,15 @@ const Projects = ({ content }) => {
                             RISC-V CPU <br />
                             
                             A virtual CPU that can run arithmetic RISC-V assembly instructions
-                            <div className="all-techs-container">
-                                <span className="single-tech"> Javascript </span>    
-                            </div> 
                             
+                            {frontmatter.tech && ( 
+                                <div className="all-techs-container">
+                                    {frontmatter.tech.map((tech, i) => (
+                                        <span className="single-tech" key={i}>{tech}</span> 
+                                    ))}
+                                </div>
+                            )}
+
                         </div>
                     </div>
 

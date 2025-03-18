@@ -41,11 +41,13 @@ export const pageQuery = graphql`
       edges {
         node {
           frontmatter {
-            greetings
-            emoji
+            date
             title
-            subtitlePrefix
-            subtitleHighlight
+            github
+            external
+            tech
+            company
+            showInProjects
           }
           rawMarkdownBody
         }

@@ -79,9 +79,10 @@ export const StyledProjectsSection = styled.section`
 				.single-tech {
 					background-color: #add8e6;
 					border-radius: 20px;
-					padding: 10px;
-					padding-left: 15px;
-					padding-right: 15px;
+					padding: 7px;
+					padding-left: 12px;
+					padding-right: 12px;
+					margin-right: 5px;
 				}
 			}
 		}
