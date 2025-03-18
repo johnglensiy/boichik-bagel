@@ -5,5 +5,4 @@ export const StyledAboutMe = styled.div`
         width: 50%;
         color: gray;
     }
-
 `

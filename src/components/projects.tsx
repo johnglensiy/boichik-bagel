@@ -2,15 +2,16 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 
 import { myProjects } from "../pages/index"
-import { ProjectsSection, ProjectCard } from './projectscss'
+import { ProjectsSection, ProjectCard, StyledProjectsSection } from './projectscss'
 import myPortrait from "../codeologyportrait.jpg"
 import cpuProjectImage from "../content/projects/images/riscvCPU.png"
 
-const Projects = (props: any) => {
+const Projects = ({ content }) => {
 
     const projectCount = myProjects.length
     const [projectIndex, setProjectIndex] = useState(0)
     const thisProject = myProjects[projectIndex]
+    const projectsToShow = content.projects.edges.filter(({node}) => node)
 
     const handleProjNav = (direction: string) => {
         setProjectIndex( () => {
@@ -24,66 +25,118 @@ const Projects = (props: any) => {
         )
     }
 
+    const projectCard = (node) => {
+        const { frontmatter, rawMarkdownBody } = node;
+        const { github, external, title, tech } = frontmatter;
+
+        return (
+            <div>
+                <h4> {frontmatter.title} </h4>
+                <br></br>
+                {rawMarkdownBody}
+            </div>
+        );
+    };
+
     return (
-        <div id="projects-section">
-            <h1>Projects Section</h1>
-            <img
-                src={cpuProjectImage} alt="cpuProjectImage" width={800}
-            />
-            <h4>RISC-V CPU</h4>
-            <img
-                src={cpuProjectImage} alt="cpuProjectImage" width={800}
-            />
-            <h4>johnglendsiy.me</h4>
+        <>
+            <StyledProjectsSection>
+                <h2>
+                    Projects
+                </h2>
+                <div className="project-grid">
 
-            
-            <ProjectsSection>
-                <ProjectCard>
-                    {myProjects[0].title}
-                    <div className="project-descr">
-                        {myProjects[0].description}
+                    <div className="featured-project">
+                        <div className="project-image">
+                            <img
+                                src={cpuProjectImage} alt="cpuProjectImage" width={300}
+                            />
+                        </div>
+                        <div>
+                            RISC-V CPU <br />
+                            
+                            A virtual CPU that can run arithmetic RISC-V assembly instructions
+                            <div className="all-techs-container">
+                                <span className="single-tech"> Javascript </span>    
+                            </div> 
+                            
+                        </div>
                     </div>
-                </ProjectCard>
-                <ProjectCard>
-                    <div>{myProjects[0].title}</div>
-                </ProjectCard>
-                <ProjectCard>
-                    <div>{myProjects[1].title}</div>
-                </ProjectCard>
-                <div>hola</div>
-                <div>hello</div>
-            </ProjectsSection>
-        </div>
-        // <div>
-        //     <div id="projects-section">
-        //     <h1>These are my projects</h1>
-        // </div>
-        // <div>
-        //      <h2 className="title">
-        //         My Projects
-        //     </h2>
-        //     <h3 className="subtitle">
-        //         {thisProject.title}
-        //     </h3>
-        //     <img
-        //         src={myPortrait} 
-        //         alt="My image"
-        //         width={50}
-        //     >
-        //     </img>
 
-        //     <div className="description">
-        //         {thisProject.description}
-        //     </div>
-        //     <button onClick={() => handleProjNav("prev")}>
+                    <div className="featured-project">
+                        <img
+                            src={cpuProjectImage} alt="cpuProjectImage" width={300}
+                        />
+                        <div>
+                            Gitlet <br />
+                            A simple implementation of Git's version-control system
+                            <div className="all-techs-container">
+                                <span className="single-tech"> Java </span>    
+                            </div> 
+                        </div>
+                    </div>
 
-        //     </button>
-        //     <button onClick={() => handleProjNav("next")}>
+                    <div className="featured-project">
+                        <img
+                            src={cpuProjectImage} alt="cpuProjectImage" width={300}
+                        />
+                        <div>
+                            Gitlet <br />
+                            A simple implementation of Git's version-control system
+                            <div className="all-techs-container">
+                                <span className="single-tech"> Java </span>    
+                            </div> 
+                        </div>
+                    </div>
 
-        //     </button>
-        // </div>
-        // </div>
-    )
-}
+                    <div className="featured-project">
+                        <img
+                            src={cpuProjectImage} alt="cpuProjectImage" width={300}
+                        />
+                        <div>
+                            Gitlet <br />
+                            A simple implementation of Git's version-control system
+                            <div className="all-techs-container">
+                                <span className="single-tech"> Java </span>    
+                            </div> 
+                        </div>
+                    </div>
 
-export default Projects
+                    <div className="featured-project">
+                        <img
+                            src={cpuProjectImage} alt="cpuProjectImage" width={300}
+                        />
+                        <div>
+                            Gitlet <br />
+                            A simple implementation of Git's version-control system
+                            <div className="all-techs-container">
+                                <span className="single-tech"> Java </span>    
+                            </div> 
+                        </div>
+                    </div>
+
+                    <div className="featured-project">
+                        <img
+                            src={cpuProjectImage} alt="cpuProjectImage" width={300}
+                        />
+                        <div>
+                            Gitlet <br />
+                            A simple implementation of Git's version-control system
+                            <div className="all-techs-container">
+                                <span className="single-tech"> Java </span>    
+                            </div> 
+                        </div>
+                    </div>
+                </div>
+
+                {/* <ul className="project-grid">
+                    { projectsToShow.map(({node}, i) => ( 
+                        <div key={i}> { projectCard(node) } </div>
+                        )) }
+                </ul> */}
+            </StyledProjectsSection>
+        </>
+    );
+};
+
+export default Projects;

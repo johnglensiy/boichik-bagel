@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const StyledHeader = styled.header`
-    outline: 1px solid black;
+    // outline: 1px solid black;
     position: sticky;
     top: 0;
     z-index: 1000;

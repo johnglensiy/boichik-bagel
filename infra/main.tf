@@ -41,4 +41,8 @@ resource "aws_dynamodb_table" "terraform_visitor_count_db" {
   }
 }
 
+resource "aws_apigatewayv2_api" "terraform_visitor_count_api" {
+  name          = "visitorCount-API"
+  protocol_type = "HTTP"
+}
 

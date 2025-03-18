@@ -6,12 +6,14 @@ import myPortrait from "../images/codeologyavatar.png";
 import Icon from "../icons/icon"; 
 import VisitCounter from "./visitCounter";
 
+import codeologyPortrait from "../images/codeologyPortrait.jpg"
+
 const Header = () => {
   return (
     <StyledHeader>
-      <RoundedImage>
-       
-      </RoundedImage>
+      <img
+          src={codeologyPortrait} alt="codeologyPortrait" width={100}
+      />
       <h2>
         John Glen Siy
       </h2>

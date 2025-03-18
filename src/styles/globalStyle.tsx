@@ -20,9 +20,9 @@ const GlobalStyle = createGlobalStyle`
         padding: 0;
         background-color: #f1f1ef;
         color: #8892b0;
-        font-size: 1.125rem;
+        font-size: 14px;
         font-family: 'Lato';
-        line-height: normal;
+        line-height: 1.5;
         font-weight: 400;
     }
     h1 {
@@ -37,7 +37,7 @@ const GlobalStyle = createGlobalStyle`
         }
     }
     h2 {
-        font-family: 
+        font-family: 'Lato', sans-serif;
         font-weight: 700;
         font-size: 1.25rem;
         line-height: 1.5rem;
@@ -46,6 +46,17 @@ const GlobalStyle = createGlobalStyle`
             font-size: 2rem;
             line-height: 3rem;
         }
+    }
+    p {
+        font-family: 'Lato', sans-serif;
+        font-weight: 400;
+        font-size: 1rem;
+        line-height: 1.5rem;
+        color: black;
+        // @media (min-width: 1200px) {
+        //     font-size: 2rem;
+        //     line-height: 3rem;
+        // }
     }
     a {
         display: inline-block;

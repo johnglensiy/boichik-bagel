@@ -22,8 +22,8 @@ export const myProjects = [
 export default function Home({ data }) {
   return (
     <Layout>
-        <AboutMe/>
-        <Projects/>
+        <AboutMe content={ data }/>
+        <Projects content={data}/>
         <Hobbies/>
         {/* <h1>Hi! Boop</h1> */}
     </Layout>
@@ -33,7 +33,11 @@ export default function Home({ data }) {
 
 export const pageQuery = graphql`
   {
-    hero: allMarkdownRemark {
+    projects: allMarkdownRemark (
+      filter: {
+        fileAbsolutePath: { regex: "/content/projects/" }  
+      }
+    ) {
       edges {
         node {
           frontmatter {

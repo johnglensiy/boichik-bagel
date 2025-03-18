@@ -25,13 +25,13 @@ const StyledLayout = styled.div`
     // margin-top: 100px;
     padding: 0 20px;
     padding-top: 100px;
-    outline: 1px solid black;
+    // outline: 1px solid black;
   }
 
   #main-container {
     margin: 0 auto;
     // margin-top: 100px;
-    width: 75%;
+    width: 90%;
     display: flex;
     flex-direction: row;
     gap: 50px;
