@@ -42,9 +42,38 @@ const GlobalStyle = createGlobalStyle`
         font-size: 1.25rem;
         line-height: 1.5rem;
         color: black;
+        // outline: 1px solid black;
+        margin-bottom: 0px;
         @media (min-width: 1200px) {
             font-size: 2rem;
             line-height: 3rem;
+        }
+    }
+    h3 {
+        font-family: 'Lato', sans-serif;
+        font-weight: 700;
+        font-size: 1.25rem;
+        line-height: 1.5rem;
+        color: black;
+        // outline: 1px solid black;
+        margin-bottom: 0px;
+        @media (min-width: 1200px) {
+            font-size: 1.5rem;
+            line-height: 1.5rem;
+        }
+    }
+    h4 {
+        font-family: 'Lato', sans-serif;
+        font-weight: 700;
+        font-size: 1.25rem;
+        line-height: 1rem;
+        color: black;
+        // outline: 1px solid black;
+        margin-bottom: 5px;
+        margin-top: 0px;
+        @media (min-width: 1200px) {
+            font-size: 1rem;
+            line-height: 1rem;
         }
     }
     p {

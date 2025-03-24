@@ -14,7 +14,7 @@ export const StyledHeader = styled.header`
     // background: white;
 
     display: flex;
-    // flex: 1;
+    flex: 1;
     flex-direction: column;
     // justify-content: space-between;
     // align-items: center;

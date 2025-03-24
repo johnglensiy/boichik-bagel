@@ -34,7 +34,7 @@ export const StyledProjectsSection = styled.section`
 	display: flex;
 	flex-direction: column;
 
-	h2:before {
+	h2::before, h3::before {
 		content: "";
 		display: inline-block;
 		height: 12px;
@@ -51,8 +51,9 @@ export const StyledProjectsSection = styled.section`
 		display: grid;
 		grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
 		grid-gap: 50px;
+		row-gap: 1rem;
 		position: relative;
-		margin-top: 50px;
+		margin-top: 25px;
 
 		@media (max-width: 1080px) {
 			grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -70,9 +71,10 @@ export const StyledProjectsSection = styled.section`
 			// outline: 1px solid black;
 			flex-direction: column;
 			width: 100%;
+			max-width: 300px;
 			display: flex;
 			gap: 15px;
-			// overflow: hidden;
+			overflow: hidden;
 
 			.project-image {
 				// outline: 1px solid black;
@@ -81,7 +83,7 @@ export const StyledProjectsSection = styled.section`
 			}
 
 			.all-techs-container {
-				padding-top: 20px;
+				padding-top: 0px;
 				padding-bottom: 20px;
 
 				.single-tech {

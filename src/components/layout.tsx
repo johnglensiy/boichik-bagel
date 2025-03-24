@@ -18,8 +18,9 @@ const StyledLayout = styled.div`
   outline: 10px solid black;
 
   #content {
-    flex: 1;
+    flex: 4;
     width: 100px;
+    // max-width: 1000px;
     font-family: "Helvetica Neue", sans-serif;
     // margin: 0 auto;
     // margin-top: 100px;
@@ -31,10 +32,11 @@ const StyledLayout = styled.div`
   #main-container {
     margin: 0 auto;
     // margin-top: 100px;
-    width: 90%;
+    width: 80%;
     display: flex;
     flex-direction: row;
     gap: 50px;
+    // outline: 1px solid black;
   }
 `
 
