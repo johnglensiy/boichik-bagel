@@ -20,10 +20,7 @@ const StyledLayout = styled.div`
   #content {
     flex: 4;
     width: 100px;
-    // max-width: 1000px;
     font-family: "Helvetica Neue", sans-serif;
-    // margin: 0 auto;
-    // margin-top: 100px;
     padding: 0 20px;
     padding-top: 100px;
     // outline: 1px solid black;

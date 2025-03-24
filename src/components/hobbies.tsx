@@ -6,6 +6,9 @@ import { HobbiesSection } from "../components/hobbiescss"
 const Hobbies = (props: any) => {
   return (
     <HobbiesSection id="hobbies-section">
+      <h2>Work Experience</h2> 
+      <br/>
+      <h2>Coursework</h2>
     </HobbiesSection>
   )
 }

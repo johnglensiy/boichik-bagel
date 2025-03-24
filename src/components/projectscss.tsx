@@ -76,10 +76,14 @@ export const StyledProjectsSection = styled.section`
 			gap: 15px;
 			overflow: hidden;
 
+			transform-origin: top left;
+			transition: transform 0.2s ease-in-out;
+
 			.project-image {
-				// outline: 1px solid black;
+				display: inline-block;
+				//outline: 1px solid black;
 				// border-radius: 20px;
-				overflow: hidden;
+				// overflow: hidden;
 			}
 
 			.all-techs-container {
@@ -95,6 +99,10 @@ export const StyledProjectsSection = styled.section`
 					margin-right: 5px;
 				}
 			}
+		}
+
+		.featured-project:hover {
+			transform: scale(1.03);
 		}
 }
 `;

@@ -26,11 +26,6 @@ const AboutMe = ({ content }) => {
 
                 <br/>
                 <br/>
-                <br/><br/>
-                <br/>
-                <br/>
-                <br/>
-                <br/>
                 <br/>
                 <br/>
                 <br/>

@@ -35,26 +35,18 @@ const Projects = ({ content }) => {
                     Software Projects
                 </h3>
                 <div className="project-grid">
-                    <a href={frontmatter.github} target="_blank" rel="noopener noreferrer"> 
+                    <a href={frontmatter.github} target="_blank" rel="nooponer noreferrer">
                         <div className="featured-project">
-                            <div className="project-image">
-                                <img
-                                    src={cpuProjectImage} alt="cpuProjectImage" width={300}
-                                />
-                            </div>
+                            <img
+                                src={gitletImage} alt="gitletImage" width={300}
+                            />
                             <div className="project-description">
-                                <h4>RISC-V CPU</h4>
-                                A virtual CPU that can run arithmetic RISC-V assembly instructions
+                                <h4>Gitlet</h4>
+                                A simple implementation of Git's version-control system
                             </div>
-
-                            {frontmatter.tech && ( 
-                                <div className="all-techs-container">
-                                    {frontmatter.tech.map((tech, i) => (
-                                        <span className="single-tech" key={i}>{tech}</span> 
-                                    ))}
-                                </div>
-                            )}
-
+                            <div className="all-techs-container">
+                                <span className="single-tech"> Java </span>    
+                            </div> 
                         </div>
                     </a>
 
@@ -64,7 +56,7 @@ const Projects = ({ content }) => {
                                 src={gitletImage} alt="gitletImage" width={300}
                             />
                             <div className="project-description">
-                                <h4>Gitlet</h4>
+                                <h4>johnglendsiy.me</h4>
                                 A simple implementation of Git's version-control system
                             </div>
                             <div className="all-techs-container">
@@ -85,6 +77,44 @@ const Projects = ({ content }) => {
                                 <span className="single-tech"> Golang </span>    
                         </div> 
                     </div>
+
+                    <a href={frontmatter.github} target="_blank" rel="noopener noreferrer"> 
+                        <div className="featured-project">
+                            <div className="project-image">
+                                <img
+                                    src={cpuProjectImage} alt="cpuProjectImage" width={300}
+                                />
+                            </div>
+                            <div className="project-description">
+                                <h4>SQL Query Optimizer</h4>
+                                A virtual CPU that can run arithmetic RISC-V assembly instructions
+                            </div>
+
+                            {frontmatter.tech && ( 
+                                <div className="all-techs-container">
+                                    {frontmatter.tech.map((tech, i) => (
+                                        <span className="single-tech" key={i}>{tech}</span> 
+                                    ))}
+                                </div>
+                            )}
+
+                        </div>
+                    </a>
+
+                    <a href={frontmatter.github} target="_blank" rel="nooponer noreferrer">
+                        <div className="featured-project">
+                            <img
+                                src={gitletImage} alt="gitletImage"
+                            />
+                            <div className="project-description">
+                                <h4>Matrix Multiplier</h4>
+                                A simple implementation of Git's version-control system
+                            </div>
+                            <div className="all-techs-container">
+                                <span className="single-tech"> Java </span>    
+                            </div> 
+                        </div>
+                    </a>
                 </div>
                 <h3>
                     Data Science/NLP
@@ -117,29 +147,41 @@ const Projects = ({ content }) => {
                     Hardware/Electrical Engineering
                 </h3>
                 <div className="project-grid">
-                    <div className="featured-project">
-                        <img
-                            src={sixteenRobotImage} alt="sixteenRobotImage" width={300}
-                        />
-                        <div>
-                            Gitlet <br />
-                            A simple implementation of Git's version-control system
-                            <div className="all-techs-container">
-                                <span className="single-tech"> Java </span>    
-                            </div> 
-                        </div>
-                    </div>
+                    <a href={frontmatter.github} target="_blank" rel="noopener noreferrer"> 
+                        <div className="featured-project">
+                            <div className="project-image">
+                                <img
+                                    src={cpuProjectImage} alt="cpuProjectImage" width={300}
+                                />
+                            </div>
+                            <div className="project-description">
+                                <h4>RISC-V CPU</h4>
+                                A virtual CPU that can run arithmetic RISC-V assembly instructions
+                            </div>
 
+                            {frontmatter.tech && ( 
+                                <div className="all-techs-container">
+                                    {frontmatter.tech.map((tech, i) => (
+                                        <span className="single-tech" key={i}>{tech}</span> 
+                                    ))}
+                                </div>
+                            )}
+
+                        </div>
+                    </a>
                     <div className="featured-project">
-                        <img
-                            src={cpuProjectImage} alt="cpuProjectImage" width={300}
-                        />
-                        <div>
-                            Gitlet <br />
-                            A simple implementation of Git's version-control system
-                            <div className="all-techs-container">
-                                <span className="single-tech"> Java </span>    
-                            </div> 
+                        <div className="project-image">
+                            <img
+                                src={cpuProjectImage} alt="cpuProjectImage" width={300}
+                            />
+                        </div>
+                        <div className="project-description">
+                            <h4>S1XT33N</h4>
+                            An autonomous car that responds to voice commands using RLC circuits
+                        </div>
+
+                        <div className="all-techs-container">
+                            <span className="single-tech">TI LaunchPad</span>
                         </div>
                     </div>
 
