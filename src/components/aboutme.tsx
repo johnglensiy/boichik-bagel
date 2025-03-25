@@ -2,6 +2,10 @@ import React from "react";
 import { StyledAboutMe } from "../components/aboutmecss";
 import VisitCounter from "../components/visitCounter";
 
+import oregonBoulderImage from "../content/oregon-boulder.png"
+import budapestImage from "../content/budapest.png"
+import grandLakeCoImage from "../content/grandlakeco.jpg"
+
 
 const AboutMe = ({ content }) => {
     const {frontmatter, rawMarkdownBody} = content.projects.edges[0].node;
@@ -23,18 +27,21 @@ const AboutMe = ({ content }) => {
                 In my free time, I love bouldering (indoor v6, outdoor v4), running, and leveling up my
                 cooking game. I'm also a huge sports fan and
                 have been cheering for the Warriors since 2013 - go Dubs! <br/>
-
-                <br/>
-                <br/>
-                <br/>
-                <br/>
-                <br/>
-                <br/>
-                <br/>
-                <br/>
-                <br/>
-
             </p>
+
+            <img src={oregonBoulderImage} alt="oregonBoulderImage" width={250}></img>
+            <img src={budapestImage} alt="budapestImage" width={200}></img>
+            <img src={grandLakeCoImage} alt="grandlakeCoImage"></img>
+
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
 
             <hr/>
         </StyledAboutMe>
