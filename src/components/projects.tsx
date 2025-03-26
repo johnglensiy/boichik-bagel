@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 
 import { myProjects } from "../pages/index"
-import { ProjectsSection, ProjectGrid, ProjectCard, StyledProjectsSection, FeaturedProject } from './projectscss'
 import myPortrait from "../codeologyportrait.jpg"
 import cpuProjectImage from "../content/projects/images/riscvCPU.png"
 import gitletImage from "../content/projects/images/gitlet.png"
@@ -13,10 +12,97 @@ interface DropdownGridProps {
     isVisible: boolean;
 }
 
-export const DropdownGrid = styled(ProjectGrid)<DropdownGridProps>`
+const StyledProjectsSection = styled.section`
+	display: flex;
+	flex-direction: column;
+	max-width: 1100px;
+
+	h2::before, h3::before {
+		content: "";
+		display: inline-block;
+		height: 12px;
+		width: 12px;
+		background-color: #ee5b36;
+		margin-right: 10px;
+	}
+
+    .dropdown-button {
+        width: auto;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+    
+}
+`;
+
+const ProjectGrid = styled.div`
+	// outline: 1px solid black;
+	overflow: hidden;
+	list-style: none;
+	padding-left: 0px;
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+	grid-gap: 50px;
+	row-gap: 1rem;
+	position: relative;
+	margin-top: 25px;
+
+	@media (max-width: 1080px) {
+		grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+	}
+	
+	a {
+		text-decoration: none;
+	}
+
+	a:hover .project-description {
+		text-decoration: underline;
+	}
+`;
+
+const DropdownGrid = styled(ProjectGrid)<DropdownGridProps>`
+    margin-top: 0px;
 	max-height: ${(props) => (props.isVisible ? "1000px" : "0")};
 	transition: max-height 0.25s ease-in-out;
-`
+`;
+
+const FeaturedProject = styled.div`
+	// outline: 1px solid black;
+	flex-direction: column;
+	width: 100%;
+	max-width: 300px;
+	display: flex;
+	gap: 15px;
+	overflow: hidden;
+
+	transform-origin: top left;
+	transition: transform 0.2s ease-in-out;
+
+	.project-image {
+		// outline: 1px solid black;
+		display: inline-block;
+	}
+
+	.all-techs-container {
+		padding-top: 0px;
+		padding-bottom: 20px;
+
+		.single-tech {
+			background-color: #add8e6;
+			border-radius: 20px;
+			padding: 7px;
+			padding-left: 12px;
+			padding-right: 12px;
+			margin-right: 5px;
+		}
+	}
+
+	&:hover {
+		transform: scale(1.03);
+	}
+`;
 
 
 
@@ -96,12 +182,6 @@ const Projects = ({ content }) => {
                     </div>
                 </ProjectGrid>
 
-                <button onClick = {() => {
-                    setHiddenProjVisible(!isHiddenProjVisible)
-                    console.log("switched")
-                }
-                    }>hi</button>
-
                 <DropdownGrid isVisible={isHiddenProjVisible}>
                     <a href={frontmatter.github} target="_blank" rel="nooponer noreferrer">
                         <FeaturedProject>
@@ -133,6 +213,12 @@ const Projects = ({ content }) => {
                         </FeaturedProject>
                     </a>
                 </DropdownGrid>
+
+                <p className="dropdown-button" onClick = {() => {
+                    setHiddenProjVisible(!isHiddenProjVisible)
+                    console.log("switched")
+                }
+                    }>Show {isHiddenProjVisible ? "less" : "more"} software projects</p>
 
                 <h3>
                     Data Science/NLP
