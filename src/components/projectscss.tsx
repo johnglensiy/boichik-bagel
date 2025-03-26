@@ -33,6 +33,7 @@ export const ProjectCard = styled.div`
 export const StyledProjectsSection = styled.section`
 	display: flex;
 	flex-direction: column;
+	max-width: 1100px;
 
 	h2::before, h3::before {
 		content: "";
@@ -100,10 +101,67 @@ export const StyledProjectsSection = styled.section`
 				}
 			}
 		}
-
-		.featured-project:hover {
-			transform: scale(1.03);
-		}
 }
 `;
 
+export const ProjectGrid = styled.div`
+	// outline: 1px solid black;
+	overflow: hidden;
+	list-style: none;
+	padding-left: 0px;
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+	grid-gap: 50px;
+	row-gap: 1rem;
+	position: relative;
+	margin-top: 25px;
+
+	@media (max-width: 1080px) {
+		grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+	}
+	
+	a {
+		text-decoration: none;
+	}
+
+	a:hover .project-description {
+		text-decoration: underline;
+	}
+`
+
+
+export const FeaturedProject = styled.div`
+	// outline: 1px solid black;
+	flex-direction: column;
+	width: 100%;
+	max-width: 300px;
+	display: flex;
+	gap: 15px;
+	overflow: hidden;
+
+	transform-origin: top left;
+	transition: transform 0.2s ease-in-out;
+
+	.project-image {
+		// outline: 1px solid black;
+		display: inline-block;
+	}
+
+	.all-techs-container {
+		padding-top: 0px;
+		padding-bottom: 20px;
+
+		.single-tech {
+			background-color: #add8e6;
+			border-radius: 20px;
+			padding: 7px;
+			padding-left: 12px;
+			padding-right: 12px;
+			margin-right: 5px;
+		}
+	}
+
+	&:hover {
+		transform: scale(1.03);
+	}
+`;

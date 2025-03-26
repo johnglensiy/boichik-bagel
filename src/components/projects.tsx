@@ -2,16 +2,28 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 
 import { myProjects } from "../pages/index"
-import { ProjectsSection, ProjectCard, StyledProjectsSection } from './projectscss'
+import { ProjectsSection, ProjectGrid, ProjectCard, StyledProjectsSection, FeaturedProject } from './projectscss'
 import myPortrait from "../codeologyportrait.jpg"
 import cpuProjectImage from "../content/projects/images/riscvCPU.png"
 import gitletImage from "../content/projects/images/gitlet.png"
 import fileSharingSystemImage from "../content/projects/images/filesharingsystem.png"
 import sixteenRobotImage from "../content/projects/images/sixteenrobot.png"
 
+interface DropdownGridProps {
+    isVisible: boolean;
+}
+
+export const DropdownGrid = styled(ProjectGrid)<DropdownGridProps>`
+	max-height: ${(props) => (props.isVisible ? "1000px" : "0")};
+	transition: max-height 0.25s ease-in-out;
+`
+
+
+
 const Projects = ({ content }) => {
 
     const projectsToShow = content.projects.edges.filter(({node}) => node)
+    const [isHiddenProjVisible, setHiddenProjVisible] = useState(false);
 
     const projectCard = (node) => {
         const { frontmatter, rawMarkdownBody } = node;
@@ -26,17 +38,22 @@ const Projects = ({ content }) => {
         );
     };
 
+    const revealMoreProjects = () => {
+
+        // toggle 
+    }
+
     const {frontmatter, rawMarkdownBody} = content.projects.edges[2].node;
 
     return (
         <>
-            <StyledProjectsSection>
+            <StyledProjectsSection id="projects-section">
                 <h3>
                     Software Projects
                 </h3>
-                <div className="project-grid">
+                <ProjectGrid>
                     <a href={frontmatter.github} target="_blank" rel="nooponer noreferrer">
-                        <div className="featured-project">
+                        <FeaturedProject>
                             <img
                                 src={gitletImage} alt="gitletImage" width={300}
                             />
@@ -47,7 +64,7 @@ const Projects = ({ content }) => {
                             <div className="all-techs-container">
                                 <span className="single-tech"> Java </span>    
                             </div> 
-                        </div>
+                        </FeaturedProject>
                     </a>
 
                     <a href={frontmatter.github} target="_blank" rel="nooponer noreferrer">
@@ -77,45 +94,46 @@ const Projects = ({ content }) => {
                                 <span className="single-tech"> Golang </span>    
                         </div> 
                     </div>
+                </ProjectGrid>
 
-                    <a href={frontmatter.github} target="_blank" rel="noopener noreferrer"> 
-                        <div className="featured-project">
-                            <div className="project-image">
-                                <img
-                                    src={cpuProjectImage} alt="cpuProjectImage" width={300}
-                                />
-                            </div>
-                            <div className="project-description">
-                                <h4>SQL Query Optimizer</h4>
-                                A virtual CPU that can run arithmetic RISC-V assembly instructions
-                            </div>
+                <button onClick = {() => {
+                    setHiddenProjVisible(!isHiddenProjVisible)
+                    console.log("switched")
+                }
+                    }>hi</button>
 
-                            {frontmatter.tech && ( 
-                                <div className="all-techs-container">
-                                    {frontmatter.tech.map((tech, i) => (
-                                        <span className="single-tech" key={i}>{tech}</span> 
-                                    ))}
-                                </div>
-                            )}
-
-                        </div>
-                    </a>
-
+                <DropdownGrid isVisible={isHiddenProjVisible}>
                     <a href={frontmatter.github} target="_blank" rel="nooponer noreferrer">
-                        <div className="featured-project">
+                        <FeaturedProject>
                             <img
-                                src={gitletImage} alt="gitletImage"
+                                src={gitletImage} alt="gitletImage" width={300}
                             />
                             <div className="project-description">
-                                <h4>Matrix Multiplier</h4>
+                                <h4>Gitlet</h4>
                                 A simple implementation of Git's version-control system
                             </div>
                             <div className="all-techs-container">
                                 <span className="single-tech"> Java </span>    
                             </div> 
-                        </div>
+                        </FeaturedProject>
                     </a>
-                </div>
+
+                    <a href={frontmatter.github} target="_blank" rel="nooponer noreferrer">
+                        <FeaturedProject>
+                            <img
+                                src={gitletImage} alt="gitletImage" width={300}
+                            />
+                            <div className="project-description">
+                                <h4>johnglendsiy.me</h4>
+                                A simple implementation of Git's version-control system
+                            </div>
+                            <div className="all-techs-container">
+                                <span className="single-tech"> Java </span>    
+                            </div> 
+                        </FeaturedProject>
+                    </a>
+                </DropdownGrid>
+
                 <h3>
                     Data Science/NLP
                 </h3>

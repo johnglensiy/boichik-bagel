@@ -54,7 +54,7 @@ const Header = () => {
             <Link to="#projects-section" aria-label="home">Projects</Link>
           </NavLink>
           <NavLink>
-            <Link to="#hobbies-section" aria-label="home">More</Link>
+            <a href="#hobbies-section">More</a>
           </NavLink>
       </div>
 
