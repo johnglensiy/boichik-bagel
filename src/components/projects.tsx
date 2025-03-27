@@ -85,7 +85,7 @@ const FeaturedProject = styled.div`
 		display: inline-block;
 	}
 
-	.all-techs-container {
+	.project-techs {
 		padding-top: 0px;
 		padding-bottom: 20px;
 
@@ -140,7 +140,7 @@ const Projects = ({ content }) => {
                                 <h4>Gitlet</h4>
                                 A simple implementation of Git's version-control system
                             </div>
-                            <div className="all-techs-container">
+                            <div className="project-techs">
                                 <span className="single-tech"> Java </span>    
                             </div> 
                         </FeaturedProject>
@@ -155,7 +155,7 @@ const Projects = ({ content }) => {
                                 <h4>johnglendsiy.me</h4>
                                 A simple implementation of Git's version-control system
                             </div>
-                            <div className="all-techs-container">
+                            <div className="project-techs">
                                 <span className="single-tech"> Java </span>    
                             </div> 
                         </div>
@@ -169,7 +169,7 @@ const Projects = ({ content }) => {
                             <h4>Secure File Sharing System</h4>
                             A simple implementation of Git's version-control system
                         </div>
-                        <div className="all-techs-container">
+                        <div className="project-techs">
                                 <span className="single-tech"> Golang </span>    
                         </div> 
                     </div>
@@ -185,7 +185,7 @@ const Projects = ({ content }) => {
                                 <h4>Gitlet</h4>
                                 A simple implementation of Git's version-control system
                             </div>
-                            <div className="all-techs-container">
+                            <div className="project-techs">
                                 <span className="single-tech"> Java </span>    
                             </div> 
                         </FeaturedProject>
@@ -200,7 +200,7 @@ const Projects = ({ content }) => {
                                 <h4>johnglendsiy.me</h4>
                                 A simple implementation of Git's version-control system
                             </div>
-                            <div className="all-techs-container">
+                            <div className="project-techs">
                                 <span className="single-tech"> Java </span>    
                             </div> 
                         </FeaturedProject>
@@ -216,14 +216,15 @@ const Projects = ({ content }) => {
                 <h3>
                     Data Science/NLP
                 </h3>
-                <div className="project-grid">
+
+                <ProjectGrid>
                     <div className="featured-project">
                         <img
                             src={sixteenRobotImage} alt="sixteenRobotImage" width={300}
                         />
                         <div>
                             <h4>Avolingo</h4> <br/>
-                            <div className="all-techs-container">
+                            <div className="project-techs">
                                 <span className="single-tech"> Pandas </span>    
                             </div> 
                         </div>
@@ -234,16 +235,18 @@ const Projects = ({ content }) => {
                         />
                         <div>
                             <h4>Spam Classifier</h4> <br/>
-                            <div className="all-techs-container">
+                            <div className="project-techs">
                                 <span className="single-tech"> Pandas </span>    
                             </div> 
                         </div>
                     </div>
-                </div>
+                </ProjectGrid>
+
                 <h3>
                     Hardware/Electrical Engineering
                 </h3>
-                <div className="project-grid">
+
+                <ProjectGrid>
                     <a href={frontmatter.github} target="_blank" rel="noopener noreferrer"> 
                         <div className="featured-project">
                             <div className="project-image">
@@ -257,7 +260,7 @@ const Projects = ({ content }) => {
                             </div>
 
                             {frontmatter.tech && ( 
-                                <div className="all-techs-container">
+                                <div className="project-techs">
                                     {frontmatter.tech.map((tech, i) => (
                                         <span className="single-tech" key={i}>{tech}</span> 
                                     ))}
@@ -277,7 +280,7 @@ const Projects = ({ content }) => {
                             An autonomous car that responds to voice commands using RLC circuits
                         </div>
 
-                        <div className="all-techs-container">
+                        <div className="project-techs">
                             <span className="single-tech">TI LaunchPad</span>
                         </div>
                     </div>
@@ -289,12 +292,13 @@ const Projects = ({ content }) => {
                         <div>
                             Gitlet <br />
                             A simple implementation of Git's version-control system
-                            <div className="all-techs-container">
+                            <div className="project-techs">
                                 <span className="single-tech"> Java </span>    
                             </div> 
                         </div>
                     </div>
-                </div>
+                </ProjectGrid>
+                
 
                 {/* <ul className="project-grid">
                     { projectsToShow.map(({node}, i) => ( 
