@@ -104,8 +104,6 @@ const FeaturedProject = styled.div`
 	}
 `;
 
-
-
 const Projects = ({ content }) => {
 
     const projectsToShow = content.projects.edges.filter(({node}) => node)
@@ -123,11 +121,6 @@ const Projects = ({ content }) => {
             </div>
         );
     };
-
-    const revealMoreProjects = () => {
-
-        // toggle 
-    }
 
     const {frontmatter, rawMarkdownBody} = content.projects.edges[2].node;
 
@@ -216,9 +209,9 @@ const Projects = ({ content }) => {
 
                 <p className="dropdown-button" onClick = {() => {
                     setHiddenProjVisible(!isHiddenProjVisible)
-                    console.log("switched")
-                }
-                    }>Show {isHiddenProjVisible ? "less" : "more"} software projects</p>
+                }}>
+                    Show {isHiddenProjVisible ? "less" : "more"} software projects
+                </p>
 
                 <h3>
                     Data Science/NLP
