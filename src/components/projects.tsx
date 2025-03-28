@@ -155,12 +155,6 @@ const Projects = ({ content }) => {
         <>
             <StyledProjectsSection id="projects-section">
 
-                <DropdownGrid isVisible={isHiddenProjVisible}>
-                    {softwareProjectsAsNodes.slice(3).map((projectEdge, index) => 
-                        <ProjectCard key={index} projectNode={projectEdge.node}></ProjectCard>
-                    )}
-                </DropdownGrid>
-
                 <h3>
                     Software Projects
                 </h3>
