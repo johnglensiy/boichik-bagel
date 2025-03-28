@@ -1,12 +1,13 @@
 ---
 date: '2023'
-title: 'Gitlet'
+title: 'Avolingo'
 github: 'https://github.com/61c-student/su23-proj3-johnglensiy'
 external: ''
-category: 'software'
+category: 'data'
 tech:
-  - Logisim
+  - PyTorch
+  - HuggingFace
 company: ''
 showInProjects: true
 ---
-A simple implementation of Git's version-control system
+A virtual CPU that can run arithmetic RISC-V assembly instructions.

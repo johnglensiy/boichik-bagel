@@ -45,6 +45,7 @@ export const pageQuery = graphql`
             title
             github
             external
+            category
             tech
             company
             showInProjects

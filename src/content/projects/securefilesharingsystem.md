@@ -1,18 +1,12 @@
 ---
 date: '2023'
-title: 'johnglendsiy.me'
+title: 'Secure File Sharing System'
 github: 'https://github.com/61c-student/su23-proj3-johnglensiy'
 external: ''
 category: 'software'
-tech: 
-  - React
-  - Typescript
-  - HTML/CSS
-  - GraphQL
-  - AWS
-  - Terraform
-
+tech:
+  - Golang
 company: ''
 showInProjects: true
 ---
-Personal website deployed with AWS
+A simple implementation of Git's version-control system

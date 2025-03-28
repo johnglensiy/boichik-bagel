@@ -109,16 +109,43 @@ const Projects = ({ content }) => {
     const projectsToShow = content.projects.edges.filter(({node}) => node)
     const [isHiddenProjVisible, setHiddenProjVisible] = useState(false);
 
-    const projectCard = (node) => {
-        const { frontmatter, rawMarkdownBody } = node;
-        const { github, external, title, tech } = frontmatter;
+    const softwareProjectsAsNodes = content.projects.edges.filter(
+        edge => edge.node.frontmatter.category === "software" && edge.node.frontmatter.showInProjects);
+
+    const hardwareProjectsAsNodes = content.projects.edges.filter(
+        edge => edge.node.frontmatter.category === "hardware" && edge.node.frontmatter.showInProjects);
+
+    const dataProjectsAsNodes = content.projects.edges.filter(
+        edge => edge.node.frontmatter.category === "data" && edge.node.frontmatter.showInProjects);
+
+    console.log("Filtered software projects:", softwareProjectsAsNodes);
+    console.log("Filtered hardware projects:", hardwareProjectsAsNodes);
+    console.log("Filtered data projects:", dataProjectsAsNodes);
+
+    const ProjectCard = ({projectNode}) => {
+        const { frontmatter, rawMarkdownBody } = projectNode;
+        // const { category, github, title, tech } = frontmatter;
 
         return (
-            <div>
-                <h4> {frontmatter.title} </h4>
-                <br></br>
-                {rawMarkdownBody}
-            </div>
+            <a href={frontmatter.github} target="_blank" rel="nooponer noreferrer">
+                <FeaturedProject>
+                    <img
+                        src={gitletImage} alt="gitletImage" width={300}
+                    />
+                    <div className="project-description">
+                        <h4>{frontmatter.title}</h4>
+                        {rawMarkdownBody}
+                    </div>
+
+                    {frontmatter.tech && ( 
+                        <div className="project-techs">
+                            {frontmatter.tech.map((tech, i) => (
+                                <span className="single-tech" key={i}>{tech}</span> 
+                            ))}
+                        </div>
+                    )}
+                </FeaturedProject>
+            </a>
         );
     };
 
@@ -127,84 +154,26 @@ const Projects = ({ content }) => {
     return (
         <>
             <StyledProjectsSection id="projects-section">
+
+                <DropdownGrid isVisible={isHiddenProjVisible}>
+                    {softwareProjectsAsNodes.slice(3).map((projectEdge, index) => 
+                        <ProjectCard key={index} projectNode={projectEdge.node}></ProjectCard>
+                    )}
+                </DropdownGrid>
+
                 <h3>
                     Software Projects
                 </h3>
                 <ProjectGrid>
-                    <a href={frontmatter.github} target="_blank" rel="nooponer noreferrer">
-                        <FeaturedProject>
-                            <img
-                                src={gitletImage} alt="gitletImage" width={300}
-                            />
-                            <div className="project-description">
-                                <h4>Gitlet</h4>
-                                A simple implementation of Git's version-control system
-                            </div>
-                            <div className="project-techs">
-                                <span className="single-tech"> Java </span>    
-                            </div> 
-                        </FeaturedProject>
-                    </a>
-
-                    <a href={frontmatter.github} target="_blank" rel="nooponer noreferrer">
-                        <div className="featured-project">
-                            <img
-                                src={gitletImage} alt="gitletImage" width={300}
-                            />
-                            <div className="project-description">
-                                <h4>johnglendsiy.me</h4>
-                                A simple implementation of Git's version-control system
-                            </div>
-                            <div className="project-techs">
-                                <span className="single-tech"> Java </span>    
-                            </div> 
-                        </div>
-                    </a>
-
-                    <div className="featured-project">
-                        <img
-                            src={gitletImage} alt="fileSharingSystemImage" width={300}
-                        />
-                        <div className="project-description">
-                            <h4>Secure File Sharing System</h4>
-                            A simple implementation of Git's version-control system
-                        </div>
-                        <div className="project-techs">
-                                <span className="single-tech"> Golang </span>    
-                        </div> 
-                    </div>
+                    {softwareProjectsAsNodes.slice(0, 3).map((projectEdge, index) => 
+                        <ProjectCard key={index} projectNode={projectEdge.node}></ProjectCard>
+                    )}
                 </ProjectGrid>
 
                 <DropdownGrid isVisible={isHiddenProjVisible}>
-                    <a href={frontmatter.github} target="_blank" rel="nooponer noreferrer">
-                        <FeaturedProject>
-                            <img
-                                src={gitletImage} alt="gitletImage" width={300}
-                            />
-                            <div className="project-description">
-                                <h4>Gitlet</h4>
-                                A simple implementation of Git's version-control system
-                            </div>
-                            <div className="project-techs">
-                                <span className="single-tech"> Java </span>    
-                            </div> 
-                        </FeaturedProject>
-                    </a>
-
-                    <a href={frontmatter.github} target="_blank" rel="nooponer noreferrer">
-                        <FeaturedProject>
-                            <img
-                                src={gitletImage} alt="gitletImage" width={300}
-                            />
-                            <div className="project-description">
-                                <h4>johnglendsiy.me</h4>
-                                A simple implementation of Git's version-control system
-                            </div>
-                            <div className="project-techs">
-                                <span className="single-tech"> Java </span>    
-                            </div> 
-                        </FeaturedProject>
-                    </a>
+                    {softwareProjectsAsNodes.slice(3).map((projectEdge, index) => 
+                        <ProjectCard key={index} projectNode={projectEdge.node}></ProjectCard>
+                    )}
                 </DropdownGrid>
 
                 <p className="dropdown-button" onClick = {() => {
@@ -218,28 +187,9 @@ const Projects = ({ content }) => {
                 </h3>
 
                 <ProjectGrid>
-                    <div className="featured-project">
-                        <img
-                            src={sixteenRobotImage} alt="sixteenRobotImage" width={300}
-                        />
-                        <div>
-                            <h4>Avolingo</h4> <br/>
-                            <div className="project-techs">
-                                <span className="single-tech"> Pandas </span>    
-                            </div> 
-                        </div>
-                    </div>
-                    <div className="featured-project">
-                        <img
-                            src={sixteenRobotImage} alt="sixteenRobotImage" width={300}
-                        />
-                        <div>
-                            <h4>Spam Classifier</h4> <br/>
-                            <div className="project-techs">
-                                <span className="single-tech"> Pandas </span>    
-                            </div> 
-                        </div>
-                    </div>
+                    {dataProjectsAsNodes.slice(0, 3).map((projectEdge, index) =>
+                        <ProjectCard key={index} projectNode={projectEdge.node}></ProjectCard>
+                    )}
                 </ProjectGrid>
 
                 <h3>
@@ -247,58 +197,10 @@ const Projects = ({ content }) => {
                 </h3>
 
                 <ProjectGrid>
-                    <a href={frontmatter.github} target="_blank" rel="noopener noreferrer"> 
-                        <div className="featured-project">
-                            <div className="project-image">
-                                <img
-                                    src={cpuProjectImage} alt="cpuProjectImage" width={300}
-                                />
-                            </div>
-                            <div className="project-description">
-                                <h4>RISC-V CPU</h4>
-                                A virtual CPU that can run arithmetic RISC-V assembly instructions
-                            </div>
-
-                            {frontmatter.tech && ( 
-                                <div className="project-techs">
-                                    {frontmatter.tech.map((tech, i) => (
-                                        <span className="single-tech" key={i}>{tech}</span> 
-                                    ))}
-                                </div>
-                            )}
-
-                        </div>
-                    </a>
-                    <div className="featured-project">
-                        <div className="project-image">
-                            <img
-                                src={cpuProjectImage} alt="cpuProjectImage" width={300}
-                            />
-                        </div>
-                        <div className="project-description">
-                            <h4>S1XT33N</h4>
-                            An autonomous car that responds to voice commands using RLC circuits
-                        </div>
-
-                        <div className="project-techs">
-                            <span className="single-tech">TI LaunchPad</span>
-                        </div>
-                    </div>
-
-                    <div className="featured-project">
-                        <img
-                            src={cpuProjectImage} alt="cpuProjectImage" width={300}
-                        />
-                        <div>
-                            Gitlet <br />
-                            A simple implementation of Git's version-control system
-                            <div className="project-techs">
-                                <span className="single-tech"> Java </span>    
-                            </div> 
-                        </div>
-                    </div>
+                    {hardwareProjectsAsNodes.slice(0, 3).map((projectEdge, index) =>
+                        <ProjectCard key={index} projectNode={projectEdge.node}></ProjectCard>
+                    )}
                 </ProjectGrid>
-                
 
                 {/* <ul className="project-grid">
                     { projectsToShow.map(({node}, i) => ( 
