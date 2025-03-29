@@ -7,57 +7,112 @@ const StyledCoursesSection = styled.section`
 	flex-direction: column;
 	margin-bottom: 80px;
 
-	ul {
-		padding-left: 0;
-		list-style-type: none;
+	.semester-div {
+		// outline: 1px solid black;
+		// margin-bottom: 12px;
 
-		div {
-			// outline: 1px solid black;
-			margin-bottom: 12px;
+		p {
+			line-height: 0.5;
+		}
+
+		a:hover {
+			text-decoration: underline;
 		}
 	}
 `
 
-const Hobbies = (props: any) => {
+const Courses = (props: any) => {
+	const classes = [
+		{
+			category: "Semester 1",
+			subjects: [
+			  { name: "COMPSCI 61A: The Structure and Interpretation of Computer Programs",
+				link: "https://cs61a.org/" },
+			  { name: "EECS 16A: Designing Information Devices and Systems",
+				link: "https://eecs16a.org/"}
+			]
+		  },
+		  {
+			category: "Semester 2",
+			subjects: [
+			  { name: "COMPSCI 61B: Data Structures", 
+				link: "https://sp25.datastructur.es/"},
+			  { name: "DATA 8: Foundations of Data Science",
+				link: "https://www.data8.org/sp22/"},
+			  { name: "EECS 16B: Designing Information Devices and Systems II",
+				link: "https://eecs16b.org/"},
+			  { name: "PHYSICS 7A: Physics for Scientists and Engineers" }
+			]
+		  },
+		  {
+			category: "Semester 3",
+			subjects: [
+			  { name: "COMPSCI 70: Discrete Mathematics and Probability",
+				link: "https://www.eecs70.org/"},
+			  { name: "DATA 100: Principles and Techniques of Data Science",
+				link: "https://ds100.org/fa22/"},
+			  { name: "PHYSICS 7B: Physics for Scientists and Engineers II" }
+			]
+		  },
+		  {
+			category: "Semester 4",
+			subjects: [
+			  { name: "COMPSCI 170: Efficient Algorithms and Intractable Problems",
+				link: "https://cs170.org/"},
+			  { name: "COMPSCI 61C: Computer Architecture",
+				link: "https://cs61c.org/sp25/"},
+			  { name: "COMPSCI 188: Artificial Intelligence",
+				link: "https://inst.eecs.berkeley.edu/~cs188/sp24/"},
+			  { name: "COMPSCI 195: Social Implications of Computing Technology",
+				link: "https://cs195.org/fa23/"}
+			]
+		  },
+		  {
+			category: "Semester 5",
+			subjects: [
+			  { name: "COMPSCI 161: Computer Security",
+				link: "https://sp25.cs161.org/"},
+			  { name: "COMPSCI 186: Database Systems",
+				link: "https://cs186berkeley.net/"}
+			]
+		  },
+		  {
+			category: "Semester 6",
+			subjects: [
+				{ name: "COMPSCI 182: Deep Neural Networks",
+				  link: "https://cs182sp21.github.io/"}
+			]
+		  },
+		  {
+			category: "Semester 7",
+			subjects: [
+				{ name: "COMPSCI 168: Internet Architecture",
+				  link: "https://sp25.cs168.io/"},
+				{ name: "COMPSCI 189: Machine Learning",
+				  link: "https://people.eecs.berkeley.edu/~jrs/189/"}
+			]
+		  }
+	];
+
 	return (
 		<StyledCoursesSection id="hobbies-section">
 			<h2>Coursework</h2>
-			<ul>
-				<div>
-					<li>COMPSCI 61A: The Structure and Interpretation of Computer Programs </li>
-					<li>EECS 16A: Designing Information Devices and Systems</li>
+			{classes.map((semester, index) => (
+				<div className="semester-div" key={index}>
+					{semester.subjects.map((subject, i) => (
+						subject.link ? 
+							<p>
+								<a href={subject.link} target="_blank" rel="nooponer noreferrer">
+									{subject.name}
+								</a>
+							</p>
+							: 
+							<p>{subject.name}</p>
+					))}
 				</div>
-				<div>
-					<li>COMPSCI 61B: Data Structures </li>
-					<li>DATA 8: Foundations of Data Science</li>
-					<li>EECS 16B: Designing Information Devices and Systems II </li>
-					<li>PHYSICS 7A: Physics for Scientists and Engineers</li>
-				</div>
-				<div>
-					<li>COMPSCI 70: Discrete Mathematics and Probability </li>
-					<li>DATA 100: Principles and Techniques of Data Science</li>
-					<li>PHYSICS 7B: Physics for Scientists and Engineers II</li>
-				</div>
-				<div>
-					<li>COMPSCI 170: Efficient Algorithms and Intractable Problems</li>
-					<li>COMPSCI 61C: Computer Architecture</li>
-					<li>COMPSCI 188: Artificial Intelligence</li>
-					<li>COMPSCI 195: Social Implications of Computing Technology</li>
-				</div>
-				<div>
-					<li>COMPSCI 161: Computer Security</li>
-					<li>COMPSCI 186: Database Systems</li>
-				</div>
-				<div>
-					<li>COMPSCI 182: Deep Neural Networks</li>
-				</div>
-				<div>
-					<li>COMPSCI 168: Internet Architecture</li>
-					<li>COMPSCI 189: Machine Learning</li>
-				</div>
-			</ul>
+			))}
 		</StyledCoursesSection>
 	)
 }
 
-export default Hobbies
+export default Courses

@@ -5,7 +5,7 @@ import { graphql } from 'gatsby'
 import Layout from "../components/layout"
 import Hero from "../components/hero"
 import Projects from "../components/projects"
-import Hobbies from "../components/hobbies"
+import Courses from "../components/courses"
 import AboutMe from "../components/aboutme"
 
 export const myProjects = [
@@ -24,7 +24,7 @@ export default function Home({ data }) {
     <Layout>
         <AboutMe content={ data }/>
         <Projects content={data}/>
-        <Hobbies/>
+        <Courses/>
         {/* <h1>Hi! Boop</h1> */}
     </Layout>
   )
