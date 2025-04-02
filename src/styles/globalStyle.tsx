@@ -78,7 +78,7 @@ const GlobalStyle = createGlobalStyle`
         }
     }
     p {
-        font-family: 'Lato', sans-serif;
+        // font-family: 'Lato', sans-serif;
         font-weight: 400;
         font-size: 1rem;
         line-height: 1.5rem;
