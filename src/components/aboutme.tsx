@@ -1,34 +1,67 @@
 import React from "react";
 import VisitCounter from "../components/visitCounter";
 import styled from 'styled-components';
+import { useRef, useState, useEffect } from "react";
 
 import oregonBoulderImage from "../content/oregon-boulder.png"
 import budapestImage from "../content/budapest.png"
 import grandLakeCoImage from "../content/grandlakeco.jpg"
+import travelPicsImage from "../content/travel-pics.png"
+
+interface ButtonVisibilityProps {
+    galleryIndex: number;
+    galleryLength: number;
+};  
 
 const StyledAboutMe = styled.div`
     width: auto;
+`
 
-    .image-container {
-        margin-top: 100px;
-        margin-bottom: 100px;
+const ImageGallery = styled.div<ButtonVisibilityProps>`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+    
+    .gallery-container {
+        margin-top: 50px;
+        margin-bottom: 50px;
 
+        width: 600px;
         display: flex;
+        flex-direction: row;
+        align-items: center;
         gap: 20px; 
-        justify-content: center; 
-        align-items: flex-start; 
+        overflow-x: hidden;
     }
 
-    figure {
+    button.left-arrow {
+        all: unset;
+        height: 50px;
+        cursor: pointer;
+        overflow: hidden;
+        max-width: ${(props) => (
+            props.galleryIndex == 0 ? "100%" : "0"
+        )}
+    }
+
+    button.right-arrow {
+        all: unset;
+        height: 50px;
+        cursor: pointer;
+        overflow: hidden;
+    }
+
+    .about-me-picture {   
+        // outline: 1px solid black;
+        
+        flex: 0 0 100%;
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
+
+        justify-content: center;
         align-items: center; 
         text-align: center;
-    }
-
-    .image-wrapper {
-        display: flex;
-        gap: 10px; 
     }
 
     figcaption {
@@ -39,14 +72,44 @@ const StyledAboutMe = styled.div`
         word-wrap: break-word; 
     }
 
-    hr {
-        width: 50%;
-        color: gray;
-    }
 `
 
 const AboutMe = ({ content }) => {
-    const {frontmatter, rawMarkdownBody} = content.projects.edges[0].node;
+
+    const [imageIndex, setImageIndex] = useState(0);
+    const [galleryLength, setGalleryLength] = useState(0);
+    const galleryRef = useRef(null);
+
+    useEffect(() => {
+        if (galleryRef.current) {
+            setGalleryLength(galleryRef.current.children.length);
+        }
+    }, [galleryRef.current]);
+
+    const scrollToPrevItem = (index) => {
+        if (!galleryRef.current) return;
+
+        const prevIndex = index - 1;
+        const images = galleryRef.current.children;
+
+        if (images[prevIndex]) {
+            images[prevIndex].scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center"});
+            setImageIndex(prevIndex);
+        }
+    }
+
+    const scrollToNextItem = (index) => {
+        if (!galleryRef.current) return;
+
+        const nextIndex = index + 1;
+        const images = galleryRef.current.children;
+        
+        if (images[nextIndex]) {
+            images[nextIndex].scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center"});
+            setImageIndex(nextIndex);
+        }
+    }
+
     return (
         <StyledAboutMe>
             <h2>Hi! I'm John</h2>
@@ -67,25 +130,55 @@ const AboutMe = ({ content }) => {
                 cooking game. I'm also a huge sports fan and
                 have been cheering for the Warriors since 2013 - go Dubs! <br/>
             </p>
-            
-            <div className="image-container">
-                <figure>
-                    <img src={oregonBoulderImage} alt="oregonBoulderImage" height={250}></img>
-                    <figcaption>My first ever outdoor boulder in Oregon in 2024</figcaption>
-                </figure>
-                <figure>
-                    <div className="image-wrapper">
-                        <img src={budapestImage} alt="budapestImage" height={250}></img>
-                        <img src={grandLakeCoImage} alt="grandlakeCoImage" height={250}></img>
-                    </div>
-                    <figcaption>Favorite places in the world I've been to so far - Budapest, Hungary and Grand Lake, Colorado</figcaption>
-                </figure>
 
-            </div>
+            <ImageGallery galleryIndex={imageIndex} galleryLength={galleryRef.current?.children.length || 0}>
+                <button className="left-arrow" onClick={() => scrollToPrevItem(imageIndex)}>
+                <svg xmlns="http://www.w3.org/2000/svg" 
+                    width="36" 
+                    height="36" 
+                    viewBox="0 0 24 24" 
+                    fill="none" 
+                    stroke="#000000" 
+                    stroke-width="1.5" 
+                    stroke-linecap="round" 
+                    stroke-linejoin="round">
+                        <path d="M19 12H6M12 5l-7 7 7 7"/>
+                </svg>
+
+                </button>
+                <div className="gallery-container" ref={galleryRef}>
+                    {}
+                    <div className="about-me-picture">
+                        <figure>
+                            <img src={oregonBoulderImage} height={250}></img>
+                            <figcaption>My first ever outdoor boulder in Oregon in 2024</figcaption>
+                        </figure>
+                    </div>
+                    <div className="about-me-picture">
+                        <figure>
+                            <img src={travelPicsImage} height={250}></img>
+                            <figcaption>Favorite places in the world I've been to so far - Budapest and Grand Lake, Colorado</figcaption>
+                        </figure>
+                    </div>
+                </div>
+            
+                <button className="right-arrow" onClick={() => scrollToNextItem(imageIndex)}>
+                    <svg xmlns="http://www.w3.org/2000/svg" 
+                        width="36" 
+                        height="36" 
+                        viewBox="0 0 24 24" 
+                        fill="none" 
+                        stroke="#000000" 
+                        stroke-width="1.5" 
+                        stroke-linecap="round" 
+                        stroke-linejoin="round">
+                            <path d="M5 12h13M12 5l7 7-7 7"/>
+                    </svg>
+                </button>
+            </ImageGallery>        
 
         </StyledAboutMe>
-
-        
+  
     );
 };
 
