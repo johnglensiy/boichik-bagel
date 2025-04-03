@@ -27,29 +27,29 @@ const ImageGallery = styled.div<ButtonVisibilityProps>`
         margin-top: 50px;
         margin-bottom: 50px;
 
+        overflow-x: hidden; /* Instead of hidden */
+        scroll-behavior: smooth; /* Smooth scrolling */
+        flex-wrap: nowrap;
+        width: 100%;
+
         width: 600px;
         display: flex;
         flex-direction: row;
         align-items: center;
         gap: 20px; 
-        overflow-x: hidden;
     }
 
-    button.left-arrow {
+    button {
         all: unset;
         height: 50px;
         cursor: pointer;
-        overflow: hidden;
-        max-width: ${(props) => (
-            props.galleryIndex == 0 ? "100%" : "0"
-        )}
-    }
+        overflow: hidden; 
+        transition: opacity 0.3s ease-in-out;
+    } 
 
-    button.right-arrow {
-        all: unset;
-        height: 50px;
-        cursor: pointer;
-        overflow: hidden;
+    .button-fade-out {
+        opacity: 0.25;
+        pointer-events: none;
     }
 
     .about-me-picture {   
@@ -77,44 +77,50 @@ const ImageGallery = styled.div<ButtonVisibilityProps>`
 const AboutMe = ({ content }) => {
 
     const [imageIndex, setImageIndex] = useState(0);
-    const [galleryLength, setGalleryLength] = useState(0);
     const galleryRef = useRef(null);
 
-    useEffect(() => {
-        if (galleryRef.current) {
-            setGalleryLength(galleryRef.current.children.length);
-        }
-    }, [galleryRef.current]);
+    const images = [
+        {source: oregonBoulderImage, desc: "My first ever outdoor boulder in Oregon in 2024"},
+        {source: travelPicsImage, desc: "Favorite places in the world I've been to so far - Budapest and Grand Lake, Colorado"}
+    ]
 
     const scrollToPrevItem = (index) => {
-        if (!galleryRef.current) return;
+        if (!galleryRef.current || !galleryRef.current.children.length) return;
 
-        const prevIndex = index - 1;
-        const images = galleryRef.current.children;
-
-        if (images[prevIndex]) {
-            images[prevIndex].scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center"});
-            setImageIndex(prevIndex);
-        }
+        setImageIndex((prevIndex) => {
+            const newIndex = prevIndex - 1;
+    
+            const images = galleryRef.current.children;
+    
+            if (images[newIndex]) {
+                images[newIndex].scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+            }
+    
+            return newIndex;
+        });
     }
 
     const scrollToNextItem = (index) => {
-        if (!galleryRef.current) return;
-
-        const nextIndex = index + 1;
-        const images = galleryRef.current.children;
+        if (!galleryRef.current || !galleryRef.current.children.length) return;
         
-        if (images[nextIndex]) {
-            images[nextIndex].scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center"});
-            setImageIndex(nextIndex);
-        }
+        setImageIndex((prevIndex) => {
+            const newIndex = prevIndex + 1;
+    
+            const images = galleryRef.current.children;
+    
+            if (images[newIndex]) {
+                images[newIndex].scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+            }
+    
+            return newIndex;
+        });
     }
 
     return (
         <StyledAboutMe>
             <h2>Hi! I'm John</h2>
             <p>
-                Hi! I'm John, an undergraduate Electrical Engineering and Computer Science. 
+                Hi! I'm John, an undergraduate Electrical Engineering and Computer Science
                 student at <span className="berkeley-cursor">UC Berkeley</span>. I'm a full-stack engineer
                 interested in software development and building impactful projects.
                 <br/>
@@ -131,38 +137,41 @@ const AboutMe = ({ content }) => {
                 have been cheering for the Warriors since 2013 - go Dubs! <br/>
             </p>
 
-            <ImageGallery galleryIndex={imageIndex} galleryLength={galleryRef.current?.children.length || 0}>
-                <button className="left-arrow" onClick={() => scrollToPrevItem(imageIndex)}>
-                <svg xmlns="http://www.w3.org/2000/svg" 
-                    width="36" 
-                    height="36" 
-                    viewBox="0 0 24 24" 
-                    fill="none" 
-                    stroke="#000000" 
-                    stroke-width="1.5" 
-                    stroke-linecap="round" 
-                    stroke-linejoin="round">
-                        <path d="M19 12H6M12 5l-7 7 7 7"/>
-                </svg>
-
+            <ImageGallery galleryIndex={imageIndex} galleryLength={images.length}>
+                <button 
+                    className={`${imageIndex === 0 ? "button-fade-out" : ""}`}
+                    onClick={() => scrollToPrevItem(imageIndex)}
+                    disabled={imageIndex === 0}
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" 
+                        width="36" 
+                        height="36" 
+                        viewBox="0 0 24 24" 
+                        fill="none" 
+                        stroke="#000000" 
+                        stroke-width="1.5" 
+                        stroke-linecap="round" 
+                        stroke-linejoin="round">
+                            <path d="M19 12H6M12 5l-7 7 7 7"/>
+                    </svg>
                 </button>
+
                 <div className="gallery-container" ref={galleryRef}>
-                    {}
-                    <div className="about-me-picture">
-                        <figure>
-                            <img src={oregonBoulderImage} height={250}></img>
-                            <figcaption>My first ever outdoor boulder in Oregon in 2024</figcaption>
-                        </figure>
-                    </div>
-                    <div className="about-me-picture">
-                        <figure>
-                            <img src={travelPicsImage} height={250}></img>
-                            <figcaption>Favorite places in the world I've been to so far - Budapest and Grand Lake, Colorado</figcaption>
-                        </figure>
-                    </div>
+                    {images.map((image, index) => (
+                        <div className="about-me-picture" key={index}>
+                            <figure>
+                                <img src={image.source} height={250}></img>
+                                <figcaption>{image.desc}</figcaption>
+                            </figure>
+                        </div>
+                    ))}
                 </div>
             
-                <button className="right-arrow" onClick={() => scrollToNextItem(imageIndex)}>
+                <button 
+                    className={`${imageIndex === images.length - 1 ? "button-fade-out" : ""}`}
+                    onClick={() => scrollToNextItem(imageIndex)}
+                    disabled={imageIndex === images.length - 1}
+                >
                     <svg xmlns="http://www.w3.org/2000/svg" 
                         width="36" 
                         height="36" 
