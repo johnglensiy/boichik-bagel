@@ -1,50 +1,34 @@
 import React from "react";
 import VisitCounter from "../components/visitCounter";
 import styled from 'styled-components';
-import { useRef, useState } from "react";
 
 import oregonBoulderImage from "../content/oregon-boulder.png"
 import budapestImage from "../content/budapest.png"
 import grandLakeCoImage from "../content/grandlakeco.jpg"
-import travelPicsImage from "../content/travel-pics.png"
 
 const StyledAboutMe = styled.div`
     width: auto;
-`
 
-const ImageGallery = styled.div`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 50px;
-    
-    .gallery-container {
-        // outline: 1px solid black;
+    .image-container {
         margin-top: 100px;
         margin-bottom: 100px;
 
-        width: 800px;
         display: flex;
-        flex-direction: row;
-        align-items: center;
         gap: 20px; 
-        overflow-x: hidden;
+        justify-content: center; 
+        align-items: flex-start; 
     }
 
-    button {
-        height: 50px;
-    }
-
-    .about-me-picture {   
-        // outline: 1px solid black;
-        
-        flex: 0 0 100%;
+    figure {
         display: flex;
-        flex-direction: row;
-
-        justify-content: center;
+        flex-direction: column;
         align-items: center; 
         text-align: center;
+    }
+
+    .image-wrapper {
+        display: flex;
+        gap: 10px; 
     }
 
     figcaption {
@@ -55,37 +39,14 @@ const ImageGallery = styled.div`
         word-wrap: break-word; 
     }
 
+    hr {
+        width: 50%;
+        color: gray;
+    }
 `
 
 const AboutMe = ({ content }) => {
-
-    const [imageIndex, setImageIndex] = useState(0);
-    const galleryRef = useRef(null);
-
-    const scrollToPrevItem = (index) => {
-        if (!galleryRef.current) return;
-
-        const prevIndex = index - 1;
-        const images = galleryRef.current.children;
-
-        if (images[prevIndex]) {
-            images[prevIndex].scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center"});
-            setImageIndex(prevIndex);
-        }
-    }
-
-    const scrollToNextItem = (index) => {
-        if (!galleryRef.current) return;
-
-        const nextIndex = index + 1;
-        const images = galleryRef.current.children;
-        
-        if (images[nextIndex]) {
-            images[nextIndex].scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center"});
-            setImageIndex(nextIndex);
-        }
-    }
-
+    const {frontmatter, rawMarkdownBody} = content.projects.edges[0].node;
     return (
         <StyledAboutMe>
             <h2>Hi! I'm John</h2>
@@ -106,25 +67,21 @@ const AboutMe = ({ content }) => {
                 cooking game. I'm also a huge sports fan and
                 have been cheering for the Warriors since 2013 - go Dubs! <br/>
             </p>
+            
+            <div className="image-container">
+                <figure>
+                    <img src={oregonBoulderImage} alt="oregonBoulderImage" height={250}></img>
+                    <figcaption>My first ever outdoor boulder in Oregon in 2024</figcaption>
+                </figure>
+                <figure>
+                    <div className="image-wrapper">
+                        <img src={budapestImage} alt="budapestImage" height={250}></img>
+                        <img src={grandLakeCoImage} alt="grandlakeCoImage" height={250}></img>
+                    </div>
+                    <figcaption>Favorite places in the world I've been to so far - Budapest, Hungary and Grand Lake, Colorado</figcaption>
+                </figure>
 
-            <ImageGallery>
-                <button onClick={() => scrollToPrevItem(imageIndex)}>Go to first</button>
-                <div className="gallery-container" ref={galleryRef}>
-                    <div className="about-me-picture">
-                        <figure>
-                            <img src={oregonBoulderImage} height={250}></img>
-                            <figcaption>My first ever outdoor boulder in Oregon in 2024</figcaption>
-                        </figure>
-                    </div>
-                    <div className="about-me-picture">
-                        <figure>
-                            <img src={travelPicsImage} height={250}></img>
-                            <figcaption>Favorite places in the world I've been to so far - Budapest, Hungary and Grand Lake, Colorado</figcaption>
-                        </figure>
-                    </div>
-                </div>
-                <button onClick={() => scrollToNextItem(imageIndex)}>Go to second</button>
-            </ImageGallery>
+            </div>
 
         </StyledAboutMe>
 
