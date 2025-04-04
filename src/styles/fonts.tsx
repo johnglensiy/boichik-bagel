@@ -10,6 +10,16 @@ import LatoLightItalic from '../fonts/Lato/Lato-LightItalic.ttf';
 import LatoRegular from '../fonts/Lato/Lato-Regular.ttf';
 import LatoThin from '../fonts/Lato/Lato-Thin.ttf';
 import LatoThinItalic from '../fonts/Lato/Lato-ThinItalic.ttf';
+import MontserratBlack from '../fonts/Montserrat/Montserrat-Black.ttf';
+import MontserratBlackItalic from '../fonts/Montserrat/Montserrat-BlackItalic.ttf';
+import MontserratBold from '../fonts/Montserrat/Montserrat-Bold.ttf';
+import MontserratBoldItalic from '../fonts/Montserrat/Montserrat-BoldItalic.ttf';
+import MontserratItalic from '../fonts/Montserrat/Montserrat-Italic.ttf';
+import MontserratLight from '../fonts/Montserrat/Montserrat-Light.ttf';
+import MontserratLightItalic from '../fonts/Montserrat/Montserrat-LightItalic.ttf';
+import MontserratRegular from '../fonts/Montserrat/Montserrat-Regular.ttf';
+import MontserratThin from '../fonts/Montserrat/Montserrat-Thin.ttf';
+import MontserratThinItalic from '../fonts/Montserrat/Montserrat-ThinItalic.ttf';
 
 const latoNormalWeights = {
     100: [LatoThin],
@@ -27,11 +37,33 @@ const latoItalicWeights = {
     900: [LatoBlackItalic]
 };
 
+const montserratNormalWeights = {
+    100: [MontserratThin],
+    300: [MontserratLight],
+    400: [MontserratRegular],
+    700: [MontserratBold],
+    900: [MontserratBlack]
+};
+
+const montserratItalicWeights = {
+    100: [MontserratThinItalic],
+    300: [MontserratLightItalic],
+    400: [MontserratItalic],
+    700: [MontserratBoldItalic],
+    900: [MontserratBlackItalic]
+};
+
 const lato = {
     name: 'Lato',
     normal: latoNormalWeights,
     italic: latoItalicWeights,
 };
+
+const montserrat = {
+    name: 'Montserrat',
+    normal: montserratNormalWeights,
+    italic: montserratItalicWeights
+}
 
 const createFontFaces = (family, style = 'normal') => {
     let styles = '';
@@ -55,9 +87,12 @@ const createFontFaces = (family, style = 'normal') => {
 
 const latoNormal = createFontFaces(lato);
 const latoItalic = createFontFaces(lato, 'italic');
+const montserratNormal = createFontFaces(montserrat);
+const montserratItalic = createFontFaces(montserrat, 'italic');
 
 const Fonts = css`
     ${latoNormal + latoItalic}
+    ${montserratNormal + montserratItalic}
 `;
 
 export default Fonts;
