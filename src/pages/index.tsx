@@ -43,6 +43,7 @@ export const pageQuery = graphql`
           frontmatter {
             date
             title
+            imageurl
             github
             external
             category

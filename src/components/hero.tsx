@@ -2,7 +2,7 @@ import React from "react"
 import styled from "styled-components"
 
 import { HeroSection, HeroSectionPortrait } from "../components/herocss"
-import myPortrait from "../codeologyportrait.jpg"
+import myPortrait from "../images/codeologyportrait.jpg"
 
 const Hero = ({ content }) => {
 

@@ -130,7 +130,7 @@ const Projects = ({ content }) => {
             <a href={frontmatter.github} target="_blank" rel="nooponer noreferrer">
                 <FeaturedProject>
                     <img
-                        src={gitletImage} alt="gitletImage" width={300}
+                        src={`/images/${frontmatter.imageurl}`} alt="gitletImage" width={300}
                     />
                     <div className="project-description">
                         <h4>{frontmatter.title}</h4>
