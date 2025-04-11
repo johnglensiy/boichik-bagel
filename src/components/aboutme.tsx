@@ -71,7 +71,6 @@ const ImageGallery = styled.div<ButtonVisibilityProps>`
         white-space: normal; 
         word-wrap: break-word; 
     }
-
 `
 
 const AboutMe = ({ content }) => {

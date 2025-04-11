@@ -15,7 +15,7 @@ const StyledLayout = styled.div`
   color: black;
   background-color: #f1f1ef;
   scroll-behavior: smooth;
-  outline: 10px solid black;
+  // outline: 10px solid black;
 
   #content {
     flex: 4;
@@ -29,7 +29,7 @@ const StyledLayout = styled.div`
   #main-container {
     margin: 0 auto;
     // margin-top: 100px;
-    width: 80%;
+    width: 85%;
     display: flex;
     flex-direction: row;
     gap: 50px;

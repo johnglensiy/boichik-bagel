@@ -43,15 +43,10 @@ const ProjectGrid = styled.div`
 	list-style: none;
 	padding-left: 0px;
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-	grid-gap: 50px;
-	row-gap: 1rem;
+	grid-template-columns: repeat(auto-fill, 275px);
+    grid-gap: 25px;
 	position: relative;
 	margin-top: 25px;
-
-	@media (max-width: 1080px) {
-		grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-	}
 	
 	a {
 		text-decoration: none;
@@ -71,8 +66,8 @@ const DropdownGrid = styled(ProjectGrid)<DropdownGridProps>`
 const FeaturedProject = styled.div`
 	// outline: 1px solid black;
 	flex-direction: column;
-	width: 100%;
-	max-width: 300px;
+	width: 275px;
+	max-width: 275px;
 	display: flex;
 	gap: 15px;
 	overflow: hidden;
@@ -130,7 +125,7 @@ const Projects = ({ content }) => {
             <a href={frontmatter.github} target="_blank" rel="nooponer noreferrer">
                 <FeaturedProject>
                     <img
-                        src={`/images/${frontmatter.imageurl}`} alt="gitletImage" width={300}
+                        src={`/images/${frontmatter.imageurl}`} alt="gitletImage" height={150}
                     />
                     <div className="project-description">
                         <h4>{frontmatter.title}</h4>

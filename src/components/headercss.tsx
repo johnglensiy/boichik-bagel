@@ -9,7 +9,8 @@ export const StyledHeader = styled.header`
     width: 300px;
     height: 100vh;
     margin: 0 auto;
-    padding: 0 20px;
+    padding-left: 10px;
+    padding-right: 0;
     padding-top: 100px;
     // background: white;
 
