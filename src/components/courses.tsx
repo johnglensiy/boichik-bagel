@@ -1,23 +1,36 @@
 import React from "react";
 import styled from "styled-components";
+import berkeleySeal from "../content/berkseal.svg";
 
 const StyledCoursesSection = styled.section`
 	// outline: 1px solid black;
 	display: flex;
-	flex-direction: column;
-	margin-bottom: 80px;
+	flex-direction: row;
 
-	.semester-div {
-		// outline: 1px solid black;
-		// margin-bottom: 12px;
+	.courses-list {
+		display: flex;
+		flex-direction: column;
+		margin-bottom: 80px;
+		.semester-div {
+			// outline: 1px solid black;
+			// margin-bottom: 12px;
 
-		p {
-			line-height: 0.5;
-		}
+			p {
+				line-height: 0.5;
+			}
 
-		a:hover {
-			text-decoration: underline;
-		}
+			a:hover {
+				text-decoration: underline;
+			}
+		}	
+	}
+
+	.berkeley-seal {
+		padding-left: 150px;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
 	}
 `
 
@@ -26,7 +39,7 @@ const Courses = (props: any) => {
 		{
 			category: "Semester 1",
 			subjects: [
-			  { name: "COMPSCI 61A: The Structure and Interpretation of Computer Programs",
+			  { name: "COMPSCI 61A: Structure of Computer Programs",
 				link: "https://cs61a.org/" },
 			  { name: "EECS 16A: Designing Information Devices and Systems",
 				link: "https://eecs16a.org/"}
@@ -95,23 +108,31 @@ const Courses = (props: any) => {
 	];
 
 	return (
-		<StyledCoursesSection id="hobbies-section">
+		<>
 			<h2>Coursework</h2>
-			{classes.map((semester, index) => (
-				<div className="semester-div" key={index}>
-					{semester.subjects.map((subject, i) => (
-						subject.link ? 
-							<p>
-								<a href={subject.link} target="_blank" rel="nooponer noreferrer">
-									{subject.name}
-								</a>
-							</p>
-							: 
-							<p>{subject.name}</p>
+			<StyledCoursesSection id="hobbies-section">
+				<div className="courses-list">
+					{classes.map((semester, index) => (
+						<div className="semester-div" key={index}>
+							{semester.subjects.map((subject, i) => (
+								subject.link ? 
+									<p>
+										<a href={subject.link} target="_blank" rel="nooponer noreferrer">
+											{subject.name}
+										</a>
+									</p>
+									: 
+									<p>{subject.name}</p>
+							))}
+						</div>
 					))}
 				</div>
-			))}
-		</StyledCoursesSection>
+				<div className="berkeley-seal">
+					<img src={berkeleySeal} width={250}></img>
+				</div>
+				
+			</StyledCoursesSection>
+		</>
 	)
 }
 

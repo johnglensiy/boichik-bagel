@@ -22,35 +22,35 @@ const VisitCounter = (props: any) => {
         }
     }
 
-    useEffect(
-        () => {
-            // document.title = `You clicked ${visits} times`;
+    // useEffect(
+    //     () => {
+    //         // document.title = `You clicked ${visits} times`;
             
             
-            // fetch number of visitors
-            // check session storage if visited is true
-            // if not visited then we have a new visitor (or at least within this browser session)
-            //      set visited to true
-            //      fetch visitors from database increment by 1 then post (handled by lambda function)
-            // else
-            //      fetch visitors from database
-            // take visitors and set it to state 
-            async function getVisitors() {
-                let visitors;
-                let data;
+    //         // fetch number of visitors
+    //         // check session storage if visited is true
+    //         // if not visited then we have a new visitor (or at least within this browser session)
+    //         //      set visited to true
+    //         //      fetch visitors from database increment by 1 then post (handled by lambda function)
+    //         // else
+    //         //      fetch visitors from database
+    //         // take visitors and set it to state 
+    //         async function getVisitors() {
+    //             let visitors;
+    //             let data;
 
-                let response = await fetch("https://dttj72l51d.execute-api.us-west-1.amazonaws.com/default/visitorCount");
+    //             let response = await fetch("https://dttj72l51d.execute-api.us-west-1.amazonaws.com/default/visitorCount");
 
-                data = await response.json();
-                console.log(data);
-                visitors = data.visitorCount;
-                setVisits(visitors);
-            }
+    //             data = await response.json();
+    //             console.log(data);
+    //             visitors = data.visitorCount;
+    //             setVisits(visitors);
+    //         }
 
-            getVisitors()
-        },
-        []
-    );
+    //         getVisitors()
+    //     },
+    //     []
+    // );
 
     return (
         <div>
