@@ -134,6 +134,8 @@ const AboutMe = ({ content }) => {
                 In my free time, I love bouldering (indoor v6, outdoor v4), running, and leveling up my
                 cooking game. I'm also a huge sports fan and
                 have been cheering for the Warriors since 2013 - go Dubs! <br/>
+
+                test
             </p>
 
             <ImageGallery galleryIndex={imageIndex} galleryLength={images.length}>
