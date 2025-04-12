@@ -10,39 +10,36 @@ terraform {
 }
 
 provider "aws" {
+  alias   = "us-east"
+  region  = "us-east-1"
+}
+
+provider "aws" {
+  alias   = "us-west"
   region  = "us-west-1"
 }
 
-resource "aws_s3_bucket" "source_code" {
-  bucket = "www.johnglendsiy.me"
-}
+resource "aws_acm_certificate" "tf_website_cert" {
+  domain_name               = "www.johnglendsiy.me"
+  validation_method         = "DNS"
+  subject_alternative_names = ["www.johnglendsiy.me"]
 
-resource "aws_acm_certificate" "terraform_website_cert" {
-  domain_name       = "www.johnglendsiy.me"
-  validation_method = "DNS"
+  options {
+    certificate_transparency_logging_preference = "ENABLED"
+  }
 
   lifecycle {
-    create_before_destroy = true
+    prevent_destroy = true
   }
 }
 
-resource "aws_route53_zone" "terraform_hosted_zone" {
-  name = "johnglendsiy.me"
+resource "aws_route53_zone" "tf_hosted_zone" {
+    name                = "johnglendsiy.me"
+    comment             = "Managed by Terraform"
+
+    tags                = {}
 }
 
-resource "aws_dynamodb_table" "terraform_visitor_count_db" {
-  name           = "visitor-count"
-  hash_key       = "id"  # Change this to your table's hash key
-  billing_mode   = "PAY_PER_REQUEST"
-
-  attribute {
-    name = "id"
-    type = "N"  # Change to your key type (e.g., "S" for string, "N" for number)
-  }
+resource "aws_s3_bucket" "tf_website_bucket" {
+  bucket = "www.johnglendsiy.me"
 }
-
-resource "aws_apigatewayv2_api" "terraform_visitor_count_api" {
-  name          = "visitorCount-API"
-  protocol_type = "HTTP"
-}
-
