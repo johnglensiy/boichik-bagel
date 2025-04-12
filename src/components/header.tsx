@@ -6,7 +6,7 @@ import myPortrait from "../images/codeologyavatar.png";
 import Icon from "../icons/icon"; 
 import VisitCounter from "./visitCounter";
 
-import codeologyPortrait from "../images/codeologyPortrait.jpg"
+import codeologyPortrait from "../images/codeologyportrait.jpg"
 
 const Header = () => {
   return (
