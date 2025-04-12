@@ -2,7 +2,10 @@ import React, { useState, useEffect } from 'react';
 
 const VisitCounter = (props: any) => {
     const [visits, setVisits] = useState(0);
-    const counter = document.querySelector('.visitor-counter')
+
+    if (typeof window !== "undefined") {
+        const el = document.getElementById("my-element");
+    }
 
     const ordinalSuffix = (num: number) => {
         let ones = num % 10;
