@@ -4,13 +4,15 @@
   "description": "A simplified bare-bones starter for Gatsby",
   "version": "0.1.0",
   "license": "0BSD",
+  "homepage": "https://<your-username>.github.io",
   "scripts": {
     "build": "gatsby build",
     "develop": "gatsby develop",
     "start": "gatsby develop",
     "serve": "gatsby serve",
     "clean": "gatsby clean",
-    "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\" && exit 1"
+    "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\" && exit 1",
+    "deploy": "gatsby build && gh-pages -d public"
   },
   "dependencies": {
     "@types/node": "20.14.11",
@@ -36,6 +38,7 @@
   "devDependencies": {
     "@babel/plugin-proposal-decorators": "^7.25.9",
     "babel-preset-gatsby": "^3.14.0",
+    "gh-pages": "^6.3.0",
     "webpack-hot-middleware": "^2.26.1"
   }
 }
