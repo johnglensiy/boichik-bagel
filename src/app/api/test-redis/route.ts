@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { Redis } from '@upstash/redis';
-// import redis from '@/util/redis';
 
 const redis = Redis.fromEnv();
 
