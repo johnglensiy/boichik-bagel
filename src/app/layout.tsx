@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 import Header from "@/components/Header";
-import VisitorCounter from "@/components/VisitorCounter";
+import ViewCount from "@/components/ViewCount";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,7 +32,7 @@ export default function RootLayout({
       >
         <Header/>
         {children}
-        <VisitorCounter/>
+        <ViewCount initialViews={67}/>
       </body>
     </html>
   );
