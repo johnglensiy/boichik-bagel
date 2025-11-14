@@ -16,10 +16,3 @@ export async function GET() {
     console.error('Redis error:', error);
   }
 }
-
-export async function POST() {
-  const current = Number(await redis.get('visitor_count')) || 0;
-  const updated = current + 1;
-  await redis.set('visitor_count', updated);
-  return NextResponse.json({ count: updated });
-}
