@@ -32,7 +32,6 @@ export default function RootLayout({
       >
         <Header/>
         {children}
-        <ViewCount initialViews={67}/>
       </body>
     </html>
   );
