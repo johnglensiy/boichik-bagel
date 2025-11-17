@@ -3,10 +3,18 @@ import ViewCount from "@/components/ViewCount";
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-black font-sans dark:bg-slate-50">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 black dark:bg-black sm:items-start">
+    <div className="flex min-h-screen justify-center bg-black font-sans dark:bg-slate-50">
+      <div className="hidden lg:flex lg:flex-col lg:w-64 px-6 py-10 bg-slate-50 text-black border">
+        <h2 className="text-3xl font-semibold mb-6">John</h2>
+        <nav className="flex flex-col gap-4">
+          <a href="#about">About</a>
+          <a href="#projects">Projects</a>
+        </nav>
+        <ViewCount initialViews={67}/>
+      </div>
+      <main className="flex min-h-screen w-full max-w-5xl flex-col items-center justify-between py-32 px-16 bg-slate-50 text-black border sm:items-start">
         <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h2>Hi! I'm John</h2>
+          <h2 className="text-2xl font-bold">Hi! I'm John</h2>
             <p>
                 Hi! I'm John, an undergraduate Electrical Engineering and Computer Science
                 student at <span className="berkeley-cursor">UC Berkeley</span>. I'm a full-stack engineer
@@ -25,7 +33,6 @@ export default function Home() {
                 have been cheering for the Warriors since 2013 - go Dubs! <br/>
             </p>
         </div>
-        <ViewCount initialViews={67}/>
       </main>
     </div>
   );
