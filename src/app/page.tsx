@@ -1,8 +1,27 @@
-import Image from "next/image";
+import fs from 'fs';
+import path from 'path';
+import matter from 'gray-matter';
+
 import ViewCount from "@/components/ViewCount";
 import ProjectCard from "@/components/ProjectCard";
 
 export default function Home() {
+  // Read markdown files
+  const projectsDir = path.join(process.cwd(), 'public/projects');
+  const projectFiles = fs.readdirSync(projectsDir);
+
+  const projects = projectFiles.map((filename) => {
+    const filePath = path.join(projectsDir, filename);
+    const fileContents = fs.readFileSync(filePath, 'utf8');
+    const { data, content } = matter(fileContents);
+
+    return {
+      id: filename.replace('.md', ''),
+      ...data,
+      content,
+    }
+  })
+
   return (
     <div className="flex min-h-screen justify-center bg-black font-sans dark:bg-slate-50">
       <div className="hidden lg:flex lg:flex-col lg:w-64 px-6 py-10 bg-slate-50 text-black border">
@@ -36,9 +55,10 @@ export default function Home() {
         </div>
         <div className="flex flex-col">
           <h2 className="before:content-[''] before:inline-block before:h-3 before:w-3 before:bg-[#ee5b36] before:mr-2 text-2xl font-bold mb-6">Software Projects</h2>
-          <div>
-            <ProjectCard>
-            </ProjectCard>
+          <div className="flex flex-row">
+            {projects.map((project) => (
+              <ProjectCard key={project.id}/>
+            ))}
           </div>
         </div>
       </main>
