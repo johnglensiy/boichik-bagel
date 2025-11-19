@@ -74,9 +74,24 @@ export default function Home() {
           </p>
         </div>
         <div className="flex flex-col">
-          <h2 className="before:content-[''] before:inline-block before:h-3 before:w-3 before:bg-[#ee5b36] before:mr-2 text-2xl font-bold mb-6">Software Projects</h2>
+          <h2 className="before:content-[''] before:inline-block before:h-3 before:w-3 before:bg-[#ee5b36] before:mr-2 text-2xl font-bold mb-6">Software Engineering</h2>
           <div className="flex flex-row flex-wrap">
-            {projects.map((project) => (
+            {projects.filter((project) => project.category === 'software')
+              .map((project) => (
+              <ProjectCard key={project.id} {...project}/>
+            ))}
+          </div>
+          <h2 className="before:content-[''] before:inline-block before:h-3 before:w-3 before:bg-[#ee5b36] before:mr-2 text-2xl font-bold mb-6">Data Science/NLP</h2>
+          <div className="flex flex-row flex-wrap">
+            {projects.filter((project) => project.category === 'data')
+              .map((project) => (
+              <ProjectCard key={project.id} {...project}/>
+            ))}
+          </div>
+          <h2 className="before:content-[''] before:inline-block before:h-3 before:w-3 before:bg-[#ee5b36] before:mr-2 text-2xl font-bold mb-6">Hardware/Electrical Engineering</h2>
+          <div className="flex flex-row flex-wrap">
+            {projects.filter((project) => project.category === 'hardware')
+              .map((project) => (
               <ProjectCard key={project.id} {...project}/>
             ))}
           </div>
