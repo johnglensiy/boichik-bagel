@@ -4,7 +4,7 @@ import matter from 'gray-matter';
 
 import ViewCount from "@/components/ViewCount";
 import ProjectCard from "@/components/ProjectCard";
-import DropdownProjects from '@/components/DropdownProjects';
+import ProjectsClient from '@/components/ProjectsClient';
 
 export interface ProjectData {
   id: string,
@@ -75,32 +75,7 @@ export default function Home() {
           </p>
         </div>
         
-        <div id="projects-section" className="flex flex-col border">
-          <h2 className="before:content-[''] before:inline-block before:h-3 before:w-3 before:bg-[#ee5b36] before:mr-2 text-2xl font-bold my-6">Software Engineering</h2>
-          <div className="flex flex-row flex-wrap">
-            {projects.filter((project) => project.category === 'software').slice(0,3)
-              .map((project) => (
-              <ProjectCard key={project.id} {...project}/>
-            ))}
-          </div>
-
-          <h2 className="before:content-[''] before:inline-block before:h-3 before:w-3 before:bg-[#ee5b36] before:mr-2 text-2xl font-bold my-6">Data Science/NLP</h2>
-          <div className="flex flex-row flex-wrap">
-            {projects.filter((project) => project.category === 'data')
-              .map((project) => (
-              <ProjectCard key={project.id} {...project}/>
-            ))}
-          </div>
-
-          <h2 className="before:content-[''] before:inline-block before:h-3 before:w-3 before:bg-[#ee5b36] before:mr-2 text-2xl font-bold my-6">Hardware/Electrical Engineering</h2>
-          <div className="flex flex-row flex-wrap">
-            {projects.filter((project) => project.category === 'hardware')
-              .map((project) => (
-              <ProjectCard key={project.id} {...project}/>
-            ))}
-          </div>
-        </div>
-        
+        <ProjectsClient projects={projects}/>
       </main>
     </div>
   );
