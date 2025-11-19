@@ -1,11 +1,14 @@
 ---
 date: '2023'
-title: 'SQL Query Optimizer'
+title: 'johnglendsiy.me v2'
 github: 'https://github.com/61c-student/su23-proj3-johnglensiy'
 external: ''
 category: 'software'
-techStack: ['Java']
+techStack:
+  - Next.JS
+  - React
+  - Tailwind
 company: ''
 showInProjects: true
 ---
-Maximizing the runtime of SQL engines by optimizing query plans
+Lightweight personal website deployed with Next.js

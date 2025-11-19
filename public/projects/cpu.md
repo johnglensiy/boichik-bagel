@@ -5,7 +5,7 @@ imageurl: 'riscvCPU.png'
 github: 'https://github.com/61c-student/su23-proj3-johnglensiy'
 external: ''
 category: 'hardware'
-tech:
+techStack:
   - Logisim
   - RISC-V assembly
 company: ''

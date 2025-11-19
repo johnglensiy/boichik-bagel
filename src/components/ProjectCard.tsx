@@ -22,7 +22,7 @@ export default function ProjectCard({
         className="block w-80 origin-top-left transition-transform duration-300 ease-in-out hover:scale-105"
     >
         <Image
-            src={`next.svg`}
+            src={`/images/projects/${id}.png`}
             alt={title}
             width={275}
             height={275}

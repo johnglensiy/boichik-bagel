@@ -1,11 +1,12 @@
 ---
 date: '2023'
-title: 'SQL Query Optimizer'
+title: 'Secure File Sharing System'
 github: 'https://github.com/61c-student/su23-proj3-johnglensiy'
 external: ''
 category: 'software'
-techStack: ['Java']
+techStack:
+  - Golang
 company: ''
 showInProjects: true
 ---
-Maximizing the runtime of SQL engines by optimizing query plans
+Secure E2E encrypted file-sharing client.
