@@ -52,7 +52,7 @@ export default function Home() {
         </nav>
         <ViewCount initialViews={67}/>
       </div>
-      <main className="flex gap-20 min-h-screen w-full max-w-5xl flex-col items-center justify-between py-32 px-16 bg-slate-50 text-black border sm:items-start">
+      <main className="flex gap-20 min-h-screen w-full max-w-6xl flex-col items-center justify-between py-32 px-16 bg-slate-50 text-black border sm:items-start">
         <div className="border flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
           <h2 className="text-2xl font-bold">Hi! I'm John</h2>
           <p>
@@ -73,22 +73,23 @@ export default function Home() {
               have been cheering for the Warriors since 2013 - go Dubs! <br/>
           </p>
         </div>
-        <div className="flex flex-col">
-          <h2 className="before:content-[''] before:inline-block before:h-3 before:w-3 before:bg-[#ee5b36] before:mr-2 text-2xl font-bold mb-6">Software Engineering</h2>
+        
+        <div id="projects-section" className="flex flex-col border">
+          <h2 className="before:content-[''] before:inline-block before:h-3 before:w-3 before:bg-[#ee5b36] before:mr-2 text-2xl font-bold my-6">Software Engineering</h2>
           <div className="flex flex-row flex-wrap">
             {projects.filter((project) => project.category === 'software')
               .map((project) => (
               <ProjectCard key={project.id} {...project}/>
             ))}
           </div>
-          <h2 className="before:content-[''] before:inline-block before:h-3 before:w-3 before:bg-[#ee5b36] before:mr-2 text-2xl font-bold mb-6">Data Science/NLP</h2>
+          <h2 className="before:content-[''] before:inline-block before:h-3 before:w-3 before:bg-[#ee5b36] before:mr-2 text-2xl font-bold my-6">Data Science/NLP</h2>
           <div className="flex flex-row flex-wrap">
             {projects.filter((project) => project.category === 'data')
               .map((project) => (
               <ProjectCard key={project.id} {...project}/>
             ))}
           </div>
-          <h2 className="before:content-[''] before:inline-block before:h-3 before:w-3 before:bg-[#ee5b36] before:mr-2 text-2xl font-bold mb-6">Hardware/Electrical Engineering</h2>
+          <h2 className="before:content-[''] before:inline-block before:h-3 before:w-3 before:bg-[#ee5b36] before:mr-2 text-2xl font-bold my-6">Hardware/Electrical Engineering</h2>
           <div className="flex flex-row flex-wrap">
             {projects.filter((project) => project.category === 'hardware')
               .map((project) => (
@@ -96,6 +97,7 @@ export default function Home() {
             ))}
           </div>
         </div>
+        
       </main>
     </div>
   );

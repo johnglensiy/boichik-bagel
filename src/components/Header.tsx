@@ -22,7 +22,8 @@ export default function Header() {
           </li>
           <li>
             <Link 
-              href="/about" 
+              href="#projects-section" 
+              scroll={true}
               className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors"
             >
               Projects
@@ -30,7 +31,7 @@ export default function Header() {
           </li>
           <li>
             <Link 
-              href="/projects" 
+              href="#projects-section" 
               className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors"
             >
               Coursework
