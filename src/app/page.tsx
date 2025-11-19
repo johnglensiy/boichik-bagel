@@ -5,6 +5,19 @@ import matter from 'gray-matter';
 import ViewCount from "@/components/ViewCount";
 import ProjectCard from "@/components/ProjectCard";
 
+export interface ProjectData {
+  id: string,
+  date: string,
+  title: string,
+  github: string,
+  external: string,
+  category: string,
+  techStack: string[],
+  company: string,
+  showInProjects: boolean,
+  content: string,
+}
+
 export default function Home() {
   // Read markdown files
   const projectsDir = path.join(process.cwd(), 'public/projects');
@@ -17,9 +30,16 @@ export default function Home() {
 
     return {
       id: filename.replace('.md', ''),
-      ...data,
-      content,
-    }
+      date: data.date as string,
+      title: data.title as string,
+      github: data.github as string,
+      external: data.external as string,
+      category: data.category as string,
+      techStack: data.techStack as string[],
+      company: data.company as string,
+      showInProjects: data.showInProjects as boolean,
+      content
+    } as ProjectData;
   })
 
   return (
@@ -55,9 +75,9 @@ export default function Home() {
         </div>
         <div className="flex flex-col">
           <h2 className="before:content-[''] before:inline-block before:h-3 before:w-3 before:bg-[#ee5b36] before:mr-2 text-2xl font-bold mb-6">Software Projects</h2>
-          <div className="flex flex-row">
+          <div className="flex flex-row flex-wrap">
             {projects.map((project) => (
-              <ProjectCard key={project.id}/>
+              <ProjectCard key={project.id} {...project}/>
             ))}
           </div>
         </div>
