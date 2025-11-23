@@ -15,5 +15,5 @@ export default function ViewCount({ initialViews }: { initialViews: number }) {
   }, [])
  
   // You can use `isPending` to give users feedback
-  return <p>Total Views: {views}</p>
+  return <p>You are the <span className="font-bold">{views}th</span> visitor of my website!</p>
 }
