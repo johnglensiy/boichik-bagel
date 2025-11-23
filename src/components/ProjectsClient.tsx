@@ -5,11 +5,11 @@ import { useState } from 'react';
 import ProjectCard from './ProjectCard';
 import { ProjectData } from '@/app/page';
 
-export default function ProjectsClient({ projects }: { projects: ProjectData[] }) {
+export default function ProjectsClient({ projects, id }: { projects: ProjectData[], id?: string }) {
     const [isDropdownVisible, setDropdownVisibility] = useState<boolean>(false);
 
     return (
-        <div id="projects-section" className="flex flex-col border">
+        <div id={id} className="flex flex-col">
             <h2 className="before:content-[''] before:inline-block before:h-3 before:w-3 before:bg-[#ee5b36] before:mr-2 text-2xl font-bold my-6">Software Engineering</h2>
             <div className="flex flex-row flex-wrap">
             {projects.filter((project) => project.category === 'software').slice(0,3)
