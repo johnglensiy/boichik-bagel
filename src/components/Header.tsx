@@ -8,7 +8,7 @@ export default function Header() {
           href="/" 
           className="text-xl font-semibold text-zinc-900 dark:text-zinc-50 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors"
         >
-          Your Name
+          John Glen Siy
         </Link>
         
         <ul className="flex items-center gap-8">
@@ -17,7 +17,7 @@ export default function Header() {
               href="/" 
               className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors"
             >
-              About
+              About Me
             </Link>
           </li>
           <li>
