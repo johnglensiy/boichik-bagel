@@ -19,7 +19,7 @@ export default function ProjectCard({
         href={url} 
         target="_blank" 
         rel="noopener noreferrer"
-        className="block w-80 origin-top-left transition-transform duration-300 ease-in-out hover:scale-105"
+        className="mr-4 mb-4 block w-80 origin-top-left transition-transform duration-300 ease-in-out hover:scale-105"
     >
         <div className="relative w-[275px] h-[150px] overflow-hidden">
             <Image
@@ -32,7 +32,7 @@ export default function ProjectCard({
         <div className="">
             <h3 className="my-2 font-bold">{title}</h3>
             {content}
-            <div className="mt-2 project-techs flex gap-2 flex-wrap">
+            <div className="mt-2 mb-6 project-techs flex gap-2 flex-wrap">
                 {techStack && techStack.map((tech, i) => (
                     <span className="px-3 py-1 bg-zinc-200 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 rounded-full text-sm font-medium" key={i}>{tech}</span> 
                 ))}

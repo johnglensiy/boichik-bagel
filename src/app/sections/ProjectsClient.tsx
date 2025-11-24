@@ -23,7 +23,7 @@ export default function ProjectsClient({ projects }: { projects: ProjectData[] }
                     <ProjectCard key={project.id} {...project}/>
                 ))}
             </div>
-            <p onClick={() => setDropdownVisibility(!isDropdownVisible)} className="cursor-pointer hover:underline my-4">
+            <p onClick={() => setDropdownVisibility(!isDropdownVisible)} className="cursor-pointer hover:underline">
                 {isDropdownVisible ? "Show fewer projects" : "Show more projects"}
             </p>
 
