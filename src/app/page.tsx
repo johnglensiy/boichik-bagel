@@ -6,7 +6,10 @@ import Image from 'next/image';
 
 import ViewCount from "@/components/ViewCount";
 import ProjectCard from "@/components/ProjectCard";
-import ProjectsClient from '@/components/ProjectsClient';
+import ProjectsClient from '@/app/sections/ProjectsClient';
+import ScrollTracker from '@/components/ScrollTracker';
+import BioSection from './sections/BioSection';
+import CourseworkSection from './sections/CourseworkSection';
 
 export interface ProjectData {
   id: string,
@@ -117,73 +120,15 @@ export default function Home() {
 		  }
 	];
 
-  const sectionIds = ["about", "projects", "coursework"];
+  const sectionIDs = ["About Me", "projects", "coursework"];
 
   return (
     <div className="flex min-h-screen justify-center bg-black font-sans dark:bg-slate-50">
-      <div className="hidden lg:flex lg:flex-col lg:w-64 px-6 py-10 bg-slate-50 text-black border">
-        <h2 className="text-3xl font-semibold mb-6">John Glen Siy</h2>
-        <p>EECS @ Berkeley</p>
-        <p>johnglen_siy@berkeley.edu</p>
-        <nav className="flex flex-col mt-4 mb-4">
-          <a href="">LinkedIn</a>
-          <a href="">Github</a>
-          <a href="">Resume</a>
-          <a href="#about" className="mt-12">About</a>
-          <a href="#projects">Projects</a>
-        </nav>
-        <ViewCount initialViews={67}/>
-      </div>
-      <main className="flex gap-20 min-h-screen w-full max-w-6xl flex-col items-center justify-between py-32 px-16 bg-slate-50 text-black border sm:items-start">
-        <div id="about" className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h2 className="text-2xl font-bold">Hi! I'm John</h2>
-          <p>
-              Hi! I'm John, an undergraduate Electrical Engineering and Computer Science
-              student at <span className="berkeley-cursor">UC Berkeley</span>. I'm a full-stack engineer
-              interested in software development and building impactful projects.
-              <br/>
-              <br/>
-              In spring semester of my sophomore year, I joined a small little CS club on campus called Codeology. 
-              There I experienced my first exposure to industry level projects, and since then, I've been
-              actively contributing as a software developer working for major clients like IBM and Samsung.
-              If you're looking for large-scale software contract roles or business partnerships, 
-              I highly recommend you check them out  <a href={"https://codeology.studentorg.berkeley.edu/"} target="_blank" rel="noopener noreferrer">here</a>!
-              <br/>
-              <br/>
-              In my free time, I love bouldering (indoor v6, outdoor v4), running, and leveling up my
-              cooking game. I'm also a huge sports fan and
-              have been cheering for the Warriors since 2013 - go Dubs! <br/>
-          </p>
-        </div>
-        
-        <div id="projects">
-          <ProjectsClient projects={projects}/>
-        </div>
-
-        <div id="coursework">
-          <h2>Coursework</h2>
-        </div>
-        {/* <div id="hobbies-section">
-          <div className="courses-list">
-            {classes.map((semester, index) => (
-              <div className="semester-div" key={index}>
-                {semester.subjects.map((subject, i) => (
-                  subject.link ? 
-                    <p>
-                      <a href={subject.link} target="_blank" rel="nooponer noreferrer">
-                        {subject.name}
-                      </a>
-                    </p>
-                    : 
-                    <p>{subject.name}</p>
-                ))}
-              </div>
-            ))}
-          </div>
-          
-        </div> */}
-      
-      </main>
+      <ScrollTracker trackedSectionIDs={sectionIDs}>
+        <BioSection/>
+        <ProjectsClient projects={projects}/>
+        <CourseworkSection/>
+      </ScrollTracker>
     </div>
   );
 }
