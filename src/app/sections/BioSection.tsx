@@ -3,9 +3,7 @@ export default function BioSection() {
     <div id="about" className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
       <h2 className="text-2xl font-bold">Hi! I'm John</h2>
       <p>
-          Hi! I'm John, an undergraduate Electrical Engineering and Computer Science
-          student at <span className="berkeley-cursor">UC Berkeley</span>. I'm a full-stack engineer
-          interested in software development and building impactful projects.
+          Hi! I'm a full-stack engineer interested in software development and building impactful projects.
           <br/>
           <br/>
           In spring semester of my sophomore year, I joined a small little CS club on campus called Codeology. 

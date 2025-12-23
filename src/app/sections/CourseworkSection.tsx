@@ -88,7 +88,7 @@ export default function CourseworkSection() {
 										</a>
 									</p>
 									: 
-									<p>{subject.name}</p>
+									<p key={`${subject.name}`} id={`${subject.name}`}>{subject.name}</p>
 							))}
 						</div>
 					))}
