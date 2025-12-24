@@ -16,16 +16,20 @@ export default function ScrollTracker({
     const [focusedSection, setFocusedSection] = useState<string>();
 
     // Inject an observer hook to each section
-    const observers = trackedSectionIDs.map(() => useInView({}));
+    const observers = trackedSectionIDs.map(() => useInView({
+        threshold: 0,
+    }));
 
     // Detect which section is in view
     useEffect(() => {
-        observers.forEach(({ inView }, index) => {
-            if (inView) {
+        // Find the first (topmost) section that is in view
+        for (let index = 0; index < observers.length; index++) {
+            if (observers[index].inView) {
                 setFocusedSection(trackedSectionIDs[index])
                 console.log(trackedSectionIDs[index])
+                break; // Stop after finding the first section in view
             }
-        })
+        }
     }, [observers.map((o) => o.inView).join(",")]);
 
     return (

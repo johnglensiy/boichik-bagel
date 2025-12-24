@@ -74,10 +74,10 @@ export default function CourseworkSection() {
 	];
 
 	return (
-		<>
+		<div className="my-15">
 			<h2 className="text-2xl font-bold">Coursework</h2>
-      <div className="flex flex-row gap-20">
-        <div className="">
+			<div className="flex flex-row gap-20">
+				<div className="">
 					{classes.map((semester, index) => (
 						<div className="my-2" key={index}>
 							{semester.subjects.map((subject, i) => (
@@ -94,15 +94,15 @@ export default function CourseworkSection() {
 					))}
 				</div>
 				<div className="flex justify-center items-center">
-          <Image
-              src={"/images/berkeley.png"}
-              alt={"UC Berkeley"}
-              width={400}
-              height={200}
-          />
+					<Image
+						src={"/images/berkeley.png"}
+						alt={"UC Berkeley"}
+						width={400}
+						height={200}
+					/>
 				</div>
-      </div>
-		</>
+			</div>
+		</div>
 	)
 }
 

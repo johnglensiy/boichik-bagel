@@ -1,6 +1,6 @@
 export default function BioSection() {
   return (
-    <div id="about" className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
+    <div id="about" className="flex flex-col items-center my-15 gap-6 text-center sm:items-start sm:text-left">
       <h2 className="text-2xl font-bold">Hi! I'm John</h2>
       <p>
           Hi! I'm a full-stack engineer interested in software development and building impactful projects.
