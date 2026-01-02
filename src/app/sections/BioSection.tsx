@@ -1,7 +1,13 @@
+import { RollingText } from "@/components/ui/shadcn-io/rolling-text";
+
 export default function BioSection() {
   return (
     <div id="about" className="flex flex-col items-center my-15 gap-6 max-w-200 text-center sm:items-start sm:text-left">
-      <h2 className="text-5xl font-bold">Hi! I'm John</h2>
+      <RollingText 
+        className="text-5xl font-bold"
+        text="Hi! I'm John"
+        transition={{ duration: 0.8, delay: 0.08, ease: "easeOut" }}
+      />
       <p>
           I'm a full-stack engineer interested in software development and building impactful projects.
           <br/>
