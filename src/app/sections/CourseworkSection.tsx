@@ -58,17 +58,18 @@ export default function CourseworkSection() {
 		  {
 			category: "Semester 6",
 			subjects: [
-				{ name: "CS 182: Deep Neural Networks",
-				  link: "https://cs182sp21.github.io/"}
+				{ name: "CS 168: Internet Architecture",
+				  link: "https://sp25.cs168.io/"}
 			]
 		  },
 		  {
 			category: "Semester 7",
 			subjects: [
-				{ name: "CS 168: Internet Architecture",
-				  link: "https://sp25.cs168.io/"},
-				{ name: "CS 189: Machine Learning",
-				  link: "https://people.eecs.berkeley.edu/~jrs/189/"}
+				{ name: "CS 160: User Interface Design and Development",
+				  link: ""},
+				{ name: "ASTRO 7A: Introduction to Astrophysics",
+				  link: ""
+				},
 			]
 		  }
 	];
