@@ -123,7 +123,7 @@ export default function Home() {
 // 		  }
 // 	];
 
-  const sectionIDs = ["about-me", "projects", "coursework"];
+  const sectionIDs = ["about me", "projects", "coursework"];
 
   return (
     <div className="flex min-h-screen justify-center bg-black font-sans dark:bg-slate-50">
