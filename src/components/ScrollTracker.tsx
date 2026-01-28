@@ -35,7 +35,11 @@ export default function ScrollTracker({
     return (
         <div className="flex min-h-screen">
             {/* Sidebar */}
-            <div id="side-banner" className="hidden lg:flex lg:flex-col lg:w-64 px-6 py-10 bg-slate-50 text-black border-r border-gray-200 sticky top-0 h-screen">
+            <div id="side-banner" className="
+                hidden lg:flex lg:flex-col lg:w-64 
+                px-6 py-25 bg-slate-50 text-black 
+                border-r border-gray-200 sticky mt-15 top-0 h-screen"
+            >
                 <h2 className="text-3xl font-semibold mb-6">John Glen Siy</h2>
                 <p>EECS @ Berkeley</p>
                 <p>johnglen_siy@berkeley.edu</p>
