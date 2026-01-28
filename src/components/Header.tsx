@@ -14,7 +14,7 @@ export default function Header() {
         <ul className="flex items-center gap-8">
           <li>
             <Link 
-              href="/" 
+              href="#about-me" 
               className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors"
             >
               About Me
@@ -22,7 +22,7 @@ export default function Header() {
           </li>
           <li>
             <Link 
-              href="#projects-section" 
+              href="#projects" 
               scroll={true}
               className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors"
             >
@@ -31,7 +31,7 @@ export default function Header() {
           </li>
           <li>
             <Link 
-              href="#projects-section" 
+              href="#coursework" 
               className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors"
             >
               Coursework
