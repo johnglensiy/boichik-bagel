@@ -234,14 +234,13 @@ export default function Portfolio2a({
         </div>
       </aside>
 
-      {/* Content — shifts right instead of letting the fixed sidebar cover it */}
+      {/* Hero — shifts right instead of letting the fixed sidebar cover it */}
       <div
         style={{
           marginLeft: sidebarShown ? "236px" : "0",
         }}
         className="transition-[margin-left] duration-[550ms] [transition-timing-function:cubic-bezier(.4,0,.2,1)]"
       >
-        {/* Hero */}
         <section
           id="about"
           className="min-h-screen relative flex flex-col px-[clamp(28px,6vw,90px)]"
@@ -328,8 +327,16 @@ export default function Portfolio2a({
             scroll<span className="text-sm">↓</span>
           </div>
         </section>
+      </div>
 
-        {/* Projects */}
+      {/* Projects + Contact — fade in from below instead of shifting right */}
+      <div
+        style={{
+          opacity: sidebarShown ? 1 : 0,
+          transform: sidebarShown ? "translateY(0)" : "translateY(24px)",
+        }}
+        className="transition-[opacity,transform] duration-[550ms] [transition-timing-function:cubic-bezier(.4,0,.2,1)]"
+      >
         <section
           id="projects"
           className="min-h-screen flex flex-col justify-center py-[70px] px-[clamp(28px,6vw,90px)] bg-[#f7f3ec]"
