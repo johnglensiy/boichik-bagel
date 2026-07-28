@@ -2,7 +2,7 @@ import { RollingText } from "@/components/ui/shadcn-io/rolling-text";
 
 export default function BioSection() {
   return (
-    <div className="flex flex-col items-center my-15 gap-6 max-w-200 text-center sm:items-start sm:text-left">
+    <div className="flex flex-col items-center gap-6 max-w-200 text-center sm:items-start sm:text-left">
       <RollingText 
         className="text-5xl font-bold"
         text="Hi! I'm John"

@@ -85,7 +85,7 @@ export default function ScrollTracker({
             </div>
 
             {/* Main Content */}
-            <main className="flex gap-25 w-full max-w-6xl flex-col items-center justify-between py-32 px-16 bg-slate-50 text-black sm:items-start">
+            <main className="flex gap-12 w-full max-w-6xl flex-col items-center justify-between py-24 px-16 bg-slate-50 text-black sm:items-start">
                 {trackedSectionIDs.map((s: string, index: number) => (
                     <div key={s} id={s} ref={observers[index].ref}>
                         {children[index]}

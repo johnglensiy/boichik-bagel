@@ -75,8 +75,8 @@ export default function CourseworkSection() {
 	];
 
 	return (
-		<div className="my-15">
-			<h2 className="text-2xl font-bold">Coursework</h2>
+		<div>
+			<h2 className="before:content-[''] before:inline-block before:h-3 before:w-3 before:bg-[#ee5b36] before:mr-2 text-2xl font-bold">Coursework</h2>
 			<div className="flex flex-row gap-20">
 				<div className="">
 					{classes.map((semester, index) => (

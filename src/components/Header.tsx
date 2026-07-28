@@ -30,7 +30,7 @@ export default function Header() {
 
   return (
     <header className={`
-      fixed top-0 left-0 right-0 z-50
+      fixed top-0 left-0 right-0 z-50 lg:hidden
       bg-white dark:bg-zinc-900
       w-full border-b border-zinc-200 dark:border-zinc-800
       transition-transform duration-300
@@ -47,8 +47,8 @@ export default function Header() {
         
         <ul className="flex items-center gap-8">
           <li>
-            <Link 
-              href="/" 
+            <Link
+              href="#about me"
               className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors"
             >
               About Me

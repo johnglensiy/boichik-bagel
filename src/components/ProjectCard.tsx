@@ -21,7 +21,7 @@ export default function ProjectCard({
         rel="noopener noreferrer"
         className="mr-4 mb-4 block w-80 origin-top-left transition-transform duration-300 ease-in-out hover:scale-105"
     >
-        <div className="relative w-[275px] h-[150px] overflow-hidden">
+        <div className="relative w-full h-[160px] overflow-hidden rounded-lg">
             <Image
                 src={`/images/projects/${id}.png`}
                 alt={title}
