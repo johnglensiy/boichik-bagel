@@ -324,13 +324,27 @@ export default function Portfolio2a({
           className={`flex flex-col gap-[9px] mt-[26px] text-[12px] ${FONT_GROTESK}`}
         >
           {NAV.map((n) => (
-            <a
-              key={n.href}
-              href={n.href}
-              className={`pl-[11px] border-l-2 ${n.active ? "text-[#33302a] font-medium border-[#c47b52]" : "text-[#8d8677] border-transparent"}`}
-            >
-              {n.label}
-            </a>
+            <div key={n.href}>
+              <a
+                href={n.href}
+                className={`pl-[11px] border-l-2 ${n.active ? "text-[#33302a] font-medium border-[#c47b52]" : "text-[#8d8677] border-transparent"}`}
+              >
+                {n.label}
+              </a>
+              {n.label === "Projects" && list[index] && (
+                <div
+                  className={`pl-[11px] mt-1 text-[10px] leading-[1.4] ${FONT_MONO} text-[#a89b85]`}
+                >
+                  viewing{" "}
+                  <span
+                    key={list[index].title}
+                    className="inline-block fade-slide-in"
+                  >
+                    {list[index].title}...
+                  </span>
+                </div>
+              )}
+            </div>
           ))}
         </nav>
         {/* <div
