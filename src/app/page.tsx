@@ -13,6 +13,8 @@ const PROJECTS: Project[] = [
     blurb:
       "Git's version control, rebuilt from scratch in Java — content-addressed commits, branching, and merges with conflict detection.",
     github: "",
+    video: "demo.mp4",
+    poster: "gitlet.png",
   },
   {
     tab: "software",
