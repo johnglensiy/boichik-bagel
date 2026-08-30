@@ -17,6 +17,9 @@ export interface Project {
   video?: string;
   poster?: string;
   blurb: string;
+  // One-line version of the blurb, used where there's no room for the full one
+  // (the hero reel caption).
+  tagline?: string;
   github: string;
 }
 

@@ -2,11 +2,24 @@
 
 import { useState, useEffect } from "react";
 import ContentSection, { type Project } from "./sections/ContentSection";
+import HeroReel, { type HeroClip } from "@/components/HeroReel";
 
 const PROJECTS: Project[] = [
   {
     tab: "software",
+    title: "Real",
+    tagline: "Live tennis scores, overlaid on Google search.",
+    stack: ["TypeScript", "Redis", "Playwright"],
+    year: "2026",
+    img: "real.png",
+    blurb:
+      "Live tennis scores overlaid on Google search — Playwright scrapers publish over Redis pub/sub to a horizontally scaling SSE tier, with physics-based point replays.",
+    github: "",
+  },
+  {
+    tab: "software",
     title: "Gitlet",
+    tagline: "Git's version control, rebuilt from scratch in Java.",
     stack: ["Java", "Git"],
     year: "2022",
     img: "gitlet.png",
@@ -19,6 +32,7 @@ const PROJECTS: Project[] = [
   {
     tab: "software",
     title: "Secure File Sharing",
+    tagline: "End-to-end encrypted file sharing, safe from its own server.",
     stack: ["Golang"],
     year: "2023",
     img: "secure-fs.png",
@@ -29,6 +43,7 @@ const PROJECTS: Project[] = [
   {
     tab: "software",
     title: "SQL Query Optimizer",
+    tagline: "Cost-based query planning that makes SQL engines faster.",
     stack: ["Java"],
     year: "2023",
     img: "sql-opt.png",
@@ -37,8 +52,20 @@ const PROJECTS: Project[] = [
     github: "",
   },
   {
+    tab: "software",
+    title: "Pac-Man AI",
+    tagline: "Search, game trees, and Q-learning agents that play Pac-Man.",
+    stack: ["Python", "NumPy"],
+    year: "2024",
+    img: "pacman.png",
+    blurb:
+      "A full stack of AI agents for Pac-Man — A* search, minimax and expectimax game trees, particle-filter ghost tracking, and Q-learning, with the neural nets written straight from NumPy.",
+    github: "",
+  },
+  {
     tab: "data",
     title: "Avolingo",
+    tagline: "Neural translation across 40+ languages.",
     stack: ["PyTorch", "HuggingFace"],
     year: "2023",
     img: "avolingo.png",
@@ -47,8 +74,31 @@ const PROJECTS: Project[] = [
     github: "",
   },
   {
+    tab: "data",
+    title: "Spam Email Classifier",
+    tagline: "Telling spam from ham with logistic regression.",
+    stack: ["Python", "Pandas", "scikit-learn"],
+    year: "2021",
+    img: "spam-classifier.png",
+    blurb:
+      "Email spam detection built on hand-engineered text features and a logistic regression classifier, tuned against precision/recall tradeoffs on a held-out set.",
+    github: "",
+  },
+  {
+    tab: "data",
+    title: "ATP Player Analysis",
+    tagline: "What match data says about how pros actually win.",
+    stack: ["Python", "Pandas", "Matplotlib"],
+    year: "2025",
+    img: "atp.png",
+    blurb:
+      "Exploratory analysis of ATP tour match data — serve and return splits, surface effects, and head-to-head trends pulled apart to see what separates players at the top.",
+    github: "",
+  },
+  {
     tab: "hw",
     title: "S1XT33N",
+    tagline: "A voice-controlled car that drives itself.",
     stack: ["Python", "Arduino"],
     year: "2023",
     img: "s1xt33n.png",
@@ -59,6 +109,7 @@ const PROJECTS: Project[] = [
   {
     tab: "hw",
     title: "RISC-V CPU",
+    tagline: "A pipelined RISC-V CPU built gate by gate.",
     stack: ["Logisim", "RISC-V assembly"],
     year: "2023",
     img: "riscv.png",
@@ -67,6 +118,15 @@ const PROJECTS: Project[] = [
     github: "",
   },
 ];
+
+// Every project with a recorded clip, in PROJECTS order — the hero reel plays
+// through them back to back, so adding a `video` to a project adds it here.
+const HERO_CLIPS: HeroClip[] = PROJECTS.filter((p) => p.video).map((p) => ({
+  title: p.title,
+  tagline: p.tagline,
+  video: `/videos/${p.video}`,
+  poster: p.poster && `/images/projects/${p.poster}`,
+}));
 
 const TIMELINE = [
   { year: "2023", title: "Secure File Sharing", filled: true },
@@ -308,34 +368,41 @@ export default function Page() {
               </a>
             </div>
           </header>
-          <div className="flex flex-col h-screen items-center justify-center text-center">
-            <h1
-              className={`m-0 text-[clamp(34px,4.4vw,56px)] leading-[1.1] ${FONT_SERIF} text-[#2e2a24] tracking-[-.01em]`}
-            >
-              Hello! I'm John
-            </h1>
-            <p
-              className={`text-[13.5px] leading-[1.7] ${FONT_GROTESK} text-[#8a8072] mt-[22px] max-w-[430px]`}
-            >
-              Currently building full-stack software for distributed systems -
-              and fun data projects on the side.
-              <br />
-              Berkeley EECS alumni.
-            </p>
-            <div className="flex gap-3 mt-[30px] justify-center">
-              <a
-                href="#projects"
-                className={`text-[12.5px] font-medium ${FONT_GROTESK} !text-[#f7f3ec] bg-[#2e2a24] rounded-[10px] px-5 py-[11px]`}
+          <div className="flex flex-col lg:flex-row h-screen items-center justify-center gap-[clamp(32px,5vw,70px)]">
+            <div className="flex flex-col items-center lg:items-start text-center lg:text-left shrink-0">
+              <h1
+                className={`m-0 text-[clamp(34px,4.4vw,56px)] leading-[1.1] ${FONT_SERIF} text-[#2e2a24] tracking-[-.01em]`}
               >
-                See my work
-              </a>
-              <a
-                href="#contact"
-                className={`text-[12.5px] font-medium ${FONT_GROTESK} !text-[#5c5346] bg-[#efe9dd] border border-[#e2dbcc] rounded-[10px] px-5 py-[11px]`}
+                Hello! I'm John
+              </h1>
+              <p
+                className={`text-[13.5px] leading-[1.7] ${FONT_GROTESK} text-[#8a8072] mt-[22px] max-w-[430px]`}
               >
-                Résumé ↓
-              </a>
+                Currently building full-stack software for distributed systems -
+                and fun data projects on the side.
+                <br />
+                Berkeley EECS alumni.
+              </p>
+              <div className="flex gap-3 mt-[30px]">
+                <a
+                  href="#projects"
+                  className={`text-[12.5px] font-medium ${FONT_GROTESK} !text-[#f7f3ec] bg-[#2e2a24] rounded-[10px] px-5 py-[11px]`}
+                >
+                  See my work
+                </a>
+                <a
+                  href="#contact"
+                  className={`text-[12.5px] font-medium ${FONT_GROTESK} !text-[#5c5346] bg-[#efe9dd] border border-[#e2dbcc] rounded-[10px] px-5 py-[11px]`}
+                >
+                  Résumé ↓
+                </a>
+              </div>
             </div>
+
+            <HeroReel
+              clips={HERO_CLIPS}
+              className="w-full max-w-[380px] lg:max-w-[440px]"
+            />
 
             {/* <div className="aspect-[1/.82] rounded-[20px] bg-[#ece5d8] border border-[#ddd6c8] shadow-[0_2px_20px_rgba(60,50,35,.06)] flex flex-col items-center justify-center gap-2.5">
               <div className="w-16 h-16 rounded-[14px] bg-[repeating-linear-gradient(45deg,#e0d7c8,#e0d7c8_7px,#e7dfd0_7px,#e7dfd0_14px)]" />
