@@ -199,12 +199,12 @@ export default function Page() {
           photo
         </div> */}
         <div
-          className={`text-[17px] font-semibold ${FONT_SERIF} text-[#33302a]`}
+          className={`text-[20px] font-semibold ${FONT_SERIF} text-[#33302a]`}
         >
           John Glen Siy
         </div>
         <div
-          className={`text-[11.5px] leading-[1.5] ${FONT_GROTESK} text-[#8d8677] mt-0.5`}
+          className={`text-[13px] leading-[1.5] ${FONT_GROTESK} text-[#8d8677] mt-0.5`}
         >
           EECS @ Berkeley
         </div>
@@ -217,8 +217,8 @@ export default function Page() {
             className="text-[#a89b85] hover:text-[#c47b52] transition-colors"
           >
             <svg
-              width="16"
-              height="16"
+              width="19"
+              height="19"
               viewBox="0 0 24 24"
               fill="currentColor"
               xmlns="http://www.w3.org/2000/svg"
@@ -234,8 +234,8 @@ export default function Page() {
             className="text-[#a89b85] hover:text-[#c47b52] transition-colors"
           >
             <svg
-              width="16"
-              height="16"
+              width="19"
+              height="19"
               viewBox="0 0 24 24"
               fill="currentColor"
               xmlns="http://www.w3.org/2000/svg"
@@ -251,8 +251,8 @@ export default function Page() {
             className="text-[#a89b85] hover:text-[#c47b52] transition-colors"
           >
             <svg
-              width="16"
-              height="16"
+              width="19"
+              height="19"
               viewBox="0 0 25 24"
               fill="currentColor"
               xmlns="http://www.w3.org/2000/svg"
@@ -262,7 +262,7 @@ export default function Page() {
           </a>
         </div>
         <nav
-          className={`flex flex-col gap-[9px] mt-[26px] text-[12px] ${FONT_GROTESK}`}
+          className={`flex flex-col gap-[11px] mt-[26px] text-[14px] ${FONT_GROTESK}`}
         >
           {NAV.map((n) => (
             <div key={n.href}>
@@ -274,7 +274,7 @@ export default function Page() {
               </a>
               {n.label === "Projects" && activeProject && (
                 <div
-                  className={`pl-[11px] mt-1 text-[10px] leading-[1.4] ${FONT_MONO} text-[#a89b85]`}
+                  className={`pl-[11px] mt-1 text-[11.5px] leading-[1.4] ${FONT_MONO} text-[#a89b85]`}
                 >
                   viewing{" "}
                   <span
@@ -318,7 +318,7 @@ export default function Page() {
             );
           })}
         </div> */}
-        <div className={`mt-auto text-[10px] ${FONT_MONO} text-[#b3a794] pt-5`}>
+        <div className={`mt-auto text-[11.5px] ${FONT_MONO} text-[#b3a794] pt-5`}>
           visitor #68
         </div>
       </aside>

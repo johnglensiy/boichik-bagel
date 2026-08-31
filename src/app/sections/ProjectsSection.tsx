@@ -36,11 +36,32 @@ const PLACEHOLDER_BULLETS = [
 ];
 
 const CARD_GAP = 16;
-// Bare expression (no outer calc()) so it can be embedded inside other calc()s.
-const CARD_BASIS_EXPR = `((100% - ${CARD_GAP * 2}px) / 3)`;
-const CARD_BASIS = `calc${CARD_BASIS_EXPR}`;
-const EXPANDED_BASIS = "80%";
+const CARD_BASIS = `calc((100% - ${CARD_GAP * 2}px) / 3)`;
+const EXPANDED_BASIS = "100%";
 
+// How far past the container edge a card stays (partly) visible before it has
+// faded out completely. Sized to a little over one card step (card width + gap,
+// 292px at the 860px max width) so a card fades out across roughly the distance
+// it travels on its way out, rather than blinking off at the edge.
+const ROW_FADE = 400;
+
+// The wrapper is padded by ROW_FADE on each side and pulled back by an equal
+// negative margin: its content box stays exactly the container width, but its
+// *border box* now extends ROW_FADE past each edge. That matters because
+// mask-clip defaults to border-box and clips the element's painting to it —
+// with an unpadded wrapper the whole fade band fell outside the clip and the
+// mask degenerated into a hard cut. With the padding, overflowing cards are
+// inside the painted area and the gradient can actually fade them.
+// mask-size/position are left at their defaults (auto/0), so the gradient just
+// spans the border box: transparent at its edges, opaque across the middle —
+// which lands exactly on the container's real edges.
+const ROW_MASK_IMAGE = `linear-gradient(to right, transparent 0, #000 ${ROW_FADE}px, #000 calc(100% - ${ROW_FADE}px), transparent 100%)`;
+const ROW_MASK: CSSProperties = {
+  maskImage: ROW_MASK_IMAGE,
+  maskRepeat: "no-repeat",
+  WebkitMaskImage: ROW_MASK_IMAGE,
+  WebkitMaskRepeat: "no-repeat",
+};
 function chunk<T>(arr: T[], size: number): T[][] {
   const out: T[][] = [];
   for (let i = 0; i < arr.length; i += size) out.push(arr.slice(i, i + size));
@@ -127,7 +148,7 @@ export default function ProjectsSection({
   return (
     <section
       id="projects"
-      className="min-h-screen flex flex-col justify-center py-[70px] px-[clamp(28px,6vw,90px)] bg-[#f7f3ec]"
+      className="min-h-screen flex flex-col justify-center py-[70px] px-[clamp(28px,6vw,90px)] bg-[#f7f3ec] overflow-x-clip"
     >
       <div className="text-[30px] leading-[1.1] font-medium font-newsreader text-[#3a342c] max-w-[860px] mx-auto w-full">
         Selected work
@@ -144,6 +165,7 @@ export default function ProjectsSection({
           const rest = track.projects.slice(3);
           const isOpen = !!openTracks[track.id];
 
+          //
           const renderCard = (p: Project) => {
             const isExpanded = expandedTitle === p.title;
             const flexStyle: CSSProperties = isExpanded
@@ -250,24 +272,22 @@ export default function ProjectsSection({
             );
           };
 
+          // util to chunk projects into rows of 3
           const shownRows = chunk(shown, 3);
           const restRows = chunk(rest, 3);
 
-          // Content is packed at flex-start; a marginLeft offset (itself
-          // animatable, unlike justify-content) slides the whole packed
-          // group into start/center/end position so every transition —
-          // expand, collapse, or switching between two expanded cards —
-          // animates as one continuous motion instead of snapping.
-          const rowOffsetStyle = (row: Project[]): CSSProperties => {
+          // Cards keep their DOM order. The row slides left by the expanded
+          // card's resting offset, so that card's left edge lands on the
+          // container's. Earlier cards are pushed out past the left edge and
+          // deliberately stay visible — no row clips them. transform, not
+          // margin, because a negative margin would widen the row and feed back
+          // into the percentage basis the cards are sized by.
+          const rowShiftStyle = (row: Project[]): CSSProperties => {
             const idx = row.findIndex((x) => x.title === expandedTitle);
-            if (idx <= 0) return { marginLeft: 0 };
-            const others = row.length - 1;
-            const gaps = row.length - 1;
-            const contentExpr = `${EXPANDED_BASIS} + ${others} * ${CARD_BASIS_EXPR} + ${gaps * CARD_GAP}px`;
-            if (idx === row.length - 1) {
-              return { marginLeft: `calc(100% - (${contentExpr}))` };
-            }
-            return { marginLeft: `calc((100% - (${contentExpr})) / 2)` };
+            if (idx <= 0) return { transform: "translateX(0)" };
+            return {
+              transform: `translateX(calc(-${idx} * (${CARD_BASIS} + ${CARD_GAP}px)))`,
+            };
           };
 
           return (
@@ -280,10 +300,15 @@ export default function ProjectsSection({
                 {shownRows.map((row, ri) => (
                   <div
                     key={ri}
-                    style={rowOffsetStyle(row)}
-                    className="flex items-stretch gap-4 overflow-hidden transition-[margin-left] duration-500 [transition-timing-function:cubic-bezier(.4,0,.2,1)]"
+                    style={ROW_MASK}
+                    className="px-[320px] -mx-[320px]"
                   >
-                    {row.map((p) => renderCard(p))}
+                    <div
+                      style={rowShiftStyle(row)}
+                      className="flex items-stretch gap-4 transition-transform duration-500 [transition-timing-function:cubic-bezier(.4,0,.2,1)]"
+                    >
+                      {row.map((p) => renderCard(p))}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -292,15 +317,24 @@ export default function ProjectsSection({
                   <div
                     className={`grid transition-[grid-template-rows] duration-400 [transition-timing-function:cubic-bezier(.4,0,.2,1)] ${isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
                   >
-                    <div className="overflow-hidden">
+                    {/* Clips vertically for the collapse animation; the px/-mx pair keeps the
+                        content width identical while pushing the horizontal
+                        clip edge out past ROW_FADE so overflowing cards can
+                        fade instead of being cut. */}
+                    <div className="overflow-hidden px-[320px] -mx-[320px]">
                       <div className="flex flex-col gap-4 pt-4">
                         {restRows.map((row, ri) => (
                           <div
                             key={ri}
-                            style={rowOffsetStyle(row)}
-                            className="flex items-stretch gap-4 overflow-hidden transition-[margin-left] duration-500 [transition-timing-function:cubic-bezier(.4,0,.2,1)]"
+                            style={ROW_MASK}
+                            className="px-[320px] -mx-[320px]"
                           >
-                            {row.map((p) => renderCard(p))}
+                            <div
+                              style={rowShiftStyle(row)}
+                              className="flex items-stretch gap-4 transition-transform duration-500 [transition-timing-function:cubic-bezier(.4,0,.2,1)]"
+                            >
+                              {row.map((p) => renderCard(p))}
+                            </div>
                           </div>
                         ))}
                       </div>
