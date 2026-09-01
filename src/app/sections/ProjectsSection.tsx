@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import {
   useEffect,
   useMemo,
@@ -74,15 +75,22 @@ function chunk<T>(arr: T[], size: number): T[][] {
 function CardMedia({
   video,
   poster,
+  image,
   label,
+  title,
   active,
 }: {
   video?: string;
   poster?: string;
+  image?: string;
   label: string;
+  title: string;
   active: boolean;
 }) {
   const ref = useRef<HTMLVideoElement>(null);
+  // A filename in the data with no matching file in public/images/projects
+  // shouldn't render a broken-image icon — fall back to the placeholder.
+  const [imageFailed, setImageFailed] = useState(false);
 
   useEffect(() => {
     const el = ref.current;
@@ -96,26 +104,41 @@ function CardMedia({
     }
   }, [active]);
 
-  if (!video) {
+  if (video) {
     return (
-      <div className="w-full h-full flex items-center justify-center text-[10px] font-plex-mono text-[#a89b85]">
-        {label}
-      </div>
+      <video
+        ref={ref}
+        src={video}
+        poster={poster}
+        loop
+        muted
+        playsInline
+        // Nothing downloads until the card is expanded and play() is called.
+        preload="none"
+        className="w-full h-full object-cover"
+      />
     );
   }
 
+  if (image && !imageFailed) {
+    return (
+      <Image
+        src={image}
+        alt={title}
+        fill
+        // Widest the box ever gets: half of an expanded 80%-of-860px card.
+        sizes="350px"
+        className="object-cover"
+        onError={() => setImageFailed(true)}
+      />
+    );
+  }
+
+  // Shows the filename, so a missing asset is obvious rather than silent.
   return (
-    <video
-      ref={ref}
-      src={video}
-      poster={poster}
-      loop
-      muted
-      playsInline
-      // Nothing downloads until the card is expanded and play() is called.
-      preload="none"
-      className="w-full h-full object-cover"
-    />
+    <div className="w-full h-full flex items-center justify-center text-[10px] font-plex-mono text-[#a89b85]">
+      {label}
+    </div>
   );
 }
 
@@ -150,15 +173,15 @@ export default function ProjectsSection({
       id="projects"
       className="min-h-screen flex flex-col justify-center py-[70px] px-[clamp(28px,6vw,90px)] bg-[#f7f3ec] overflow-x-clip"
     >
-      <div className="text-[30px] leading-[1.1] font-medium font-newsreader text-[#3a342c] max-w-[860px] mx-auto w-full">
+      <div className="text-[30px] leading-[1.1] font-medium font-newsreader text-[#3a342c] max-w-[800px] mx-auto w-full">
         Selected work
       </div>
-      <p className="text-[12.5px] leading-[1.6] font-grotesk text-[#8a8072] max-w-[860px] mx-auto mt-2 w-full">
+      <p className="text-[12.5px] leading-[1.6] font-grotesk text-[#8a8072] max-w-[800px] mx-auto mt-2 w-full">
         A few things I&apos;ve built across systems, security, and applied ML —
         one track per area.
       </p>
 
-      <div className="flex flex-col gap-10 max-w-[860px] w-full mx-auto mt-8">
+      <div className="flex flex-col gap-10 max-w-[800px] w-full mx-auto mt-8">
         {tracks.map((track) => {
           if (track.projects.length === 0) return null;
           const shown = track.projects.slice(0, 3);
@@ -192,19 +215,6 @@ export default function ProjectsSection({
                 style={flexStyle}
                 className="group relative rounded-2xl bg-[#f4efe7] hover:bg-[#efe6d5] transition-[flex-basis,flex-grow,background-color] duration-500 [transition-timing-function:cubic-bezier(.4,0,.2,1)] cursor-pointer overflow-hidden p-4"
               >
-                {!isExpanded && (
-                  <span className="absolute top-3 right-3 w-6 h-6 rounded-full bg-[#e4dccd] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                    <svg width="9" height="9" viewBox="0 0 9 9" fill="none">
-                      <path
-                        d="M1 8 L8 1 M3 1 H8 V6"
-                        stroke="#7a6e5c"
-                        strokeWidth="1.3"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </span>
-                )}
                 <div className="relative h-[270px]">
                   {/* Persistent media — resizes directly, never fades */}
                   <div
@@ -213,7 +223,9 @@ export default function ProjectsSection({
                     <CardMedia
                       video={p.video && `/videos/${p.video}`}
                       poster={p.poster && `/images/projects/${p.poster}`}
+                      image={p.img && `/images/projects/${p.img}`}
                       label={p.img}
+                      title={p.title}
                       active={isExpanded}
                     />
                   </div>

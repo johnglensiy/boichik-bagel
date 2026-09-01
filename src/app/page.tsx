@@ -46,7 +46,7 @@ const PROJECTS: Project[] = [
     tagline: "Cost-based query planning that makes SQL engines faster.",
     stack: ["Java"],
     year: "2023",
-    img: "sql-opt.png",
+    img: "sql-query-optimizer.png",
     blurb:
       "Faster SQL engines through cost-based query-plan optimization and join reordering.",
     github: "",
@@ -101,7 +101,7 @@ const PROJECTS: Project[] = [
     tagline: "A voice-controlled car that drives itself.",
     stack: ["Python", "Arduino"],
     year: "2023",
-    img: "s1xt33n.png",
+    img: "eecs-robot.png",
     blurb:
       "A voice-controlled autonomous car — PCA command classification driving a tuned closed-loop controller.",
     github: "",
@@ -112,7 +112,7 @@ const PROJECTS: Project[] = [
     tagline: "A pipelined RISC-V CPU built gate by gate.",
     stack: ["Logisim", "RISC-V assembly"],
     year: "2023",
-    img: "riscv.png",
+    img: "cpu.png",
     blurb:
       "A working pipelined RISC-V CPU designed and built gate-by-gate in Logisim.",
     github: "",
