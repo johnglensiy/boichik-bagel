@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useRef, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { ContactShadows, OrbitControls } from "@react-three/drei";
-import type * as THREE from "three";
+import * as THREE from "three";
 import SFScene, { SF_GROUND_Y } from "./SFScene";
 import { SF_STYLES, type SFStyleId } from "./styles";
 
@@ -43,6 +43,29 @@ export default function SFDiorama({ styleId, className, paused = false }: SFDior
   const spin = useRef<THREE.Group | null>(null);
   const [grabbed, setGrabbed] = useState(false);
   const [reduced, setReduced] = useState(false);
+  const frame = useRef<HTMLDivElement>(null);
+  // Client-only component (the page loads it with ssr: false), so document is
+  // there on first render. iPhone Safari has no element fullscreen; the button
+  // just doesn't appear there.
+  const [canFullscreen] = useState(() => document.fullscreenEnabled);
+  const [fullscreen, setFullscreen] = useState(false);
+
+  // Track the real fullscreen state rather than our own toggle, so Esc and the
+  // browser's own exit keep the button in step.
+  useEffect(() => {
+    const sync = () => setFullscreen(document.fullscreenElement === frame.current);
+    document.addEventListener("fullscreenchange", sync);
+    return () => document.removeEventListener("fullscreenchange", sync);
+  }, []);
+
+  const toggleFullscreen = () => {
+    // Can be refused (an embedding frame without allow="fullscreen", say);
+    // the page just stays as it was.
+    const done = document.fullscreenElement
+      ? document.exitFullscreen()
+      : frame.current?.requestFullscreen();
+    done?.catch(() => {});
+  };
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -56,6 +79,7 @@ export default function SFDiorama({ styleId, className, paused = false }: SFDior
 
   return (
     <div
+      ref={frame}
       className={className}
       style={{ background: style.bg, position: "relative", overflow: "hidden" }}
     >
@@ -114,8 +138,23 @@ export default function SFDiorama({ styleId, className, paused = false }: SFDior
 
         <Turntable enabled={spinning} target={spin} />
         <OrbitControls
-          enablePan={false}
-          enableZoom={false}
+          // Shift-drag slides the model around the frame (OrbitControls pans
+          // on a modified left drag). Right-drag is left off so a context-menu
+          // reflex doesn't throw the city out of view; two-finger touch still
+          // pans on phones.
+          enablePan
+          screenSpacePanning
+          mouseButtons={{ LEFT: THREE.MOUSE.ROTATE, MIDDLE: THREE.MOUSE.DOLLY, RIGHT: undefined }}
+          // Scroll to inspect. The camera opens ~22.6 out; the floor stops it
+          // short of clipping into the towers, the ceiling before the city
+          // shrinks to a postage stamp. Zooming toward the cursor means you can
+          // point at a landmark and dive at it rather than at the cube's centre.
+          enableZoom
+          zoomToCursor
+          zoomSpeed={1.4}
+          minDistance={6}
+          maxDistance={34}
+          onStart={() => setGrabbed(true)}
           target={[0, 0, 0]}
           minPolarAngle={Math.PI * 0.14}
           maxPolarAngle={Math.PI * 0.44}
@@ -123,6 +162,45 @@ export default function SFDiorama({ styleId, className, paused = false }: SFDior
           enableDamping
         />
       </Canvas>
+
+      {canFullscreen && (
+        <button
+          type="button"
+          onClick={toggleFullscreen}
+          aria-label={fullscreen ? "Exit full screen" : "View full screen"}
+          title={fullscreen ? "Exit full screen (Esc)" : "View full screen"}
+          style={{
+            position: "absolute",
+            top: 12,
+            right: 12,
+            zIndex: 1,
+            display: "grid",
+            placeItems: "center",
+            width: 34,
+            height: 34,
+            borderRadius: 9,
+            border: "1px solid rgba(0,0,0,0.08)",
+            background: "rgba(255,255,255,0.72)",
+            color: "#4a4339",
+            cursor: "pointer",
+            backdropFilter: "blur(6px)",
+          }}
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
+            <path
+              d={
+                fullscreen
+                  ? "M6 2v4H2M10 2v4h4M6 14v-4H2M10 14v-4h4"
+                  : "M2 6V2h4M14 6V2h-4M2 10v4h4M14 10v4h-4"
+              }
+              stroke="currentColor"
+              strokeWidth="1.6"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
+      )}
 
       {/* Uncoated-stock grain. CSS rather than a post-processing pass — it costs
           nothing and only the riso treatment really leans on it. */}

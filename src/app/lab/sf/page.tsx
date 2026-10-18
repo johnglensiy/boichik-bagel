@@ -33,7 +33,8 @@ export default function SFLabPage() {
         </header>
         <p className="text-[12.5px] leading-[1.65] font-grotesk text-[#8a8072] mt-2 max-w-[62ch]">
           Same geometry and same camera in all four — only the palette, material
-          and light change. Drag to turn it; the turntable stops once you do.
+          and light change. Drag to turn it, shift-drag to move it, scroll to zoom;
+          the turntable stops once you do.
         </p>
 
         <div className="mt-6 rounded-[18px] overflow-hidden border border-[#e2dbcc]">

@@ -4,7 +4,9 @@ import {
   createContext,
   useContext,
   useEffect,
+  useLayoutEffect,
   useMemo,
+  useRef,
   type ReactNode,
 } from "react";
 import * as THREE from "three";
@@ -44,7 +46,8 @@ const CUBE = { half: 4.6, landTop: 0, baseTop: -0.8, bottom: -3.4 };
  * the deck. Here they are arithmetic you can check. The block is a square, so
  * in bridge-space it is a diamond: |u| + |v| <= APEX.
  */
-const TOWER_D = 2.2;
+/** Half the main span, in the bridge's own (unscaled) units. */
+const TOWER_D = 3.9;
 const APEX = CUBE.half * Math.SQRT2;
 
 /** Half the roadway's width, plus a little. Nothing may stand inside it. */
@@ -54,6 +57,14 @@ const DECK_HALF = 0.5;
 const BRIDGE_ROT = -Math.PI / 4;
 /** Corner to corner, a hair short of poking out of the block. */
 const BRIDGE_LEN = CUBE.half * 2 * Math.SQRT2 - 0.15;
+
+/**
+ * The whole bridge — towers, cables, deck section — is built at full size and
+ * drawn at this scale. Only its length is exempt: DECK_LEN is stretched back
+ * out so the roadway still runs corner to corner across the block.
+ */
+const BRIDGE_SCALE = 0.7;
+const DECK_LEN = BRIDGE_LEN / BRIDGE_SCALE;
 
 /** Bottom of the cube, in scene space - where the contact shadow sits. */
 export const SF_GROUND_Y = CUBE.bottom;
@@ -197,6 +208,7 @@ function MaterialProvider({
       style.glass,
       style.orange,
       style.road,
+      style.asphalt,
       style.window,
       style.trim,
       style.metal,
@@ -443,116 +455,458 @@ function Streets({ style }: { style: SFStyle }) {
 
 // --------------------------------------------------------------- the bridge
 
+/** Six lanes, three each way, between the rails. */
+const LANE_W = 0.76;
+/** Full deck width, rail to rail — the 90 ft that the towers are scaled against. */
+const DECK_W = 0.92;
+const LANE_COUNT = 6;
+const DASH = 0.16;
+const DASH_GAP = 0.2;
+/**
+ * Tower legs straddle the deck. Their inner faces stand on the deck's edge
+ * (±DECK_W / 2) all the way up, and each setback is taken off the outer face,
+ * so the openings stay the roadway's width and the lanes always run clear.
+ */
+const LEG_INNER = DECK_W / 2;
+/**
+ * Leg sections, bottom to top: [across, along] — thickness across the bridge
+ * and depth along it. The real legs are deeper along the bridge (54 ft) than
+ * across (33 ft); these keep that and step in at each strut.
+ */
+const LEG_SECTIONS: Array<[number, number]> = [
+  [0.24, 0.37],
+  [0.22, 0.34],
+  [0.19, 0.3],
+  [0.17, 0.27],
+];
+/**
+ * The pale stone pier each tower stands on: one oval under both legs, long
+ * across the bridge, with a margin of stone showing round the leg bases.
+ */
+const FOOTING_H = 0.16;
+const FOOTING_RX = LEG_SECTIONS[0][1] / 2 + 0.1; // along the bridge
+const FOOTING_RZ = LEG_INNER + LEG_SECTIONS[0][0] + 0.1; // across it
+/** Height of the sloped ledge where a leg steps in. */
+const LEDGE_H = 0.06;
+/**
+ * The cables ride right over the middle of each leg top, in the saddle under
+ * the cap's hood, as on the real towers. That puts them a little outboard of
+ * the deck edge, where a stiffening truss down each side takes the hangers.
+ */
+const CABLE_Z = LEG_INNER + LEG_SECTIONS[LEG_SECTIONS.length - 1][0] / 2;
+/** Cap proportions: a cornice on the leg top, then the rounded saddle hood. */
+const CAP_CORNICE_H = 0.06;
+const CAP_HOOD_H = 0.13;
+
+/**
+ * Asphalt and lane paint laid on top of the deck. The dashes are one instanced
+ * mesh: four lines of them run the full corner-to-corner span, which is ~140
+ * boxes that would otherwise each be a draw call.
+ */
+function Roadway({ style, deckTop }: { style: SFStyle; deckTop: number }) {
+  const mat = useMat();
+  const dashes = useRef<THREE.InstancedMesh>(null);
+  const paintY = deckTop + 0.024;
+
+  const lane = LANE_W / LANE_COUNT;
+  // Dividers between lanes, skipping the centreline, which is drawn solid.
+  const dashedZ = [-2, -1, 1, 2].map((k) => k * lane);
+  const perLine = Math.floor(DECK_LEN / (DASH + DASH_GAP));
+
+  useLayoutEffect(() => {
+    const m = dashes.current;
+    if (!m) return;
+    const o = new THREE.Object3D();
+    let i = 0;
+    for (const z of dashedZ) {
+      for (let k = 0; k < perLine; k++) {
+        o.position.set(-DECK_LEN / 2 + (k + 0.5) * (DASH + DASH_GAP), paintY, z);
+        o.updateMatrix();
+        m.setMatrixAt(i++, o.matrix);
+      }
+    }
+    m.instanceMatrix.needsUpdate = true;
+  });
+
+  return (
+    <>
+      <mesh position={[0, deckTop + 0.01, 0]} receiveShadow={style.shadows} material={mat(style.asphalt)}>
+        <boxGeometry args={[DECK_LEN - 0.02, 0.02, LANE_W]} />
+      </mesh>
+      {/* Centre divider: two thin lines, so it reads as the median at a glance. */}
+      {[-0.012, 0.012].map((z) => (
+        <mesh key={z} position={[0, paintY, z]} material={mat(style.trim)}>
+          <boxGeometry args={[DECK_LEN - 0.02, 0.006, 0.01]} />
+        </mesh>
+      ))}
+      <instancedMesh
+        ref={dashes}
+        args={[undefined, mat(style.trim), dashedZ.length * perLine]}
+      >
+        <boxGeometry args={[DASH, 0.006, 0.012]} />
+      </instancedMesh>
+    </>
+  );
+}
+
+
+/**
+ * Heights of the four portal struts' top edges, as fractions of the tower
+ * above the deck (0 = roadway, 1 = leg top), lowest first. Read top-down, the
+ * two upper gaps are equal and the two lower gaps — between the bottom pair,
+ * and from the lowest strut down to the roadway — are equal and taller, so the
+ * openings open up toward the traffic.
+ */
+const PORTAL_FRACTIONS = (() => {
+  const top = 0.96;
+  const ratio = 1.3; // lower gap ÷ upper gap
+  const upper = top / (2 + 2 * ratio);
+  const lower = upper * ratio;
+  return [lower, 2 * lower, 2 * lower + upper, top];
+})();
+
+/**
+ * One portal strut, seen face-on: a solid panel between the legs whose edges
+ * step twice where they meet each leg. The steps under a strut clip the top
+ * corners of the opening below it, and the steps on top clip the bottom
+ * corners of the opening above, so every opening gets the stepped Art Deco
+ * corners the real towers have. Built in the tower's cross-section plane
+ * (x across the bridge, y up) with its top edge at y = 0, then extruded along
+ * the bridge by `thickness`.
+ */
+function portalStrut(
+  height: number,
+  thickness: number,
+  topKnees: boolean,
+): THREE.ExtrudeGeometry {
+  // Runs a little into each leg so there's no seam at the inner face.
+  const W = LEG_INNER + 0.05;
+  const knees = [
+    { reach: 0.14, rise: 0.04 }, // outer knee, reaching further into the opening
+    { reach: 0.07, rise: 0.04 }, // inner knee, tucked against the leg
+  ];
+  // The right half's outline, walked clockwise from the top of the knees.
+  const half: Array<[number, number]> = [];
+  let top = 0;
+  if (topKnees) {
+    for (const k of knees) {
+      half.push([LEG_INNER - k.reach, top]);
+      top += k.rise;
+      half.push([LEG_INNER - k.reach, top]);
+    }
+  }
+  half.push([W, top]);
+  let bottom = -height;
+  const under: Array<[number, number]> = [];
+  for (const k of knees) {
+    under.push([LEG_INNER - k.reach, bottom]);
+    bottom -= k.rise;
+    under.push([LEG_INNER - k.reach, bottom]);
+  }
+  half.push([W, bottom], ...under.reverse());
+
+  const shape = new THREE.Shape();
+  shape.moveTo(-half[0][0], half[0][1]);
+  half.forEach(([x, y]) => shape.lineTo(x, y));
+  [...half].reverse().forEach(([x, y]) => shape.lineTo(-x, y));
+  shape.closePath();
+
+  const g = new THREE.ExtrudeGeometry(shape, { depth: thickness, bevelEnabled: false });
+  g.translate(0, 0, -thickness / 2);
+  return g;
+}
+
+/**
+ * A rectangular leg piece whose inner face sits on z = 0 and whose body
+ * extends toward +z. Its section goes from [across0, along0] at the bottom to
+ * [across1, along1] at the top: equal for a straight run, smaller for the
+ * sloped ledge at a setback. The far leg uses the same geometry turned half a
+ * revolution, which keeps the faces pointing outward (a mirror would not).
+ */
+function legPiece(
+  [across0, along0]: [number, number],
+  [across1, along1]: [number, number],
+  height: number,
+): THREE.BufferGeometry {
+  const g = new THREE.BoxGeometry(1, 1, 1);
+  g.translate(0, 0.5, 0.5);
+  const pos = g.attributes.position;
+  for (let i = 0; i < pos.count; i++) {
+    const t = pos.getY(i);
+    pos.setXYZ(
+      i,
+      pos.getX(i) * THREE.MathUtils.lerp(along0, along1, t),
+      t * height,
+      pos.getZ(i) * THREE.MathUtils.lerp(across0, across1, t),
+    );
+  }
+  g.computeVertexNormals();
+  return g;
+}
+
+/**
+ * The cap on each leg, after the real towers: a cornice slightly proud of the
+ * leg, then a rounded saddle hood arching along the bridge (the main cable
+ * runs into it over the crown), and a small square turret on top with a
+ * railed platform. Sits in the leg's frame (inner face on z = 0, body toward
+ * +z).
+ */
+function LegCap({ top, style }: { top: number; style: SFStyle }) {
+  const mat = useMat();
+  const orange = mat(style.orange);
+  const [across, along] = LEG_SECTIONS[LEG_SECTIONS.length - 1];
+  const cz = across / 2;
+  const hoodY = top + CAP_CORNICE_H;
+  const turretH = 0.09;
+  const turretY = hoodY + CAP_HOOD_H * 0.85;
+  return (
+    <group position={[0, 0, cz]}>
+      <mesh position={[0, top + CAP_CORNICE_H / 2, 0]} castShadow={style.shadows} material={orange}>
+        <boxGeometry args={[along + 0.03, CAP_CORNICE_H, across + 0.03]} />
+      </mesh>
+      {/* Half a cylinder lying across the bridge, squashed into a low arch:
+          its curve runs the way the cable does. */}
+      <group position={[0, hoodY, 0]} scale={[1, CAP_HOOD_H / (along / 2), 1]}>
+        <mesh rotation={[Math.PI / 2, 0, 0]} castShadow={style.shadows} material={orange}>
+          <cylinderGeometry
+            args={[along / 2 + 0.01, along / 2 + 0.01, across + 0.01, style.rounded ? 20 : 8, 1, false, Math.PI / 2, Math.PI]}
+          />
+        </mesh>
+      </group>
+      <mesh position={[0, turretY + turretH / 2, 0]} castShadow={style.shadows} material={orange}>
+        <boxGeometry args={[along * 0.3, turretH, across * 0.42]} />
+      </mesh>
+      <mesh position={[0, turretY + turretH + 0.012, 0]} material={orange}>
+        <boxGeometry args={[along * 0.42, 0.024, across * 0.56]} />
+      </mesh>
+    </group>
+  );
+}
+
 function GoldenGate({ style }: { style: SFStyle }) {
   const mat = useMat();
   const orange = mat(style.orange);
 
   const deckY = 1.3;
-  const towerH = 3.6;
+  const deckTop = deckY + 0.085;
+  // The one proportion kept true to life: the real deck is 90 ft wide and the
+  // towers rise 500 ft above it. Squash them and it stops reading as this
+  // bridge — they are why it's on every postcard.
+  const legTop = deckTop + DECK_W * (500 / 90);
+  // The cable crests on the saddle, just under the crown of the cap's hood.
+  const towerH = legTop + CAP_CORNICE_H + CAP_HOOD_H * 0.8;
   const towerX = useMemo(() => [-TOWER_D, TOWER_D], []);
 
   // Main cable: tower top, dipping to just above the deck mid-span, back up,
-  // then down to an anchorage on each shore. The dip is the silhouette.
+  // then down to an anchorage at each end of the deck. The dip is the
+  // silhouette. The ends land on the rail tops at the block's corners, so the
+  // cable runs the bridge's full length instead of stopping short.
   const cable = useMemo(() => {
+    const anchorY = deckY + 0.2;
     const c = new THREE.CatmullRomCurve3([
-      new THREE.Vector3(-TOWER_D - 2.0, deckY + 0.35, 0),
+      new THREE.Vector3(-DECK_LEN / 2, anchorY, 0),
       new THREE.Vector3(towerX[0], towerH, 0),
       new THREE.Vector3(0, deckY + 0.72, 0),
       new THREE.Vector3(towerX[1], towerH, 0),
-      new THREE.Vector3(TOWER_D + 2.0, deckY + 0.35, 0),
+      new THREE.Vector3(DECK_LEN / 2, anchorY, 0),
     ]);
     c.curveType = "catmullrom";
     c.tension = 0.4;
     return c;
-  }, [towerX]);
+  }, [towerX, towerH]);
 
   const hangers = useMemo(() => {
     const out: Array<{ x: number; top: number }> = [];
-    for (let i = 0; i <= 26; i++) {
-      const pt = cable.getPoint(i / 26);
-      if (pt.x < towerX[0] + 0.25 || pt.x > towerX[1] - 0.25) continue;
+    // Hangers on the side spans too, now the cable runs out over them; only
+    // the stretch right beside each tower is left clear.
+    for (let i = 0; i <= 52; i++) {
+      const pt = cable.getPoint(i / 52);
+      if (towerX.some((x) => Math.abs(pt.x - x) < 0.25)) continue;
       if (pt.y - deckY < 0.2) continue;
       out.push({ x: pt.x, top: pt.y });
     }
     return out;
   }, [cable, towerX]);
 
-  // Real towers step back in stages on the way up. Three frustums per leg is
-  // what keeps them from reading as plain posts.
-  const legSegments = [
-    { y: CUBE.landTop, h: 2.2, rb: 0.19, rt: 0.145 },
-    { y: CUBE.landTop + 2.2, h: 0.8, rb: 0.145, rt: 0.12 },
-    { y: CUBE.landTop + 3.0, h: 0.8, rb: 0.12, rt: 0.1 },
-  ];
+  // Real towers step back in stages on the way up, each setback just above a
+  // strut. Every section is a straight run topped by a sloped ledge into the
+  // next, narrower one; the last runs to the leg top.
+  const tower = useMemo(() => {
+    const strutY = PORTAL_FRACTIONS.map((f) => deckTop + f * (legTop - deckTop));
+    const breaks = [CUBE.landTop, strutY[0], strutY[1], strutY[2], legTop];
+    const pieces: Array<{ y: number; geometry: THREE.BufferGeometry }> = [];
+    const ribs: Array<{ pos: [number, number, number]; size: [number, number, number] }> = [];
+    LEG_SECTIONS.forEach((sec, i) => {
+      const next = LEG_SECTIONS[i + 1];
+      const y0 = breaks[i];
+      const runH = breaks[i + 1] - y0 - (next ? LEDGE_H : 0);
+      pieces.push({ y: y0, geometry: legPiece(sec, sec, runH) });
+      if (next) pieces.push({ y: y0 + runH, geometry: legPiece(sec, next, LEDGE_H) });
 
-  // Approach viaduct: the deck crosses both triangles of city on its way to
-  // the corners, so it needs piers standing on land the whole way out.
-  const piers = [3.5, 4.7, 5.8].flatMap((d) => [-d, d]);
-  const pierH = deckY - 0.2 - CUBE.landTop;
+      // Fluting: raised ribs on the faces leave channels between them that
+      // catch shadow, which is what the real towers' vertical grooves read as
+      // from any distance. Two on each face along the bridge, one outboard.
+      const [across, along] = sec;
+      const ribH = runH - 0.06;
+      const ribY = y0 + runH / 2;
+      for (const sx of [-1, 1]) {
+        for (const f of [0.33, 0.67]) {
+          ribs.push({
+            pos: [sx * (along / 2 + 0.006), ribY, f * across],
+            size: [0.012, ribH, 0.026],
+          });
+        }
+      }
+      ribs.push({ pos: [0, ribY, across + 0.006], size: [0.03, ribH, 0.012] });
+    });
+
+    const strutDepth = LEG_SECTIONS[LEG_SECTIONS.length - 1][1] * 0.8;
+    const struts = strutY.map((y, k) => {
+      const isTop = k === strutY.length - 1;
+      const height = isTop ? 0.22 : 0.14;
+      return { y, height, geometry: portalStrut(height, strutDepth, !isTop) };
+    });
+    // Below the deck the legs are tied by a single X panel, with a horizontal
+    // tie above and below it. Everything sits in the tower's mid-plane, the
+    // full width between the legs' inner faces, and stops short of the footing.
+    const braceTop = deckY - 0.26; // just under the deck's lower chord
+    const braceBottom = CUBE.landTop + FOOTING_H + 0.06;
+    const panels = 1;
+    const panelH = (braceTop - braceBottom) / panels;
+    const span = LEG_INNER * 2;
+    const ties = Array.from({ length: panels + 1 }, (_, k) => braceBottom + k * panelH);
+    const diagonals = Array.from({ length: panels }, (_, k) => ({
+      y: braceBottom + (k + 0.5) * panelH,
+      length: Math.hypot(span, panelH),
+      angle: Math.atan2(panelH, span),
+    }));
+
+    return { pieces, ribs, struts, strutDepth, ties, diagonals };
+  }, [deckY, deckTop, legTop]);
+  useEffect(
+    () => () => {
+      tower.pieces.forEach((p) => p.geometry.dispose());
+      tower.struts.forEach((st) => st.geometry.dispose());
+    },
+    [tower],
+  );
 
   return (
-    <group rotation={[0, BRIDGE_ROT, 0]}>
+    <group rotation={[0, BRIDGE_ROT, 0]} scale={BRIDGE_SCALE}>
       {/* Roadway, corner to corner, with a raised rail down each side. */}
       <mesh position={[0, deckY, 0]} castShadow={style.shadows} material={orange}>
-        <boxGeometry args={[BRIDGE_LEN, 0.17, 0.92]} />
+        <boxGeometry args={[DECK_LEN, 0.17, DECK_W]} />
         {style.outline && <Edges color={style.outline} threshold={15} />}
       </mesh>
+      <Roadway style={style} deckTop={deckTop} />
       {[-0.43, 0.43].map((z) => (
         <mesh key={z} position={[0, deckY + 0.15, z]} material={orange} castShadow={false}>
-          <boxGeometry args={[BRIDGE_LEN, 0.13, 0.05]} />
+          <boxGeometry args={[DECK_LEN, 0.13, 0.05]} />
+        </mesh>
+      ))}
+      {/* Stiffening trusses down each side, under the cables, which the
+          hangers land on. They run straight through the tower legs. */}
+      {[-CABLE_Z, CABLE_Z].map((z) => (
+        <mesh key={`st${z}`} position={[0, deckY - 0.02, z]} castShadow={style.shadows} material={orange}>
+          <boxGeometry args={[DECK_LEN, 0.22, 0.05]} />
         </mesh>
       ))}
       <mesh position={[0, deckY - 0.15, 0]} material={orange} castShadow={false}>
-        <boxGeometry args={[BRIDGE_LEN, 0.13, 0.48]} />
+        <boxGeometry args={[DECK_LEN, 0.13, 0.48]} />
       </mesh>
-
-      {piers.map((x) =>
-        [-0.3, 0.3].map((z) => (
-          <mesh
-            key={`${x}-${z}`}
-            position={[x, CUBE.landTop + pierH / 2, z]}
-            castShadow={style.shadows}
-            material={orange}
-          >
-            <boxGeometry args={[0.16, pierH, 0.16]} />
-          </mesh>
-        )),
-      )}
 
       {towerX.map((x, i) => (
         <group key={i} position={[x, 0, 0]}>
-          {[-0.34, 0.34].map((z) =>
-            legSegments.map((seg, k) => (
+          {/* Two legs: the near one as built, the far one turned half a
+              revolution so its inner face also lands on the deck edge. */}
+          {[0, Math.PI].map((turn) => (
+            <group key={turn} rotation={[0, turn, 0]}>
+              <group position={[0, 0, LEG_INNER]}>
+                {tower.pieces.map((p, k) => (
+                  <mesh
+                    key={k}
+                    position={[0, p.y, 0]}
+                    geometry={p.geometry}
+                    castShadow={style.shadows}
+                    material={orange}
+                  />
+                ))}
+                {tower.ribs.map((r, k) => (
+                  <mesh key={`r${k}`} position={r.pos} material={orange}>
+                    <boxGeometry args={r.size} />
+                  </mesh>
+                ))}
+                <LegCap top={legTop} style={style} />
+              </group>
+            </group>
+          ))}
+          <mesh
+            position={[0, CUBE.landTop + FOOTING_H / 2, 0]}
+            scale={[FOOTING_RX, 1, FOOTING_RZ]}
+            castShadow={style.shadows}
+            receiveShadow={style.shadows}
+            material={mat(style.concrete)}
+          >
+            <cylinderGeometry args={[1, 1, FOOTING_H, style.rounded ? 32 : 12]} />
+          </mesh>
+          {/* Under-deck bracing, as on the real towers: an X between the
+              legs from the deck down to the footing. */}
+          {tower.ties.map((y, k) => (
+            <mesh key={`t${k}`} position={[0, y, 0]} castShadow={style.shadows} material={orange}>
+              <boxGeometry args={[tower.strutDepth, 0.07, LEG_INNER * 2]} />
+            </mesh>
+          ))}
+          {tower.diagonals.flatMap((d, k) =>
+            [-1, 1].map((dir) => (
               <mesh
-                key={`${z}-${k}`}
-                position={[0, seg.y + seg.h / 2, z]}
+                key={`d${k}${dir}`}
+                position={[0, d.y, 0]}
+                rotation={[dir * d.angle, 0, 0]}
                 castShadow={style.shadows}
                 material={orange}
               >
-                <cylinderGeometry args={[seg.rt, seg.rb, seg.h, style.rounded ? 10 : 4]} />
+                <boxGeometry args={[tower.strutDepth * 0.7, 0.05, d.length]} />
               </mesh>
             )),
           )}
-          {/* Portal bracing. The stacked crossbeams are the Art Deco tell that
-              separates this bridge from every other suspension bridge. */}
-          {[deckY + 0.55, deckY + 1.35, towerH - 0.55, towerH - 0.14].map((y, k) => (
-            <mesh key={k} position={[0, y, 0]} castShadow={style.shadows} material={orange}>
-              <boxGeometry args={[0.2, 0.15, 0.78 - k * 0.05]} />
-            </mesh>
+          {/* Portal bracing. The stacked struts are the Art Deco tell that
+              separates this bridge from every other suspension bridge. Each is
+              a solid panel; a raised lip along its top and bottom edges on
+              both faces leaves the middle reading as a recessed panel. */}
+          {tower.struts.map((st, k) => (
+            <group key={k} position={[0, st.y, 0]}>
+              <mesh
+                rotation={[0, Math.PI / 2, 0]}
+                castShadow={style.shadows}
+                geometry={st.geometry}
+                material={orange}
+              />
+              {[-1, 1].flatMap((sx) =>
+                [-0.015, -st.height + 0.015].map((dy) => (
+                  <mesh
+                    key={`${sx}${dy}`}
+                    position={[sx * (tower.strutDepth / 2 + 0.006), dy, 0]}
+                    material={orange}
+                  >
+                    <boxGeometry args={[0.012, 0.03, LEG_INNER * 2]} />
+                  </mesh>
+                )),
+              )}
+            </group>
           ))}
         </group>
       ))}
 
-      {[-0.38, 0.38].map((z) => (
+      {[-CABLE_Z, CABLE_Z].map((z) => (
         <mesh key={z} position={[0, 0, z]} castShadow={style.shadows} material={orange}>
-          <tubeGeometry args={[cable, 44, 0.05, style.rounded ? 7 : 4, false]} />
+          <tubeGeometry args={[cable, 44, 0.028, style.rounded ? 7 : 4, false]} />
         </mesh>
       ))}
 
       {hangers.map((hg, i) =>
-        [-0.38, 0.38].map((z) => (
+        [-CABLE_Z, CABLE_Z].map((z) => (
           <mesh key={`${i}-${z}`} position={[hg.x, (hg.top + deckY) / 2, z]} material={orange}>
-            <boxGeometry args={[0.032, hg.top - deckY, 0.032]} />
+            <boxGeometry args={[0.016, hg.top - deckY, 0.016]} />
           </mesh>
         )),
       )}

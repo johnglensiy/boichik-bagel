@@ -19,6 +19,7 @@ export interface SFStyle {
   glass: string; // Salesforce and the filler towers
   orange: string; // Golden Gate. The one color SF doesn't let you reinterpret.
   road: string;
+  asphalt: string; // the bridge roadway — grey even where the city's streets are sand
   window: string; // glazing, doorways, the dark holes that give a facade scale
   trim: string; // cornices, roof edges, railings
   metal: string; // lamp posts, the cable car's pole, the lighthouse cap
@@ -60,6 +61,7 @@ export const SF_STYLES: Record<SFStyleId, SFStyle> = {
     glass: "#9fb4c2",
     orange: "#c8502f",
     road: "#cfc3ad",
+    asphalt: "#8d8b86",
     window: "#6e7b85",
     trim: "#efe7d7",
     metal: "#8e8375",
@@ -101,6 +103,7 @@ export const SF_STYLES: Record<SFStyleId, SFStyle> = {
     glass: "#b9c8d2",
     orange: "#cc5c36",
     road: "#d4c7ab",
+    asphalt: "#a19e97",
     window: "#93a1a9",
     trim: "#fbf6ea",
     metal: "#a2957f",
@@ -142,6 +145,7 @@ export const SF_STYLES: Record<SFStyleId, SFStyle> = {
     glass: "#dfe2e3",
     orange: "#c2451f",
     road: "#d8d4cb",
+    asphalt: "#aeb0b1",
     window: "#c6cacc",
     trim: "#f5f2ec",
     metal: "#bfbab1",
@@ -183,6 +187,7 @@ export const SF_STYLES: Record<SFStyleId, SFStyle> = {
     glass: "#8fa9bc",
     orange: "#d1532c",
     road: "#ddd0b6",
+    asphalt: "#868d96",
     window: "#5d7f99",
     trim: "#fbf7ee",
     metal: "#8fa9bc",
