@@ -4,7 +4,9 @@ import { Suspense, useEffect, useRef, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { ContactShadows, OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
-import SFScene, { SF_GROUND_Y } from "./SFScene";
+import SFScene, { SF_GROUND_Y, landmarkProblems } from "./SFScene";
+import { LANDMARKS } from "./landmarks";
+import { SAVED_LAYOUT, type Layout } from "./layout";
 import { SF_STYLES, type SFStyleId } from "./styles";
 
 /** The cube spans y −3.4…+5.5, so this drops its centre onto the orbit target. */
@@ -36,9 +38,21 @@ interface SFDioramaProps {
   className?: string;
   /** Pauses the turntable without unmounting — for when the hero scrolls away. */
   paused?: boolean;
+  /** Where the landmarks stand; the saved layout when not given. */
+  layout?: Layout;
+  /** Edit mode: landmarks drag across the block and show their footprints. */
+  editing?: boolean;
+  onMove?: (id: string, at: { u: number; v: number }) => void;
 }
 
-export default function SFDiorama({ styleId, className, paused = false }: SFDioramaProps) {
+export default function SFDiorama({
+  styleId,
+  className,
+  paused = false,
+  layout = SAVED_LAYOUT,
+  editing = false,
+  onMove,
+}: SFDioramaProps) {
   const style = SF_STYLES[styleId];
   const spin = useRef<THREE.Group | null>(null);
   const [grabbed, setGrabbed] = useState(false);
@@ -75,7 +89,8 @@ export default function SFDiorama({ styleId, className, paused = false }: SFDior
     return () => mq.removeEventListener("change", sync);
   }, []);
 
-  const spinning = !grabbed && !paused && !reduced;
+  // A model turning under the cursor can't be arranged, so editing stops it.
+  const spinning = !grabbed && !paused && !reduced && !editing;
 
   return (
     <div
@@ -120,7 +135,7 @@ export default function SFDiorama({ styleId, className, paused = false }: SFDior
               dead-on is static. Turned the other way it foreshortens into a
               red gantry and stops reading as a bridge at all. */}
           <group ref={spin} position={[0, CITY_OFFSET_Y, 0]} rotation={[0, 1.35, 0]}>
-            <SFScene style={style} />
+            <SFScene style={style} layout={layout} editing={editing} onMove={onMove} />
             {style.shadows && (
               <ContactShadows
                 position={[0, SF_GROUND_Y - 0.02, 0]}
@@ -143,6 +158,9 @@ export default function SFDiorama({ styleId, className, paused = false }: SFDior
           // reflex doesn't throw the city out of view; two-finger touch still
           // pans on phones.
           enablePan
+          // Registered as the scene's controls so a landmark drag can pause
+          // them; otherwise the camera would orbit under the drag.
+          makeDefault
           screenSpacePanning
           mouseButtons={{ LEFT: THREE.MOUSE.ROTATE, MIDDLE: THREE.MOUSE.DOLLY, RIGHT: undefined }}
           // Scroll to inspect. The camera opens ~22.6 out; the floor stops it
@@ -162,6 +180,42 @@ export default function SFDiorama({ styleId, className, paused = false }: SFDior
           enableDamping
         />
       </Canvas>
+
+      {/* While arranging, name anything standing where it can't: in the
+          roadway or hanging off the block. Its footprint shows red too. */}
+      {editing && (
+        <div
+          style={{
+            position: "absolute",
+            top: 12,
+            left: 12,
+            zIndex: 1,
+            maxWidth: 260,
+            padding: "7px 10px",
+            borderRadius: 9,
+            background: "rgba(255,255,255,0.78)",
+            backdropFilter: "blur(6px)",
+            font: "11px/1.5 ui-monospace, monospace",
+            color: "#5d554a",
+            pointerEvents: "none",
+          }}
+        >
+          {(() => {
+            const bad = LANDMARKS.flatMap((def) =>
+              landmarkProblems(def, layout).map((p) => `${def.label}: ${p}`),
+            );
+            return bad.length ? (
+              bad.map((line) => (
+                <div key={line} style={{ color: "#b2392f" }}>
+                  {line}
+                </div>
+              ))
+            ) : (
+              <div>every landmark is clear</div>
+            );
+          })()}
+        </div>
+      )}
 
       {canFullscreen && (
         <button

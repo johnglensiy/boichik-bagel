@@ -1,7 +1,8 @@
 "use client";
 
 import { MaterialProvider } from "./core/materials";
-import { CUBE, spotProblems, uv } from "./core/space";
+import { spotProblems } from "./core/space";
+import { DraggableLandmark } from "./DraggableLandmark";
 import { LANDMARKS, type LandmarkDef } from "./landmarks";
 import { GoldenGate } from "./landmarks/golden-gate/GoldenGate";
 import { Skyline } from "./landmarks/Skyline";
@@ -31,7 +32,7 @@ export { SF_GROUND_Y } from "./core/space";
  *
  * Each landmark is its own module under landmarks/. The bridge, filler skyline
  * and terrain are fixed; the landmarks in LANDMARKS stand wherever the layout
- * puts them.
+ * puts them and can be dragged in edit mode.
  */
 
 /** Placement problems for one landmark at its layout spot. */
@@ -52,9 +53,16 @@ if (process.env.NODE_ENV !== "production") {
 interface SFSceneProps {
   style: SFStyle;
   layout?: Layout;
+  editing?: boolean;
+  onMove?: (id: string, at: { u: number; v: number }) => void;
 }
 
-export default function SFScene({ style, layout = SAVED_LAYOUT }: SFSceneProps) {
+export default function SFScene({
+  style,
+  layout = SAVED_LAYOUT,
+  editing = false,
+  onMove,
+}: SFSceneProps) {
   return (
     <MaterialProvider style={style}>
       <Terrain style={style} />
@@ -64,11 +72,17 @@ export default function SFScene({ style, layout = SAVED_LAYOUT }: SFSceneProps) 
       {LANDMARKS.map((def) => {
         const at = layout[def.id];
         if (!at) return null;
-        const [x, z] = uv(at.u, at.v);
         return (
-          <group key={def.id} position={[x, CUBE.landTop + (def.lift ?? 0), z]}>
+          <DraggableLandmark
+            key={def.id}
+            def={def}
+            at={at}
+            editing={editing}
+            problems={landmarkProblems(def, layout)}
+            onMove={(id, next) => onMove?.(id, next)}
+          >
             <def.Model style={style} />
-          </group>
+          </DraggableLandmark>
         );
       })}
       <GoldenGate style={style} />

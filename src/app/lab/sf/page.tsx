@@ -4,6 +4,11 @@ import { useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { SF_STYLES, SF_STYLE_ORDER, type SFStyleId } from "@/components/sf/styles";
+import { SAVED_LAYOUT, type Layout } from "@/components/sf/layout";
+
+// Arranging the city writes layout.json in the source tree, which only the dev
+// server can do, so the editor only exists there.
+const CAN_EDIT = process.env.NODE_ENV === "development";
 
 // three + drei are ~170kb gzipped. Kept out of the first load so the page
 // paints on the server render and the canvas arrives after.
@@ -19,6 +24,34 @@ const SFDiorama = dynamic(() => import("@/components/sf/SFDiorama"), {
 export default function SFLabPage() {
   const [styleId, setStyleId] = useState<SFStyleId>("clay");
   const style = SF_STYLES[styleId];
+  const [layout, setLayout] = useState<Layout>(SAVED_LAYOUT);
+  const [saved, setSaved] = useState<Layout>(SAVED_LAYOUT);
+  const [editing, setEditing] = useState(false);
+  const [status, setStatus] = useState<string | null>(null);
+  const dirty = JSON.stringify(layout) !== JSON.stringify(saved);
+
+  const move = (id: string, at: { u: number; v: number }) => {
+    setLayout((l) => ({ ...l, [id]: at }));
+    setStatus(null);
+  };
+
+  const save = async () => {
+    setStatus("saving…");
+    try {
+      const res = await fetch("/api/sf-layout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(layout),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? res.statusText);
+      setLayout(data.layout);
+      setSaved(data.layout);
+      setStatus("saved to layout.json");
+    } catch (err) {
+      setStatus(`not saved: ${err instanceof Error ? err.message : String(err)}`);
+    }
+  };
 
   return (
     <main className="min-h-screen bg-[#f7f3ec] px-[clamp(24px,5vw,72px)] py-[clamp(28px,5vh,56px)]">
@@ -41,8 +74,50 @@ export default function SFLabPage() {
           <SFDiorama
             styleId={styleId}
             className="w-full h-[clamp(420px,64vh,620px)]"
+            layout={layout}
+            editing={editing}
+            onMove={move}
           />
         </div>
+
+        {CAN_EDIT && (
+          <div className="mt-3 flex flex-wrap items-center gap-2 text-[12px] font-grotesk">
+            <button
+              type="button"
+              onClick={() => setEditing((e) => !e)}
+              aria-pressed={editing}
+              className={`rounded-[9px] px-3 py-1.5 border cursor-pointer ${
+                editing
+                  ? "bg-[#efe6d5] border-[#c47b52] text-[#33302a]"
+                  : "bg-[#f4efe7] border-[#e2dbcc] text-[#5d554a] hover:bg-[#efe9dd]"
+              }`}
+            >
+              {editing ? "Done arranging" : "Arrange landmarks"}
+            </button>
+            <button
+              type="button"
+              onClick={save}
+              disabled={!dirty}
+              className="rounded-[9px] px-3 py-1.5 border border-[#e2dbcc] bg-[#f4efe7] text-[#5d554a] enabled:hover:bg-[#efe9dd] enabled:cursor-pointer disabled:opacity-45"
+            >
+              Save layout
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setLayout(saved);
+                setStatus(null);
+              }}
+              disabled={!dirty}
+              className="rounded-[9px] px-3 py-1.5 border border-[#e2dbcc] bg-[#f4efe7] text-[#5d554a] enabled:hover:bg-[#efe9dd] enabled:cursor-pointer disabled:opacity-45"
+            >
+              Revert
+            </button>
+            <span className="text-[11px] font-plex-mono text-[#b3a794]">
+              {status ?? (editing ? "drag a landmark to move it · dev only" : dirty ? "unsaved changes" : "")}
+            </span>
+          </div>
+        )}
 
         {/* Style switcher. Swatches rather than labels alone — the decision
             being made is a visual one. */}
