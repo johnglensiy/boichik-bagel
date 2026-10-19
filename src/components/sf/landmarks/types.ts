@@ -15,7 +15,5 @@ export interface LandmarkDef {
    * stay on the block). The long buildings run along the bridge.
    */
   footprint: { across: number; along: number };
-  /** Height above the land — Coit stands on its hill, the cable car on a rise. */
-  lift?: number;
   Model: ComponentType<{ style: SFStyle }>;
 }

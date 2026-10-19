@@ -44,6 +44,41 @@ export function toUV(x: number, z: number): [number, number] {
   return [(x + z) / Math.SQRT2, (z - x) / Math.SQRT2];
 }
 
+/**
+ * Two hills on opposite corners of the block, the two off the bridge's
+ * default line, so the towers' footings stay on the flat. Each peaks exactly
+ * on its corner, so the block holds a quarter of it, cut off like the cube was
+ * sliced out of a hillside: the sides rise to meet it and show its profile.
+ * They rise out of the plain with no edge, to a broad rounded crown rather
+ * than a bell's point, which on a corner reads as a spike. In bridge-space,
+ * u = 0 along the far diagonal.
+ *
+ * - Lombard Street's, Russian Hill, the taller.
+ * - Coit Tower's, Telegraph Hill.
+ */
+const APEX = CUBE.half * Math.SQRT2;
+const HILLS: Array<{ u: number; v: number; spread: number; height: number }> = [
+  { u: 0, v: APEX, spread: 1.6, height: 2.4 },
+  { u: 0, v: -APEX, spread: 1.45, height: 2.0 },
+];
+
+/**
+ * Height of the land above CUBE.landTop at the city's local (x, z). The hills
+ * run to the block's edge, where its sides rise to meet them.
+ */
+export function groundHeight(x: number, z: number): number {
+  const [u, v] = toUV(x, z);
+  let h = 0;
+  for (const hill of HILLS) {
+    const d2 = (u - hill.u) ** 2 + (v - hill.v) ** 2;
+    // A bell's exponent squared: nearly level for a good way out from the
+    // peak, then a steeper shoulder down to the plain.
+    const k = d2 / (2 * hill.spread * hill.spread);
+    h += hill.height * Math.exp(-k * k);
+  }
+  return h;
+}
+
 export interface Spot {
   u: number;
   v: number;

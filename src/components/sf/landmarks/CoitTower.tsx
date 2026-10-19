@@ -10,7 +10,6 @@ function CoitTower({ style }: { style: SFStyle }) {
   const mat = useMat();
   const seg = style.rounded ? 20 : 8;
   const shaftH = 2.15;
-  // Up on the west hill, which is why a stubby concrete cylinder reads as tall.
   return (
     <group>
       <mesh position={[0, 0.16, 0]} castShadow={style.shadows} material={mat(style.concrete)}>
@@ -47,6 +46,5 @@ export const coit: LandmarkDef = {
   id: "coit",
   label: "Coit Tower",
   footprint: { across: 0.7, along: 0.7 },
-  lift: 1.09,
   Model: CoitTower,
 };

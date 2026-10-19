@@ -7,8 +7,6 @@ import { DraggableLandmark } from "./DraggableLandmark";
 import { LANDMARKS, goldenGate, type LandmarkDef } from "./landmarks";
 import { SAVED_LAYOUT, type Layout, type Placement } from "./layout";
 import type { SFStyle } from "./styles";
-import { Hills } from "./terrain/Hills";
-import { Streets } from "./terrain/Streets";
 import { Terrain } from "./terrain/Terrain";
 
 export { SF_GROUND_Y } from "./core/space";
@@ -92,16 +90,7 @@ export default function SFScene({
     () => Object.fromEntries(LANDMARKS.map((def) => [def.id, <def.Model key={def.id} style={style} />])),
     [style],
   );
-  const ground = useMemo(
-    () => (
-      <>
-        <Terrain style={style} />
-        <Hills style={style} />
-        <Streets style={style} />
-      </>
-    ),
-    [style],
-  );
+  const ground = useMemo(() => <Terrain style={style} />, [style]);
   return (
     <MaterialProvider style={style}>
       {ground}

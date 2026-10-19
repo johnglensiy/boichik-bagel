@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import * as THREE from "three";
 import { useThree, type ThreeEvent } from "@react-three/fiber";
-import { CUBE, toUV, uv } from "./core/space";
+import { GroundUnderContext, type GroundUnder } from "./core/ground";
+import { CUBE, groundHeight, toUV, uv } from "./core/space";
 import type { LandmarkDef } from "./landmarks";
 import { normalizeScale, normalizeTurn, type Placement } from "./layout";
 
@@ -182,6 +183,39 @@ export function DraggableLandmark({
 
   const across = def.footprint.across * scale;
   const along = def.footprint.along * scale;
+  // Stand on the land, hills included: the lowest of the ground under its
+  // centre and halfway to each corner. Lowest, so on a slope it never floats;
+  // its uphill side sits into the hill instead, the way buildings are cut in.
+  // The footprint runs at 45° to the model's own axes, then turns with it.
+  const base = useMemo(() => {
+    const t = turn / DEG - Math.PI / 4;
+    const c = Math.cos(t);
+    const s = Math.sin(t);
+    let low = groundHeight(x, z);
+    for (const [a, b] of [
+      [1, 1],
+      [1, -1],
+      [-1, 1],
+      [-1, -1],
+    ]) {
+      const px = (a * along) / 2;
+      const pz = (b * across) / 2;
+      low = Math.min(low, groundHeight(x + px * c + pz * s, z - px * s + pz * c));
+    }
+    return low;
+  }, [x, z, turn, along, across]);
+  // For models that lie along the land: the ground under a point of the
+  // model, in its own scaled, turned frame, measured from that base.
+  const groundUnder = useMemo<GroundUnder>(() => {
+    const t = turn / DEG;
+    const c = Math.cos(t);
+    const s = Math.sin(t);
+    return (lx, lz) => {
+      const px = lx * scale;
+      const pz = lz * scale;
+      return (groundHeight(x + px * c + pz * s, z - px * s + pz * c) - base) / scale;
+    };
+  }, [x, z, turn, scale, base]);
   const ground = 0.03;
   // Just clear of the footprint's corners, so it never hides under the model
   // and is easy to click.
@@ -189,7 +223,7 @@ export function DraggableLandmark({
   return (
     <group
       ref={group}
-      position={[x, CUBE.landTop, z]}
+      position={[x, CUBE.landTop + base, z]}
       rotation={[0, turn / DEG, 0]}
       // Only while arranging: a landmark with handlers is hit-tested on every
       // pointer move, and the bridge alone is hundreds of cables and cars.
@@ -209,7 +243,9 @@ export function DraggableLandmark({
     >
       {/* Scaled about the model's own origin, its base, so it stays standing
           on its spot. The ring below stays outside it, at a usable width. */}
-      <group scale={scale}>{children}</group>
+      <group scale={scale}>
+        <GroundUnderContext value={groundUnder}>{children}</GroundUnderContext>
+      </group>
       {/* The key handle: click it, then turn with left/right and resize with
           up/down. Solid while armed, so it's clear the keys will act. */}
       {selected && (
@@ -234,6 +270,9 @@ export function DraggableLandmark({
             transparent
             opacity={armed ? 0.95 : hovered === "ring" ? 0.7 : 0.45}
             depthWrite={false}
+            // Drawn over the land, which on a hill would otherwise bury half
+            // of a ring laid flat at the landmark's base.
+            depthTest={false}
             side={THREE.DoubleSide}
           />
         </mesh>

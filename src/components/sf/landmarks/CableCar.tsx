@@ -5,7 +5,7 @@ import type { SFStyle } from "../styles";
 import type { LandmarkDef } from "./types";
 
 function CableCar({ style }: { style: SFStyle }) {
-  // One car cresting the hill. Small on purpose — it's the detail you find on
+  // One car on the street. Small on purpose — it's the detail you find on
   // the second look, not a landmark.
   return (
     <group rotation={[0, -Math.PI / 4, 0]}>
@@ -30,6 +30,5 @@ export const cableCar: LandmarkDef = {
   id: "cableCar",
   label: "Cable car",
   footprint: { across: 0.35, along: 0.35 },
-  lift: 0.5,
   Model: CableCar,
 };
