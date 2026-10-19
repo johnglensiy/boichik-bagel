@@ -40,11 +40,33 @@
     "u": 3.45,
     "v": -6.86
   },
+  "oraclePark": {
+    "u": 4.379,
+    "v": -0.228,
+    "turn": -99,
+    "scale": 1.12
+  },
   "goldenGate": {
     "u": 0.239,
     "v": 0.104,
     "turn": -69,
     "scale": 1.16
+  },
+  "palaceOfFineArts": {
+    "u": -4.539,
+    "v": 0.162,
+    "turn": 39,
+    "scale": 1.56
+  },
+  "sutroTower": {
+    "u": -0.023,
+    "v": 5.769
+  },
+  "ghirardelli": {
+    "u": -3.047,
+    "v": -2,
+    "turn": -135,
+    "scale": 1.53
   },
   "frisbee": {
     "u": -2.01,

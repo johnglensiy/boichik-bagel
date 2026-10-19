@@ -4,10 +4,14 @@ import { cableCar } from "./CableCar";
 import { coit } from "./CoitTower";
 import { ferry } from "./FerryBuilding";
 import { frisbeePlayers } from "./FrisbeePlayers";
+import { ghirardelli } from "./Ghirardelli";
 import { goldenGate } from "./golden-gate/GoldenGate";
 import { lombard } from "./Lombard";
+import { oraclePark } from "./OraclePark";
 import { ladies } from "./PaintedLadies";
+import { palaceOfFineArts } from "./PalaceOfFineArts";
 import { salesforce } from "./Salesforce";
+import { sutroTower } from "./SutroTower";
 import { transamerica } from "./Transamerica";
 
 /**
@@ -25,6 +29,10 @@ export const LANDMARKS: LandmarkDef[] = [
   lombard,
   alcatraz,
   cableCar,
+  oraclePark,
+  palaceOfFineArts,
+  sutroTower,
+  ghirardelli,
   goldenGate,
 ];
 
