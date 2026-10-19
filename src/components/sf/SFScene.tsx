@@ -7,8 +7,11 @@ import { DraggableLandmark } from "./DraggableLandmark";
 import { LANDMARKS, goldenGate, type LandmarkDef } from "./landmarks";
 import { SAVED_LAYOUT, type Layout, type Placement } from "./layout";
 import type { SFStyle } from "./styles";
+import { GrassEditor } from "./GrassEditor";
+import { SAVED_GRASS } from "./grass";
 import { RoadEditor } from "./RoadEditor";
-import { SAVED_ROADS, type Road } from "./roads";
+import { SAVED_ROADS, type Cell, type Road } from "./roads";
+import { Grass } from "./terrain/Grass";
 import { Roads } from "./terrain/Roads";
 import { Terrain } from "./terrain/Terrain";
 
@@ -82,6 +85,11 @@ interface SFSceneProps {
   /** Road mode: click squares on the land to lay roads between them. */
   drawingRoads?: boolean;
   onRoadsChange?: (roads: Road[]) => void;
+  /** Painted lawn squares; the saved ones when not given. */
+  grass?: Cell[];
+  /** Grass mode: click squares on the land to paint or clear lawn. */
+  paintingGrass?: boolean;
+  onGrassChange?: (grass: Cell[]) => void;
 }
 
 const NONE_HIDDEN: ReadonlySet<string> = new Set();
@@ -95,6 +103,9 @@ export default function SFScene({
   roads = SAVED_ROADS,
   drawingRoads = false,
   onRoadsChange,
+  grass = SAVED_GRASS,
+  paintingGrass = false,
+  onGrassChange,
 }: SFSceneProps) {
   // Like text boxes: click one to select it, and only that one shows the ring
   // that arms the arrow keys, so the rings never crowd the whole block.
@@ -107,9 +118,12 @@ export default function SFScene({
     [style],
   );
   const ground = useMemo(() => <Terrain style={style} />, [style]);
+  const lawns = useMemo(() => <Grass style={style} cells={grass} />, [style, grass]);
   return (
     <MaterialProvider style={style}>
       {ground}
+      {lawns}
+      {paintingGrass && <GrassEditor grass={grass} onChange={(next) => onGrassChange?.(next)} />}
       {/* The road tiles stream in once their models load; the land doesn't wait. */}
       <Suspense fallback={null}>
         <Roads style={style} roads={roads} />

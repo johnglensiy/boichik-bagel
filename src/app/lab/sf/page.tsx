@@ -5,11 +5,12 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { SF_STYLES, SF_STYLE_ORDER, type SFStyleId } from "@/components/sf/styles";
 import { SAVED_LAYOUT, type Layout, type Placement } from "@/components/sf/layout";
-import { SAVED_ROADS, type Road } from "@/components/sf/roads";
+import { SAVED_ROADS, type Cell, type Road } from "@/components/sf/roads";
+import { SAVED_GRASS } from "@/components/sf/grass";
 
-// Arranging the city and drawing its roads write layout.json and roads.json in
-// the source tree, which only the dev server can do, so the editors only exist
-// there.
+// Arranging the city, drawing its roads and painting its lawns write
+// layout.json, roads.json and grass.json in the source tree, which only the
+// dev server can do, so the editors only exist there.
 const CAN_EDIT = process.env.NODE_ENV === "development";
 
 // three + drei are ~170kb gzipped. Kept out of the first load so the page
@@ -34,11 +35,15 @@ export default function SFLabPage() {
   const [saved, setSaved] = useState<Layout>(SAVED_LAYOUT);
   const [roads, setRoads] = useState<Road[]>(SAVED_ROADS);
   const [savedRoads, setSavedRoads] = useState<Road[]>(SAVED_ROADS);
-  // One editor at a time: a click either picks a landmark or lays a road.
-  const [mode, setMode] = useState<"view" | "arrange" | "roads">("view");
+  const [grass, setGrass] = useState<Cell[]>(SAVED_GRASS);
+  const [savedGrass, setSavedGrass] = useState<Cell[]>(SAVED_GRASS);
+  // One editor at a time: a click picks a landmark, lays a road or paints grass.
+  const [mode, setMode] = useState<"view" | "arrange" | "roads" | "grass">("view");
   const editing = mode === "arrange";
   const drawingRoads = mode === "roads";
-  const toggleMode = (m: "arrange" | "roads") => setMode((cur) => (cur === m ? "view" : m));
+  const paintingGrass = mode === "grass";
+  const toggleMode = (m: "arrange" | "roads" | "grass") =>
+    setMode((cur) => (cur === m ? "view" : m));
   const [status, setStatus] = useState<string | null>(null);
   const [hidden, setHidden] = useState<ReadonlySet<string>>(() => new Set());
   const toggle = (id: string) =>
@@ -49,7 +54,8 @@ export default function SFLabPage() {
     });
   const layoutDirty = JSON.stringify(layout) !== JSON.stringify(saved);
   const roadsDirty = JSON.stringify(roads) !== JSON.stringify(savedRoads);
-  const dirty = layoutDirty || roadsDirty;
+  const grassDirty = JSON.stringify(grass) !== JSON.stringify(savedGrass);
+  const dirty = layoutDirty || roadsDirty || grassDirty;
 
   const move = (id: string, at: Placement) => {
     setLayout((l) => ({ ...l, [id]: at }));
@@ -58,6 +64,11 @@ export default function SFLabPage() {
 
   const changeRoads = (next: Road[]) => {
     setRoads(next);
+    setStatus(null);
+  };
+
+  const changeGrass = (next: Cell[]) => {
+    setGrass(next);
     setStatus(null);
   };
 
@@ -72,7 +83,7 @@ export default function SFLabPage() {
     return data;
   };
 
-  // Saves whichever of the two has changed.
+  // Saves whichever of them has changed.
   const save = async () => {
     setStatus("saving…");
     try {
@@ -88,6 +99,12 @@ export default function SFLabPage() {
         setRoads(data.roads);
         setSavedRoads(data.roads);
         files.push("roads.json");
+      }
+      if (grassDirty) {
+        const data = await post("/api/sf-grass", grass);
+        setGrass(data.grass);
+        setSavedGrass(data.grass);
+        files.push("grass.json");
       }
       setStatus(`saved to ${files.join(" and ")}`);
     } catch (err) {
@@ -123,6 +140,9 @@ export default function SFLabPage() {
             roads={roads}
             drawingRoads={drawingRoads}
             onRoadsChange={changeRoads}
+            grass={grass}
+            paintingGrass={paintingGrass}
+            onGrassChange={changeGrass}
           />
         </div>
 
@@ -130,12 +150,14 @@ export default function SFLabPage() {
 
         {CAN_EDIT && (
           <div className="mt-3 flex flex-wrap items-center gap-2 text-[12px] font-grotesk">
-            {(["arrange", "roads"] as const).map((m) => {
+            {(["arrange", "roads", "grass"] as const).map((m) => {
               const on = mode === m;
               const label =
                 m === "arrange"
                   ? on ? "Done arranging" : "Arrange landmarks"
-                  : on ? "Done drawing" : "Draw roads";
+                  : m === "roads"
+                    ? on ? "Done drawing" : "Draw roads"
+                    : on ? "Done painting" : "Paint grass";
               return (
                 <button
                   key={m}
@@ -172,6 +194,16 @@ export default function SFLabPage() {
                 </button>
               </>
             )}
+            {paintingGrass && (
+              <button
+                type="button"
+                onClick={() => changeGrass([])}
+                disabled={!grass.length}
+                className="rounded-[9px] px-3 py-1.5 border border-[#e2dbcc] bg-[#f4efe7] text-[#5d554a] enabled:hover:bg-[#efe9dd] enabled:cursor-pointer disabled:opacity-45"
+              >
+                Clear grass
+              </button>
+            )}
             <button
               type="button"
               onClick={save}
@@ -185,6 +217,7 @@ export default function SFLabPage() {
               onClick={() => {
                 setLayout(saved);
                 setRoads(savedRoads);
+                setGrass(savedGrass);
                 setStatus(null);
               }}
               disabled={!dirty}
@@ -198,9 +231,11 @@ export default function SFLabPage() {
                   ? "drag a landmark to move it; once selected, click its ring, then ← → turn it and ↑ ↓ resize it (shift snaps) · dev only"
                   : drawingRoads
                     ? "click a square, then another, to lay a road between them; it carries on from there, so keep clicking for a route. Click the same square or press Esc to stop · dev only"
-                    : dirty
-                      ? "unsaved changes"
-                      : "")}
+                    : paintingGrass
+                      ? "press and drag on the land to paint grass; start a stroke on grass to erase. [ and ] change the brush size · dev only"
+                      : dirty
+                        ? "unsaved changes"
+                        : "")}
             </span>
           </div>
         )}
