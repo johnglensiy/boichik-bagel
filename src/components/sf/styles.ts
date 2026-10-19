@@ -12,7 +12,7 @@ export interface SFStyle {
 
   // Palette. Every landmark pulls its color from here so a style swap is a
   // palette swap, not a rewrite of the geometry.
-  land: string;
+  land: string; // the ground's top: pavement grey in every style, to match the road kit's kerbs
   landSide: string;
   hill: string;
   concrete: string; // Transamerica, Coit — the white-stucco family
@@ -45,6 +45,20 @@ export interface SFStyle {
   grain: number;
 }
 
+/**
+ * A warm filter over the road kit's texture, which is cast blue: it takes out
+ * some blue so the asphalt reads brownish, like a real street, rather than
+ * slate. Multiplied into the road tiles' material in every style.
+ */
+export const ROAD_TINT = "#ffeab3";
+
+/**
+ * The road kit's kerb grey (#bdc6ee, read off its colormap) under ROAD_TINT.
+ * The road tiles keep their own texture in every style, so the land wears
+ * this in all of them and the streets sit on matching pavement.
+ */
+const PAVEMENT = "#bdb6a7";
+
 export const SF_STYLES: Record<SFStyleId, SFStyle> = {
   // Vinyl-toy city. The most legible caricature: everything rounded, scale
   // pushed, colors at souvenir saturation.
@@ -54,7 +68,7 @@ export const SF_STYLES: Record<SFStyleId, SFStyle> = {
     note: "Matte vinyl toy. Rounded mass, pushed vertical scale, soft shadow.",
     bg: "#f7f3ec",
     fog: null,
-    land: "#d8c7a4",
+    land: PAVEMENT,
     landSide: "#bda87f",
     hill: "#b4c296",
     concrete: "#f4eee2",
@@ -96,7 +110,7 @@ export const SF_STYLES: Record<SFStyleId, SFStyle> = {
     note: "Cut cardstock. Flat planes, drawn folds, hand-glued tilt.",
     bg: "#f2ede3",
     fog: null,
-    land: "#e6dcc8",
+    land: PAVEMENT,
     landSide: "#d2c4a9",
     hill: "#c6d2ae",
     concrete: "#f7f1e4",
@@ -138,7 +152,7 @@ export const SF_STYLES: Record<SFStyleId, SFStyle> = {
     note: "Near-white massing in fog. Only the landmarks keep their color.",
     bg: "#e9e7e2",
     fog: { color: "#e9e7e2", near: 22, far: 62 },
-    land: "#e4e1da",
+    land: PAVEMENT,
     landSide: "#d2cec5",
     hill: "#e0ded6",
     concrete: "#f6f4ef",
@@ -180,7 +194,7 @@ export const SF_STYLES: Record<SFStyleId, SFStyle> = {
     note: "Three inks, banded shading, no gradients. A print, not a render.",
     bg: "#f4efe4",
     fog: null,
-    land: "#e8dcc2",
+    land: PAVEMENT,
     landSide: "#d9c9a6",
     hill: "#c9d3ae",
     concrete: "#fbf7ee",

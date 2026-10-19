@@ -1,12 +1,15 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { Suspense, useMemo, useState } from "react";
 import { MaterialProvider } from "./core/materials";
 import { spotProblems, type BridgeSpot } from "./core/space";
 import { DraggableLandmark } from "./DraggableLandmark";
 import { LANDMARKS, goldenGate, type LandmarkDef } from "./landmarks";
 import { SAVED_LAYOUT, type Layout, type Placement } from "./layout";
 import type { SFStyle } from "./styles";
+import { RoadEditor } from "./RoadEditor";
+import { SAVED_ROADS, type Road } from "./roads";
+import { Roads } from "./terrain/Roads";
 import { Terrain } from "./terrain/Terrain";
 
 export { SF_GROUND_Y } from "./core/space";
@@ -74,6 +77,11 @@ interface SFSceneProps {
   hidden?: ReadonlySet<string>;
   editing?: boolean;
   onMove?: (id: string, at: Placement) => void;
+  /** The streets; the saved ones when not given. */
+  roads?: Road[];
+  /** Road mode: click squares on the land to lay roads between them. */
+  drawingRoads?: boolean;
+  onRoadsChange?: (roads: Road[]) => void;
 }
 
 const NONE_HIDDEN: ReadonlySet<string> = new Set();
@@ -84,6 +92,9 @@ export default function SFScene({
   hidden = NONE_HIDDEN,
   editing = false,
   onMove,
+  roads = SAVED_ROADS,
+  drawingRoads = false,
+  onRoadsChange,
 }: SFSceneProps) {
   // Like text boxes: click one to select it, and only that one shows the ring
   // that arms the arrow keys, so the rings never crowd the whole block.
@@ -99,6 +110,11 @@ export default function SFScene({
   return (
     <MaterialProvider style={style}>
       {ground}
+      {/* The road tiles stream in once their models load; the land doesn't wait. */}
+      <Suspense fallback={null}>
+        <Roads style={style} roads={roads} />
+      </Suspense>
+      {drawingRoads && <RoadEditor roads={roads} onChange={(next) => onRoadsChange?.(next)} />}
       {LANDMARKS.map((def) => {
         const at = layout[def.id];
         if (!at || hidden.has(def.id)) return null;

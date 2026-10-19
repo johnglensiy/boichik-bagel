@@ -5,9 +5,11 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { SF_STYLES, SF_STYLE_ORDER, type SFStyleId } from "@/components/sf/styles";
 import { SAVED_LAYOUT, type Layout, type Placement } from "@/components/sf/layout";
+import { SAVED_ROADS, type Road } from "@/components/sf/roads";
 
-// Arranging the city writes layout.json in the source tree, which only the dev
-// server can do, so the editor only exists there.
+// Arranging the city and drawing its roads write layout.json and roads.json in
+// the source tree, which only the dev server can do, so the editors only exist
+// there.
 const CAN_EDIT = process.env.NODE_ENV === "development";
 
 // three + drei are ~170kb gzipped. Kept out of the first load so the page
@@ -30,7 +32,13 @@ export default function SFLabPage() {
   const style = SF_STYLES[styleId];
   const [layout, setLayout] = useState<Layout>(SAVED_LAYOUT);
   const [saved, setSaved] = useState<Layout>(SAVED_LAYOUT);
-  const [editing, setEditing] = useState(false);
+  const [roads, setRoads] = useState<Road[]>(SAVED_ROADS);
+  const [savedRoads, setSavedRoads] = useState<Road[]>(SAVED_ROADS);
+  // One editor at a time: a click either picks a landmark or lays a road.
+  const [mode, setMode] = useState<"view" | "arrange" | "roads">("view");
+  const editing = mode === "arrange";
+  const drawingRoads = mode === "roads";
+  const toggleMode = (m: "arrange" | "roads") => setMode((cur) => (cur === m ? "view" : m));
   const [status, setStatus] = useState<string | null>(null);
   const [hidden, setHidden] = useState<ReadonlySet<string>>(() => new Set());
   const toggle = (id: string) =>
@@ -39,26 +47,49 @@ export default function SFLabPage() {
       if (!next.delete(id)) next.add(id);
       return next;
     });
-  const dirty = JSON.stringify(layout) !== JSON.stringify(saved);
+  const layoutDirty = JSON.stringify(layout) !== JSON.stringify(saved);
+  const roadsDirty = JSON.stringify(roads) !== JSON.stringify(savedRoads);
+  const dirty = layoutDirty || roadsDirty;
 
   const move = (id: string, at: Placement) => {
     setLayout((l) => ({ ...l, [id]: at }));
     setStatus(null);
   };
 
+  const changeRoads = (next: Road[]) => {
+    setRoads(next);
+    setStatus(null);
+  };
+
+  const post = async (url: string, body: unknown) => {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error ?? res.statusText);
+    return data;
+  };
+
+  // Saves whichever of the two has changed.
   const save = async () => {
     setStatus("saving…");
     try {
-      const res = await fetch("/api/sf-layout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(layout),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? res.statusText);
-      setLayout(data.layout);
-      setSaved(data.layout);
-      setStatus("saved to layout.json");
+      const files: string[] = [];
+      if (layoutDirty) {
+        const data = await post("/api/sf-layout", layout);
+        setLayout(data.layout);
+        setSaved(data.layout);
+        files.push("layout.json");
+      }
+      if (roadsDirty) {
+        const data = await post("/api/sf-roads", roads);
+        setRoads(data.roads);
+        setSavedRoads(data.roads);
+        files.push("roads.json");
+      }
+      setStatus(`saved to ${files.join(" and ")}`);
     } catch (err) {
       setStatus(`not saved: ${err instanceof Error ? err.message : String(err)}`);
     }
@@ -89,6 +120,9 @@ export default function SFLabPage() {
             hidden={hidden}
             editing={editing}
             onMove={move}
+            roads={roads}
+            drawingRoads={drawingRoads}
+            onRoadsChange={changeRoads}
           />
         </div>
 
@@ -96,30 +130,61 @@ export default function SFLabPage() {
 
         {CAN_EDIT && (
           <div className="mt-3 flex flex-wrap items-center gap-2 text-[12px] font-grotesk">
-            <button
-              type="button"
-              onClick={() => setEditing((e) => !e)}
-              aria-pressed={editing}
-              className={`rounded-[9px] px-3 py-1.5 border cursor-pointer ${
-                editing
-                  ? "bg-[#efe6d5] border-[#c47b52] text-[#33302a]"
-                  : "bg-[#f4efe7] border-[#e2dbcc] text-[#5d554a] hover:bg-[#efe9dd]"
-              }`}
-            >
-              {editing ? "Done arranging" : "Arrange landmarks"}
-            </button>
+            {(["arrange", "roads"] as const).map((m) => {
+              const on = mode === m;
+              const label =
+                m === "arrange"
+                  ? on ? "Done arranging" : "Arrange landmarks"
+                  : on ? "Done drawing" : "Draw roads";
+              return (
+                <button
+                  key={m}
+                  type="button"
+                  onClick={() => toggleMode(m)}
+                  aria-pressed={on}
+                  className={`rounded-[9px] px-3 py-1.5 border cursor-pointer ${
+                    on
+                      ? "bg-[#efe6d5] border-[#c47b52] text-[#33302a]"
+                      : "bg-[#f4efe7] border-[#e2dbcc] text-[#5d554a] hover:bg-[#efe9dd]"
+                  }`}
+                >
+                  {label}
+                </button>
+              );
+            })}
+            {drawingRoads && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => changeRoads(roads.slice(0, -1))}
+                  disabled={!roads.length}
+                  className="rounded-[9px] px-3 py-1.5 border border-[#e2dbcc] bg-[#f4efe7] text-[#5d554a] enabled:hover:bg-[#efe9dd] enabled:cursor-pointer disabled:opacity-45"
+                >
+                  Undo road
+                </button>
+                <button
+                  type="button"
+                  onClick={() => changeRoads([])}
+                  disabled={!roads.length}
+                  className="rounded-[9px] px-3 py-1.5 border border-[#e2dbcc] bg-[#f4efe7] text-[#5d554a] enabled:hover:bg-[#efe9dd] enabled:cursor-pointer disabled:opacity-45"
+                >
+                  Clear roads
+                </button>
+              </>
+            )}
             <button
               type="button"
               onClick={save}
               disabled={!dirty}
               className="rounded-[9px] px-3 py-1.5 border border-[#e2dbcc] bg-[#f4efe7] text-[#5d554a] enabled:hover:bg-[#efe9dd] enabled:cursor-pointer disabled:opacity-45"
             >
-              Save layout
+              Save
             </button>
             <button
               type="button"
               onClick={() => {
                 setLayout(saved);
+                setRoads(savedRoads);
                 setStatus(null);
               }}
               disabled={!dirty}
@@ -128,7 +193,14 @@ export default function SFLabPage() {
               Revert
             </button>
             <span className="text-[11px] font-plex-mono text-[#b3a794]">
-              {status ?? (editing ? "drag a landmark to move it; once selected, click its ring, then ← → turn it and ↑ ↓ resize it (shift snaps) · dev only" : dirty ? "unsaved changes" : "")}
+              {status ??
+                (editing
+                  ? "drag a landmark to move it; once selected, click its ring, then ← → turn it and ↑ ↓ resize it (shift snaps) · dev only"
+                  : drawingRoads
+                    ? "click a square, then another, to lay a road between them; it carries on from there, so keep clicking for a route. Click the same square or press Esc to stop · dev only"
+                    : dirty
+                      ? "unsaved changes"
+                      : "")}
             </span>
           </div>
         )}

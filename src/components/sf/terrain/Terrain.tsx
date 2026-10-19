@@ -51,7 +51,7 @@ function landSides(half: number, segments: number): THREE.BufferGeometry {
 
 /**
  * The land's top surface: a fine grid lifted by groundHeight, so the hills
- * rise out of the plain with no seam.
+ * rise out of the plain with no seam. Also what the road editor clicks on.
  */
 export function landSurface(): THREE.BufferGeometry {
   const h = CUBE.half;

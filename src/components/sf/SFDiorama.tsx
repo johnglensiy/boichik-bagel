@@ -7,6 +7,7 @@ import * as THREE from "three";
 import SFScene, { SF_GROUND_Y, landmarkProblems } from "./SFScene";
 import { LANDMARKS, goldenGate } from "./landmarks";
 import { SAVED_LAYOUT, type Layout, type Placement } from "./layout";
+import { SAVED_ROADS, type Road } from "./roads";
 import { SF_STYLES, type SFStyleId } from "./styles";
 
 /** The cube spans y −3.4…+5.5, so this drops its centre onto the orbit target. */
@@ -47,6 +48,11 @@ interface SFDioramaProps {
   /** Edit mode: landmarks drag across the block, and turn and resize by arrow keys. */
   editing?: boolean;
   onMove?: (id: string, at: Placement) => void;
+  /** The streets; the saved ones when not given. */
+  roads?: Road[];
+  /** Road mode: click squares on the land to lay roads between them. */
+  drawingRoads?: boolean;
+  onRoadsChange?: (roads: Road[]) => void;
 }
 
 export default function SFDiorama({
@@ -57,6 +63,9 @@ export default function SFDiorama({
   hidden = NONE_HIDDEN,
   editing = false,
   onMove,
+  roads = SAVED_ROADS,
+  drawingRoads = false,
+  onRoadsChange,
 }: SFDioramaProps) {
   const style = SF_STYLES[styleId];
   const spin = useRef<THREE.Group | null>(null);
@@ -94,8 +103,9 @@ export default function SFDiorama({
     return () => mq.removeEventListener("change", sync);
   }, []);
 
-  // A model turning under the cursor can't be arranged, so editing stops it.
-  const spinning = !grabbed && !paused && !reduced && !editing;
+  // A model turning under the cursor can't be arranged or drawn on, so
+  // either stops it.
+  const spinning = !grabbed && !paused && !reduced && !editing && !drawingRoads;
 
   return (
     <div
@@ -146,6 +156,9 @@ export default function SFDiorama({
               hidden={hidden}
               editing={editing}
               onMove={onMove}
+              roads={roads}
+              drawingRoads={drawingRoads}
+              onRoadsChange={onRoadsChange}
             />
             {style.shadows && (
               <ContactShadows
