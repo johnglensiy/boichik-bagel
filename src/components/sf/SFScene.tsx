@@ -4,7 +4,7 @@ import { Suspense, useMemo, useState } from "react";
 import { MaterialProvider } from "./core/materials";
 import { spotProblems, type BridgeSpot } from "./core/space";
 import { DraggableLandmark } from "./DraggableLandmark";
-import { LANDMARKS, goldenGate, type LandmarkDef } from "./landmarks";
+import { LANDMARKS, cableCar, goldenGate, type LandmarkDef } from "./landmarks";
 import { SAVED_LAYOUT, type Layout, type Placement } from "./layout";
 import type { SFStyle } from "./styles";
 import { GrassEditor } from "./GrassEditor";
@@ -129,14 +129,25 @@ export default function SFScene({
       {paintingGrass && <GrassEditor grass={grass} onChange={(next) => onGrassChange?.(next)} />}
       {/* The road tiles stream in once their models load; the land doesn't wait. */}
       <Suspense fallback={null}>
-        <Roads style={style} roads={roads} />
+        <Roads
+          style={style}
+          roads={roads}
+          // The cable car rides the track rather than standing where the
+          // layout puts it. Its model faces along the bridge; a quarter-turn
+          // back points it along +x, the way the ride steers it.
+          car={
+            hidden.has(cableCar.id) ? null : (
+              <group rotation={[0, Math.PI / 4, 0]}>{models[cableCar.id]}</group>
+            )
+          }
+        />
       </Suspense>
       {drawingRoads && (
         <RoadEditor roads={roads} erasing={erasingRoads} onChange={(next) => onRoadsChange?.(next)} />
       )}
       {LANDMARKS.map((def) => {
         const at = layout[def.id];
-        if (!at || hidden.has(def.id)) return null;
+        if (!at || hidden.has(def.id) || def.id === cableCar.id) return null;
         return (
           <DraggableLandmark
             key={def.id}

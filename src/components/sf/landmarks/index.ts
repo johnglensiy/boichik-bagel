@@ -36,6 +36,6 @@ export const LANDMARKS: LandmarkDef[] = [
   goldenGate,
 ];
 
-export { goldenGate };
+export { cableCar, goldenGate };
 
 export type { LandmarkDef } from "./types";

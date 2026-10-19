@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, type ReactNode } from "react";
 import * as THREE from "three";
 import { useGLTF } from "@react-three/drei";
 import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 import { CUBE, groundHeight } from "../core/space";
 import { CELL, ROAD_WIDTH, cellCentre, onRim, sameCell, type Cell, type Road } from "../roads";
 import { ROAD_TINT, makeToonRamp, type SFStyle } from "../styles";
+import { CableCarRide } from "./CableCarRide";
 
 /** Kenney's City Kit (Roads), CC0 (kenney.nl). All three share one colormap texture. */
 const STRAIGHT = "/models/roads/road-straight.glb";
@@ -411,7 +412,16 @@ function ribbons(paths: Vec[][], lanes: ReadonlyArray<readonly [number, number]>
  * down every one. The tiles are merged into one mesh and each part of the
  * track into one more: four draw calls however many roads.
  */
-export function Roads({ style, roads }: { style: SFStyle; roads: Road[] }) {
+export function Roads({
+  style,
+  roads,
+  car,
+}: {
+  style: SFStyle;
+  roads: Road[];
+  /** A cable car model to ride the track end to end, or nothing. */
+  car?: ReactNode;
+}) {
   const [straightModel, crossModel, endModel] = useGLTF([STRAIGHT, CROSSROAD, END]);
   const pieces = useMemo(
     () => ({
@@ -514,6 +524,7 @@ export function Roads({ style, roads }: { style: SFStyle; roads: Road[] }) {
   return (
     <group>
       <mesh geometry={geometry} material={material} receiveShadow={style.shadows} />
+      {car && <CableCarRide tracks={laid.tracks}>{car}</CableCarRide>}
       {(["bed", "rails", "slot"] as const).map(
         (part) =>
           track[part] && (
