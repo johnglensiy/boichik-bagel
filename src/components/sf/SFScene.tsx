@@ -70,13 +70,18 @@ if (process.env.NODE_ENV !== "production") {
 interface SFSceneProps {
   style: SFStyle;
   layout?: Layout;
+  /** Landmarks to leave out of the scene, by id. */
+  hidden?: ReadonlySet<string>;
   editing?: boolean;
   onMove?: (id: string, at: Placement) => void;
 }
 
+const NONE_HIDDEN: ReadonlySet<string> = new Set();
+
 export default function SFScene({
   style,
   layout = SAVED_LAYOUT,
+  hidden = NONE_HIDDEN,
   editing = false,
   onMove,
 }: SFSceneProps) {
@@ -96,7 +101,7 @@ export default function SFScene({
       {ground}
       {LANDMARKS.map((def) => {
         const at = layout[def.id];
-        if (!at) return null;
+        if (!at || hidden.has(def.id)) return null;
         return (
           <DraggableLandmark
             key={def.id}

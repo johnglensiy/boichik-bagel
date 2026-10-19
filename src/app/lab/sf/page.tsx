@@ -21,6 +21,10 @@ const SFDiorama = dynamic(() => import("@/components/sf/SFDiorama"), {
   ),
 });
 
+// Its checkboxes are labelled from the landmark definitions, which come with
+// the models, so it loads with the scene rather than in the first load.
+const LandmarkToggles = dynamic(() => import("@/components/sf/LandmarkToggles"), { ssr: false });
+
 export default function SFLabPage() {
   const [styleId, setStyleId] = useState<SFStyleId>("clay");
   const style = SF_STYLES[styleId];
@@ -28,6 +32,13 @@ export default function SFLabPage() {
   const [saved, setSaved] = useState<Layout>(SAVED_LAYOUT);
   const [editing, setEditing] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
+  const [hidden, setHidden] = useState<ReadonlySet<string>>(() => new Set());
+  const toggle = (id: string) =>
+    setHidden((h) => {
+      const next = new Set(h);
+      if (!next.delete(id)) next.add(id);
+      return next;
+    });
   const dirty = JSON.stringify(layout) !== JSON.stringify(saved);
 
   const move = (id: string, at: Placement) => {
@@ -75,10 +86,13 @@ export default function SFLabPage() {
             styleId={styleId}
             className="w-full h-[clamp(420px,64vh,620px)]"
             layout={layout}
+            hidden={hidden}
             editing={editing}
             onMove={move}
           />
         </div>
+
+        <LandmarkToggles hidden={hidden} onToggle={toggle} />
 
         {CAN_EDIT && (
           <div className="mt-3 flex flex-wrap items-center gap-2 text-[12px] font-grotesk">

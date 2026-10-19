@@ -5,7 +5,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { ContactShadows, OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 import SFScene, { SF_GROUND_Y, landmarkProblems } from "./SFScene";
-import { LANDMARKS } from "./landmarks";
+import { LANDMARKS, goldenGate } from "./landmarks";
 import { SAVED_LAYOUT, type Layout, type Placement } from "./layout";
 import { SF_STYLES, type SFStyleId } from "./styles";
 
@@ -33,6 +33,8 @@ function Turntable({
   return null;
 }
 
+const NONE_HIDDEN: ReadonlySet<string> = new Set();
+
 interface SFDioramaProps {
   styleId: SFStyleId;
   className?: string;
@@ -40,6 +42,8 @@ interface SFDioramaProps {
   paused?: boolean;
   /** Where the landmarks stand; the saved layout when not given. */
   layout?: Layout;
+  /** Landmarks to leave out, by id. */
+  hidden?: ReadonlySet<string>;
   /** Edit mode: landmarks drag across the block, and turn and resize by arrow keys. */
   editing?: boolean;
   onMove?: (id: string, at: Placement) => void;
@@ -50,6 +54,7 @@ export default function SFDiorama({
   className,
   paused = false,
   layout = SAVED_LAYOUT,
+  hidden = NONE_HIDDEN,
   editing = false,
   onMove,
 }: SFDioramaProps) {
@@ -135,7 +140,13 @@ export default function SFDiorama({
               dead-on is static. Turned the other way it foreshortens into a
               red gantry and stops reading as a bridge at all. */}
           <group ref={spin} position={[0, CITY_OFFSET_Y, 0]} rotation={[0, 1.35, 0]}>
-            <SFScene style={style} layout={layout} editing={editing} onMove={onMove} />
+            <SFScene
+              style={style}
+              layout={layout}
+              hidden={hidden}
+              editing={editing}
+              onMove={onMove}
+            />
             {style.shadows && (
               <ContactShadows
                 position={[0, SF_GROUND_Y - 0.02, 0]}
@@ -200,9 +211,13 @@ export default function SFDiorama({
           }}
         >
           {(() => {
-            const bad = LANDMARKS.flatMap((def) =>
-              landmarkProblems(def, layout).map((p) => `${def.label}: ${p}`),
-            );
+            // Hidden landmarks aren't there to be in the way, and with the
+            // bridge hidden there's no roadway to be in.
+            const bad = hidden.has(goldenGate.id)
+              ? []
+              : LANDMARKS.filter((def) => !hidden.has(def.id)).flatMap((def) =>
+                  landmarkProblems(def, layout).map((p) => `${def.label}: ${p}`),
+                );
             return bad.length ? (
               bad.map((line) => (
                 <div key={line} style={{ color: "#b2392f" }}>
