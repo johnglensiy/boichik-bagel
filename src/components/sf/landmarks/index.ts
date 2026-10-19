@@ -3,6 +3,7 @@ import { alcatraz } from "./Alcatraz";
 import { cableCar } from "./CableCar";
 import { coit } from "./CoitTower";
 import { ferry } from "./FerryBuilding";
+import { frisbeePlayers } from "./FrisbeePlayers";
 import { goldenGate } from "./golden-gate/GoldenGate";
 import { lombard } from "./Lombard";
 import { ladies } from "./PaintedLadies";
@@ -20,6 +21,7 @@ export const LANDMARKS: LandmarkDef[] = [
   ferry,
   coit,
   ladies,
+  frisbeePlayers,
   lombard,
   alcatraz,
   cableCar,
