@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { writeFile } from "node:fs/promises";
 import path from "node:path";
-import { LAYOUT_IDS, roundLayout, type Layout } from "@/components/sf/layout";
+import { LAYOUT_IDS, MIN_SCALE, roundLayout, type Layout } from "@/components/sf/layout";
 
 /**
  * Saves the SF diorama's landmark layout back into the source tree
@@ -26,7 +26,8 @@ export async function POST(req: Request) {
   }
 
   // Exactly the known landmarks, each with finite coordinates inside a
-  // generous box around the block — never trust a file write to the client.
+  // generous box around the block, and a finite turn and a scale of at least
+  // MIN_SCALE if it has them — never trust a file write to the client.
   const layout = body as Layout;
   const keys = body && typeof body === "object" ? Object.keys(body) : [];
   const valid =
@@ -39,7 +40,10 @@ export async function POST(req: Request) {
         Number.isFinite(at.u) &&
         Number.isFinite(at.v) &&
         Math.abs(at.u) < 10 &&
-        Math.abs(at.v) < 10
+        Math.abs(at.v) < 10 &&
+        (at.turn === undefined || Number.isFinite(at.turn)) &&
+        (at.scale === undefined ||
+          (Number.isFinite(at.scale) && at.scale >= MIN_SCALE))
       );
     });
   if (!valid) {
@@ -47,7 +51,12 @@ export async function POST(req: Request) {
   }
 
   const clean = roundLayout(
-    Object.fromEntries(LAYOUT_IDS.map((id) => [id, { u: layout[id].u, v: layout[id].v }])),
+    Object.fromEntries(
+      LAYOUT_IDS.map((id) => {
+        const { u, v, turn, scale } = layout[id];
+        return [id, { u, v, turn, scale }];
+      }),
+    ),
   );
   await writeFile(LAYOUT_FILE, JSON.stringify(clean, null, 2) + "\n", "utf-8");
   return NextResponse.json({ ok: true, layout: clean });

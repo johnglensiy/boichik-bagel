@@ -6,7 +6,7 @@ import { ContactShadows, OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 import SFScene, { SF_GROUND_Y, landmarkProblems } from "./SFScene";
 import { LANDMARKS } from "./landmarks";
-import { SAVED_LAYOUT, type Layout } from "./layout";
+import { SAVED_LAYOUT, type Layout, type Placement } from "./layout";
 import { SF_STYLES, type SFStyleId } from "./styles";
 
 /** The cube spans y −3.4…+5.5, so this drops its centre onto the orbit target. */
@@ -40,9 +40,9 @@ interface SFDioramaProps {
   paused?: boolean;
   /** Where the landmarks stand; the saved layout when not given. */
   layout?: Layout;
-  /** Edit mode: landmarks drag across the block and show their footprints. */
+  /** Edit mode: landmarks drag across the block, and turn and resize by arrow keys. */
   editing?: boolean;
-  onMove?: (id: string, at: { u: number; v: number }) => void;
+  onMove?: (id: string, at: Placement) => void;
 }
 
 export default function SFDiorama({
@@ -182,7 +182,7 @@ export default function SFDiorama({
       </Canvas>
 
       {/* While arranging, name anything standing where it can't: in the
-          roadway or hanging off the block. Its footprint shows red too. */}
+          roadway or hanging off the block. */}
       {editing && (
         <div
           style={{

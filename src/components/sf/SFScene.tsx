@@ -1,11 +1,12 @@
 "use client";
 
+import { useMemo, useState } from "react";
 import { MaterialProvider } from "./core/materials";
-import { spotProblems } from "./core/space";
+import { spotProblems, turnedFootprint } from "./core/space";
 import { DraggableLandmark } from "./DraggableLandmark";
 import { LANDMARKS, type LandmarkDef } from "./landmarks";
 import { GoldenGate } from "./landmarks/golden-gate/GoldenGate";
-import { SAVED_LAYOUT, type Layout } from "./layout";
+import { SAVED_LAYOUT, type Layout, type Placement } from "./layout";
 import type { SFStyle } from "./styles";
 import { Hills } from "./terrain/Hills";
 import { Streets } from "./terrain/Streets";
@@ -31,14 +32,17 @@ export { SF_GROUND_Y } from "./core/space";
  *
  * Each landmark is its own module under landmarks/; there is no filler city
  * around them. The bridge and terrain are fixed; the landmarks in LANDMARKS
- * stand wherever the layout puts them and can be dragged in edit mode.
+ * stand, face and size wherever the layout puts them, and can be dragged,
+ * turned and resized in edit mode.
  */
 
 /** Placement problems for one landmark at its layout spot. */
 export function landmarkProblems(def: LandmarkDef, layout: Layout): string[] {
   const at = layout[def.id];
   if (!at) return ["not in the layout"];
-  return spotProblems({ ...at, ...def.footprint });
+  const s = at.scale ?? 1;
+  const footprint = { across: def.footprint.across * s, along: def.footprint.along * s };
+  return spotProblems({ u: at.u, v: at.v, ...turnedFootprint(footprint, at.turn) });
 }
 
 /** Check the saved layout once, in development only. */
@@ -53,7 +57,7 @@ interface SFSceneProps {
   style: SFStyle;
   layout?: Layout;
   editing?: boolean;
-  onMove?: (id: string, at: { u: number; v: number }) => void;
+  onMove?: (id: string, at: Placement) => void;
 }
 
 export default function SFScene({
@@ -62,11 +66,30 @@ export default function SFScene({
   editing = false,
   onMove,
 }: SFSceneProps) {
+  // Like text boxes: click one to select it, and only that one shows the ring
+  // that arms the arrow keys, so the rings never crowd the whole block.
+  const [selected, setSelected] = useState<string | null>(null);
+  // Built once per style. A drag re-renders this scene every frame; handing
+  // React the same elements lets it skip every model, the terrain and the
+  // bridge, and redo only the landmark being moved.
+  const models = useMemo(
+    () => Object.fromEntries(LANDMARKS.map((def) => [def.id, <def.Model key={def.id} style={style} />])),
+    [style],
+  );
+  const ground = useMemo(
+    () => (
+      <>
+        <Terrain style={style} />
+        <Hills style={style} />
+        <Streets style={style} />
+      </>
+    ),
+    [style],
+  );
+  const bridge = useMemo(() => <GoldenGate style={style} />, [style]);
   return (
     <MaterialProvider style={style}>
-      <Terrain style={style} />
-      <Hills style={style} />
-      <Streets style={style} />
+      {ground}
       {LANDMARKS.map((def) => {
         const at = layout[def.id];
         if (!at) return null;
@@ -76,14 +99,15 @@ export default function SFScene({
             def={def}
             at={at}
             editing={editing}
-            problems={landmarkProblems(def, layout)}
+            selected={editing && selected === def.id}
+            onSelect={setSelected}
             onMove={(id, next) => onMove?.(id, next)}
           >
-            <def.Model style={style} />
+            {models[def.id]}
           </DraggableLandmark>
         );
       })}
-      <GoldenGate style={style} />
+      {bridge}
     </MaterialProvider>
   );
 }

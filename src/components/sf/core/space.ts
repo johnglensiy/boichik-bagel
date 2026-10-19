@@ -51,6 +51,21 @@ export interface Spot {
 }
 
 /**
+ * A footprint turned by `turn` degrees about the vertical, as the bridge-space
+ * box that contains it. Conservative off the axes (a 45° turn checks the
+ * square around the diamond), which errs on the side of clearing the deck.
+ */
+export function turnedFootprint(
+  f: { across: number; along: number },
+  turn = 0,
+): { across: number; along: number } {
+  const t = (turn * Math.PI) / 180;
+  const c = Math.abs(Math.cos(t));
+  const s = Math.abs(Math.sin(t));
+  return { across: c * f.across + s * f.along, along: s * f.across + c * f.along };
+}
+
+/**
  * The two placement rules: stay out of the roadway, stay on the block. Easy
  * to break by a nudged number or a drag, and on a slowly turning model easy
  * to miss by eye, so they're checked rather than eyeballed.

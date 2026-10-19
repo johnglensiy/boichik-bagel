@@ -4,7 +4,7 @@ import { useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { SF_STYLES, SF_STYLE_ORDER, type SFStyleId } from "@/components/sf/styles";
-import { SAVED_LAYOUT, type Layout } from "@/components/sf/layout";
+import { SAVED_LAYOUT, type Layout, type Placement } from "@/components/sf/layout";
 
 // Arranging the city writes layout.json in the source tree, which only the dev
 // server can do, so the editor only exists there.
@@ -30,7 +30,7 @@ export default function SFLabPage() {
   const [status, setStatus] = useState<string | null>(null);
   const dirty = JSON.stringify(layout) !== JSON.stringify(saved);
 
-  const move = (id: string, at: { u: number; v: number }) => {
+  const move = (id: string, at: Placement) => {
     setLayout((l) => ({ ...l, [id]: at }));
     setStatus(null);
   };
@@ -114,7 +114,7 @@ export default function SFLabPage() {
               Revert
             </button>
             <span className="text-[11px] font-plex-mono text-[#b3a794]">
-              {status ?? (editing ? "drag a landmark to move it · dev only" : dirty ? "unsaved changes" : "")}
+              {status ?? (editing ? "drag a landmark to move it; once selected, click its ring, then ← → turn it and ↑ ↓ resize it (shift snaps) · dev only" : dirty ? "unsaved changes" : "")}
             </span>
           </div>
         )}
