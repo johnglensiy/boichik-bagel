@@ -192,7 +192,7 @@ export function DraggableLandmark({
       position={[x, CUBE.landTop, z]}
       rotation={[0, turn / DEG, 0]}
       // Only while arranging: a landmark with handlers is hit-tested on every
-      // pointer move.
+      // pointer move, and the bridge alone is hundreds of cables and cars.
       onPointerDown={editing ? startDrag : undefined}
       onPointerMove={editing ? onPointerMove : undefined}
       onPointerUp={editing ? endDrag : undefined}

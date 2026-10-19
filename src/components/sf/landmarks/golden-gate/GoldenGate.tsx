@@ -3,9 +3,10 @@
 import { Suspense, useEffect, useMemo } from "react";
 import * as THREE from "three";
 import { Edges } from "@react-three/drei";
-import { CUBE, BRIDGE_ROT } from "../../core/space";
+import { CUBE, BRIDGE_ROT, BRIDGE_FOOTPRINT } from "../../core/space";
 import { useMat } from "../../core/materials";
 import type { SFStyle } from "../../styles";
+import type { LandmarkDef } from "../types";
 import {
   TOWER_D,
   BRIDGE_SCALE,
@@ -27,11 +28,11 @@ import { Traffic } from "./Traffic";
 import { LegCap, legPiece, portalStrut } from "./towerParts";
 
 /**
- * The Golden Gate. It is the layout's fixed frame: it runs the block's
- * diagonal and every other landmark is placed relative to it, so unlike them
- * it isn't draggable.
+ * The Golden Gate. Built to run the block's diagonal, corner to corner, which
+ * is where its default spot puts it; like the other landmarks it can be
+ * dragged, turned and resized, and the roadway it keeps clear goes with it.
  */
-export function GoldenGate({ style }: { style: SFStyle }) {
+function GoldenGate({ style }: { style: SFStyle }) {
   const mat = useMat();
   const orange = mat(style.orange);
 
@@ -265,3 +266,10 @@ export function GoldenGate({ style }: { style: SFStyle }) {
     </group>
   );
 }
+
+export const goldenGate: LandmarkDef = {
+  id: "goldenGate",
+  label: "Golden Gate",
+  footprint: BRIDGE_FOOTPRINT,
+  Model: GoldenGate,
+};

@@ -181,8 +181,7 @@ export default function SFDiorama({
         />
       </Canvas>
 
-      {/* While arranging, name anything standing where it can't: in the
-          roadway or hanging off the block. */}
+      {/* While arranging, name anything standing in the bridge's roadway. */}
       {editing && (
         <div
           style={{

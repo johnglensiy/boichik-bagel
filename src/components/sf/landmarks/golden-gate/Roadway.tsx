@@ -8,8 +8,9 @@ import { DECK_LEN, LANE_W, LANE_COUNT, DASH, DASH_GAP } from "./dimensions";
 
 /**
  * Asphalt and lane paint laid on top of the deck. The dashes are one instanced
- * mesh: four lines of them run the full corner-to-corner span, which is ~140
- * boxes that would otherwise each be a draw call.
+ * mesh: a line of them between each pair of lanes runs the full
+ * corner-to-corner span, dozens of boxes that would otherwise each be a draw
+ * call.
  */
 export function Roadway({ style, deckTop }: { style: SFStyle; deckTop: number }) {
   const mat = useMat();
@@ -18,7 +19,9 @@ export function Roadway({ style, deckTop }: { style: SFStyle; deckTop: number })
 
   const lane = LANE_W / LANE_COUNT;
   // Dividers between lanes, skipping the centreline, which is drawn solid.
-  const dashedZ = [-2, -1, 1, 2].map((k) => k * lane);
+  const dashedZ = Array.from({ length: LANE_COUNT / 2 - 1 }, (_, i) => (i + 1) * lane).flatMap(
+    (z) => [-z, z],
+  );
   const perLine = Math.floor(DECK_LEN / (DASH + DASH_GAP));
 
   useLayoutEffect(() => {

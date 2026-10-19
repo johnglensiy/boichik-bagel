@@ -15,11 +15,11 @@ export const TOWER_D = 3.9;
 export const BRIDGE_SCALE = 0.7;
 export const DECK_LEN = BRIDGE_LEN / BRIDGE_SCALE;
 
-/** Six lanes, three each way, between the rails. */
+/** Four lanes, two each way, between the rails. */
 export const LANE_W = 0.76;
 /** Full deck width, rail to rail — the 90 ft that the towers are scaled against. */
 export const DECK_W = 0.92;
-export const LANE_COUNT = 6;
+export const LANE_COUNT = 4;
 export const DASH = 0.16;
 export const DASH_GAP = 0.2;
 /**

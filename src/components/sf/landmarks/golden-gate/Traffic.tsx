@@ -9,8 +9,11 @@ import { makeToonRamp, type SFStyle } from "../../styles";
 import { DECK_LEN, LANE_W, LANE_COUNT } from "./dimensions";
 
 const CARS_PER_LANE = 11;
-/** Car length in the bridge's own units; a lane is ~0.127 wide. */
-const CAR_LEN = 0.14;
+/**
+ * Car width in the bridge's own units: most of a lane, with a sliver of
+ * road showing either side. Length follows from each model's proportions.
+ */
+const CAR_W = (LANE_W / LANE_COUNT) * 0.85;
 /** Kenney's Car Kit (CC0, kenney.nl). All five share one colormap texture. */
 const CAR_MODELS = ["sedan", "taxi", "suv", "van", "truck"].map(
   (name) => `/models/cars/${name}.glb`,
@@ -19,7 +22,7 @@ const CAR_MODELS = ["sedan", "taxi", "suv", "van", "truck"].map(
 /**
  * Flattens one car model into a single geometry: body and wheels merged with
  * their node transforms, sitting on y = 0, centred, nose toward +x and scaled
- * to CAR_LEN. One geometry per model is what lets each model be a single
+ * to CAR_W. One geometry per model is what lets each model be a single
  * instanced mesh, however many of it are on the road.
  */
 function carGeometry(scene: THREE.Object3D): THREE.BufferGeometry {
@@ -41,14 +44,14 @@ function carGeometry(scene: THREE.Object3D): THREE.BufferGeometry {
   merged.computeBoundingBox();
   const box = merged.boundingBox!;
   merged.translate(-(box.min.x + box.max.x) / 2, -box.min.y, -(box.min.z + box.max.z) / 2);
-  const k = CAR_LEN / (box.max.z - box.min.z);
+  const k = CAR_W / (box.max.x - box.min.x);
   merged.scale(k, k, k);
   merged.rotateY(Math.PI / 2); // the models face +z; the deck runs along x
   return merged;
 }
 
 /**
- * Cars streaming across the deck, three lanes each way. Each of the five
+ * Cars streaming across the deck, two lanes each way. Each of the five
  * models is one instanced mesh, so the whole stream is five draw calls and
  * each frame only rewrites matrices. Spacing, speed and model mix vary per
  * lane so it reads as traffic rather than a conveyor belt. Held still for
