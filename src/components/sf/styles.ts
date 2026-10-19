@@ -16,7 +16,7 @@ export interface SFStyle {
   landSide: string;
   hill: string;
   concrete: string; // Transamerica, Coit — the white-stucco family
-  glass: string; // Salesforce and the filler towers
+  glass: string; // Salesforce's curtain wall
   orange: string; // Golden Gate. The one color SF doesn't let you reinterpret.
   road: string;
   asphalt: string; // the bridge roadway — grey even where the city's streets are sand

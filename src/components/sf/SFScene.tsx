@@ -5,7 +5,6 @@ import { spotProblems } from "./core/space";
 import { DraggableLandmark } from "./DraggableLandmark";
 import { LANDMARKS, type LandmarkDef } from "./landmarks";
 import { GoldenGate } from "./landmarks/golden-gate/GoldenGate";
-import { Skyline } from "./landmarks/Skyline";
 import { SAVED_LAYOUT, type Layout } from "./layout";
 import type { SFStyle } from "./styles";
 import { Hills } from "./terrain/Hills";
@@ -30,9 +29,9 @@ export { SF_GROUND_Y } from "./core/space";
  * material, edge treatment and light. That keeps the switcher a fair comparison
  * instead of four different models.
  *
- * Each landmark is its own module under landmarks/. The bridge, filler skyline
- * and terrain are fixed; the landmarks in LANDMARKS stand wherever the layout
- * puts them and can be dragged in edit mode.
+ * Each landmark is its own module under landmarks/; there is no filler city
+ * around them. The bridge and terrain are fixed; the landmarks in LANDMARKS
+ * stand wherever the layout puts them and can be dragged in edit mode.
  */
 
 /** Placement problems for one landmark at its layout spot. */
@@ -68,7 +67,6 @@ export default function SFScene({
       <Terrain style={style} />
       <Hills style={style} />
       <Streets style={style} />
-      <Skyline style={style} />
       {LANDMARKS.map((def) => {
         const at = layout[def.id];
         if (!at) return null;
