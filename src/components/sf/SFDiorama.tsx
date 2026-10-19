@@ -48,6 +48,11 @@ interface SFDioramaProps {
   /** Edit mode: landmarks drag across the block, and turn and resize by arrow keys. */
   editing?: boolean;
   onMove?: (id: string, at: Placement) => void;
+  /**
+   * Scroll to zoom. Off where the diorama sits in a page that scrolls past
+   * it, like the home hero: there the wheel should move the page.
+   */
+  zoom?: boolean;
   /** The streets; the saved ones when not given. */
   roads?: Road[];
   /** Road mode: click squares on the land to lay roads between them. */
@@ -63,6 +68,7 @@ export default function SFDiorama({
   hidden = NONE_HIDDEN,
   editing = false,
   onMove,
+  zoom = true,
   roads = SAVED_ROADS,
   drawingRoads = false,
   onRoadsChange,
@@ -191,7 +197,7 @@ export default function SFDiorama({
           // short of clipping into the towers, the ceiling before the city
           // shrinks to a postage stamp. Zooming toward the cursor means you can
           // point at a landmark and dive at it rather than at the cube's centre.
-          enableZoom
+          enableZoom={zoom}
           zoomToCursor
           zoomSpeed={1.4}
           minDistance={6}

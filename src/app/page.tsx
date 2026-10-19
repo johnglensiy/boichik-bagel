@@ -1,8 +1,17 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 import ContentSection, { type Project } from "./sections/ContentSection";
-import HeroReel, { type HeroClip } from "@/components/HeroReel";
+
+// The San Francisco diorama, in place of a video. three + drei are ~170kb
+// gzipped, so it's kept out of the first load: the hero paints from the
+// server render and the model arrives after. The empty box holds its space
+// meanwhile so nothing shifts when it lands.
+const SFDiorama = dynamic(() => import("@/components/sf/SFDiorama"), {
+  ssr: false,
+  loading: () => <div className="w-full h-full" />,
+});
 
 const PROJECTS: Project[] = [
   {
@@ -118,15 +127,6 @@ const PROJECTS: Project[] = [
     github: "",
   },
 ];
-
-// Every project with a recorded clip, in PROJECTS order — the hero reel plays
-// through them back to back, so adding a `video` to a project adds it here.
-const HERO_CLIPS: HeroClip[] = PROJECTS.filter((p) => p.video).map((p) => ({
-  title: p.title,
-  tagline: p.tagline,
-  video: `/videos/${p.video}`,
-  poster: p.poster && `/images/projects/${p.poster}`,
-}));
 
 const TIMELINE = [
   { year: "2023", title: "Secure File Sharing", filled: true },
@@ -399,10 +399,19 @@ export default function Page() {
               </div>
             </div>
 
-            <HeroReel
-              clips={HERO_CLIPS}
-              className="w-full max-w-[380px] lg:max-w-[440px]"
-            />
+            {/* Clay's background is the page's, so the model sits on the page
+                with no frame. The turntable rests once the hero scrolls away,
+                and the wheel scrolls the page rather than zooming. Beside the
+                text it takes whatever width the text leaves, up to a cap, so
+                the row never runs past the screen. */}
+            <div className="w-full max-w-[460px] lg:max-w-[580px] lg:flex-1 lg:min-w-0 aspect-square">
+              <SFDiorama
+                styleId="clay"
+                paused={!heroVisible}
+                zoom={false}
+                className="w-full h-full"
+              />
+            </div>
 
             {/* <div className="aspect-[1/.82] rounded-[20px] bg-[#ece5d8] border border-[#ddd6c8] shadow-[0_2px_20px_rgba(60,50,35,.06)] flex flex-col items-center justify-center gap-2.5">
               <div className="w-16 h-16 rounded-[14px] bg-[repeating-linear-gradient(45deg,#e0d7c8,#e0d7c8_7px,#e7dfd0_7px,#e7dfd0_14px)]" />
