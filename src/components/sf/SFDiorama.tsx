@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState, type ReactNode } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { ContactShadows, OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
@@ -58,6 +58,14 @@ interface SFDioramaProps {
   roads?: Road[];
   /** Road mode: click squares on the land to lay roads between them. */
   drawingRoads?: boolean;
+  /** In road mode, press and drag to erase roads instead of laying them. */
+  erasingRoads?: boolean;
+  /**
+   * The page's own controls — editing buttons, landmark toggles — shown over
+   * the diorama while it's full screen, where the page around it can't be
+   * seen. Outside full screen the page shows them itself.
+   */
+  fullscreenControls?: ReactNode;
   onRoadsChange?: (roads: Road[]) => void;
   /** Painted lawn squares; the saved ones when not given. */
   grass?: Cell[];
@@ -77,6 +85,8 @@ export default function SFDiorama({
   zoom = true,
   roads = SAVED_ROADS,
   drawingRoads = false,
+  erasingRoads = false,
+  fullscreenControls,
   onRoadsChange,
   grass = SAVED_GRASS,
   paintingGrass = false,
@@ -173,6 +183,7 @@ export default function SFDiorama({
               onMove={onMove}
               roads={roads}
               drawingRoads={drawingRoads}
+              erasingRoads={erasingRoads}
               onRoadsChange={onRoadsChange}
               grass={grass}
               paintingGrass={paintingGrass}
@@ -299,6 +310,27 @@ export default function SFDiorama({
             />
           </svg>
         </button>
+      )}
+
+      {fullscreen && fullscreenControls && (
+        <div
+          style={{
+            position: "absolute",
+            left: 12,
+            right: 12,
+            bottom: 12,
+            zIndex: 1,
+            maxHeight: "40%",
+            overflowY: "auto",
+            padding: "10px 12px",
+            borderRadius: 12,
+            background: "rgba(247,243,236,0.86)",
+            backdropFilter: "blur(8px)",
+            border: "1px solid rgba(0,0,0,0.06)",
+          }}
+        >
+          {fullscreenControls}
+        </div>
       )}
 
       {/* Uncoated-stock grain. CSS rather than a post-processing pass — it costs

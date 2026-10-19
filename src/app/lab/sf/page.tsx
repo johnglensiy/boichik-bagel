@@ -42,6 +42,8 @@ export default function SFLabPage() {
   const editing = mode === "arrange";
   const drawingRoads = mode === "roads";
   const paintingGrass = mode === "grass";
+  // In road mode, whether a drag lays roads or rubs them out.
+  const [erasingRoads, setErasingRoads] = useState(false);
   const toggleMode = (m: "arrange" | "roads" | "grass") =>
     setMode((cur) => (cur === m ? "view" : m));
   const [status, setStatus] = useState<string | null>(null);
@@ -112,6 +114,116 @@ export default function SFLabPage() {
     }
   };
 
+  // The editing controls. Rendered under the diorama, and handed to it to
+  // show over the city while it's full screen, where this page can't be seen.
+  const toolbar = CAN_EDIT ? (
+    <div className="mt-3 flex flex-wrap items-center gap-2 text-[12px] font-grotesk">
+      {(["arrange", "roads", "grass"] as const).map((m) => {
+        const on = mode === m;
+        const label =
+          m === "arrange"
+            ? on ? "Done arranging" : "Arrange landmarks"
+            : m === "roads"
+              ? on ? "Done drawing" : "Draw roads"
+              : on ? "Done painting" : "Paint grass";
+        return (
+          <button
+            key={m}
+            type="button"
+            onClick={() => toggleMode(m)}
+            aria-pressed={on}
+            className={`rounded-[9px] px-3 py-1.5 border cursor-pointer ${
+              on
+                ? "bg-[#efe6d5] border-[#c47b52] text-[#33302a]"
+                : "bg-[#f4efe7] border-[#e2dbcc] text-[#5d554a] hover:bg-[#efe9dd]"
+            }`}
+          >
+            {label}
+          </button>
+        );
+      })}
+      {drawingRoads && (
+        <>
+          <button
+            type="button"
+            onClick={() => setErasingRoads((e) => !e)}
+            aria-pressed={erasingRoads}
+            className={`rounded-[9px] px-3 py-1.5 border cursor-pointer ${
+              erasingRoads
+                ? "bg-[#f6e3df] border-[#d0453a] text-[#33302a]"
+                : "bg-[#f4efe7] border-[#e2dbcc] text-[#5d554a] hover:bg-[#efe9dd]"
+            }`}
+          >
+            {erasingRoads ? "Erasing roads" : "Erase roads"}
+          </button>
+          <button
+            type="button"
+            onClick={() => changeRoads(roads.slice(0, -1))}
+            disabled={!roads.length}
+            className="rounded-[9px] px-3 py-1.5 border border-[#e2dbcc] bg-[#f4efe7] text-[#5d554a] enabled:hover:bg-[#efe9dd] enabled:cursor-pointer disabled:opacity-45"
+          >
+            Undo road
+          </button>
+          <button
+            type="button"
+            onClick={() => changeRoads([])}
+            disabled={!roads.length}
+            className="rounded-[9px] px-3 py-1.5 border border-[#e2dbcc] bg-[#f4efe7] text-[#5d554a] enabled:hover:bg-[#efe9dd] enabled:cursor-pointer disabled:opacity-45"
+          >
+            Clear roads
+          </button>
+        </>
+      )}
+      {paintingGrass && (
+        <button
+          type="button"
+          onClick={() => changeGrass([])}
+          disabled={!grass.length}
+          className="rounded-[9px] px-3 py-1.5 border border-[#e2dbcc] bg-[#f4efe7] text-[#5d554a] enabled:hover:bg-[#efe9dd] enabled:cursor-pointer disabled:opacity-45"
+        >
+          Clear grass
+        </button>
+      )}
+      <button
+        type="button"
+        onClick={save}
+        disabled={!dirty}
+        className="rounded-[9px] px-3 py-1.5 border border-[#e2dbcc] bg-[#f4efe7] text-[#5d554a] enabled:hover:bg-[#efe9dd] enabled:cursor-pointer disabled:opacity-45"
+      >
+        Save
+      </button>
+      <button
+        type="button"
+        onClick={() => {
+          setLayout(saved);
+          setRoads(savedRoads);
+          setGrass(savedGrass);
+          setStatus(null);
+        }}
+        disabled={!dirty}
+        className="rounded-[9px] px-3 py-1.5 border border-[#e2dbcc] bg-[#f4efe7] text-[#5d554a] enabled:hover:bg-[#efe9dd] enabled:cursor-pointer disabled:opacity-45"
+      >
+        Revert
+      </button>
+      <span className="text-[11px] font-plex-mono text-[#b3a794]">
+        {status ??
+          (editing
+            ? "drag a landmark to move it; once selected, click its ring, then ← → turn it and ↑ ↓ resize it (shift snaps) · dev only"
+            : drawingRoads && erasingRoads
+              ? "press and drag over roads to erase them. [ and ] change the eraser size · dev only"
+            : drawingRoads
+              ? "click a square, then another, to lay a road between them; it carries on from there, so keep clicking for a route. Click the same square or press Esc to stop · dev only"
+              : paintingGrass
+                ? "press and drag on the land to paint grass; start a stroke on grass to erase. [ and ] change the brush size · dev only"
+                : dirty
+                ? "unsaved changes"
+                : "")}
+      </span>
+    </div>
+  ) : null;
+
+  const toggles = <LandmarkToggles hidden={hidden} onToggle={toggle} />;
+
   return (
     <main className="min-h-screen bg-[#f7f3ec] px-[clamp(24px,5vw,72px)] py-[clamp(28px,5vh,56px)]">
       <div className="max-w-[1080px] mx-auto">
@@ -143,102 +255,19 @@ export default function SFLabPage() {
             grass={grass}
             paintingGrass={paintingGrass}
             onGrassChange={changeGrass}
+            erasingRoads={erasingRoads}
+            fullscreenControls={
+              <>
+                {toggles}
+                {toolbar}
+              </>
+            }
           />
         </div>
 
-        <LandmarkToggles hidden={hidden} onToggle={toggle} />
+        {toggles}
 
-        {CAN_EDIT && (
-          <div className="mt-3 flex flex-wrap items-center gap-2 text-[12px] font-grotesk">
-            {(["arrange", "roads", "grass"] as const).map((m) => {
-              const on = mode === m;
-              const label =
-                m === "arrange"
-                  ? on ? "Done arranging" : "Arrange landmarks"
-                  : m === "roads"
-                    ? on ? "Done drawing" : "Draw roads"
-                    : on ? "Done painting" : "Paint grass";
-              return (
-                <button
-                  key={m}
-                  type="button"
-                  onClick={() => toggleMode(m)}
-                  aria-pressed={on}
-                  className={`rounded-[9px] px-3 py-1.5 border cursor-pointer ${
-                    on
-                      ? "bg-[#efe6d5] border-[#c47b52] text-[#33302a]"
-                      : "bg-[#f4efe7] border-[#e2dbcc] text-[#5d554a] hover:bg-[#efe9dd]"
-                  }`}
-                >
-                  {label}
-                </button>
-              );
-            })}
-            {drawingRoads && (
-              <>
-                <button
-                  type="button"
-                  onClick={() => changeRoads(roads.slice(0, -1))}
-                  disabled={!roads.length}
-                  className="rounded-[9px] px-3 py-1.5 border border-[#e2dbcc] bg-[#f4efe7] text-[#5d554a] enabled:hover:bg-[#efe9dd] enabled:cursor-pointer disabled:opacity-45"
-                >
-                  Undo road
-                </button>
-                <button
-                  type="button"
-                  onClick={() => changeRoads([])}
-                  disabled={!roads.length}
-                  className="rounded-[9px] px-3 py-1.5 border border-[#e2dbcc] bg-[#f4efe7] text-[#5d554a] enabled:hover:bg-[#efe9dd] enabled:cursor-pointer disabled:opacity-45"
-                >
-                  Clear roads
-                </button>
-              </>
-            )}
-            {paintingGrass && (
-              <button
-                type="button"
-                onClick={() => changeGrass([])}
-                disabled={!grass.length}
-                className="rounded-[9px] px-3 py-1.5 border border-[#e2dbcc] bg-[#f4efe7] text-[#5d554a] enabled:hover:bg-[#efe9dd] enabled:cursor-pointer disabled:opacity-45"
-              >
-                Clear grass
-              </button>
-            )}
-            <button
-              type="button"
-              onClick={save}
-              disabled={!dirty}
-              className="rounded-[9px] px-3 py-1.5 border border-[#e2dbcc] bg-[#f4efe7] text-[#5d554a] enabled:hover:bg-[#efe9dd] enabled:cursor-pointer disabled:opacity-45"
-            >
-              Save
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setLayout(saved);
-                setRoads(savedRoads);
-                setGrass(savedGrass);
-                setStatus(null);
-              }}
-              disabled={!dirty}
-              className="rounded-[9px] px-3 py-1.5 border border-[#e2dbcc] bg-[#f4efe7] text-[#5d554a] enabled:hover:bg-[#efe9dd] enabled:cursor-pointer disabled:opacity-45"
-            >
-              Revert
-            </button>
-            <span className="text-[11px] font-plex-mono text-[#b3a794]">
-              {status ??
-                (editing
-                  ? "drag a landmark to move it; once selected, click its ring, then ← → turn it and ↑ ↓ resize it (shift snaps) · dev only"
-                  : drawingRoads
-                    ? "click a square, then another, to lay a road between them; it carries on from there, so keep clicking for a route. Click the same square or press Esc to stop · dev only"
-                    : paintingGrass
-                      ? "press and drag on the land to paint grass; start a stroke on grass to erase. [ and ] change the brush size · dev only"
-                      : dirty
-                        ? "unsaved changes"
-                        : "")}
-            </span>
-          </div>
-        )}
+        {toolbar}
 
         {/* Style switcher. Swatches rather than labels alone — the decision
             being made is a visual one. */}

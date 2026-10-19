@@ -84,6 +84,8 @@ interface SFSceneProps {
   roads?: Road[];
   /** Road mode: click squares on the land to lay roads between them. */
   drawingRoads?: boolean;
+  /** In road mode, press and drag to erase roads instead of laying them. */
+  erasingRoads?: boolean;
   onRoadsChange?: (roads: Road[]) => void;
   /** Painted lawn squares; the saved ones when not given. */
   grass?: Cell[];
@@ -102,6 +104,7 @@ export default function SFScene({
   onMove,
   roads = SAVED_ROADS,
   drawingRoads = false,
+  erasingRoads = false,
   onRoadsChange,
   grass = SAVED_GRASS,
   paintingGrass = false,
@@ -128,7 +131,9 @@ export default function SFScene({
       <Suspense fallback={null}>
         <Roads style={style} roads={roads} />
       </Suspense>
-      {drawingRoads && <RoadEditor roads={roads} onChange={(next) => onRoadsChange?.(next)} />}
+      {drawingRoads && (
+        <RoadEditor roads={roads} erasing={erasingRoads} onChange={(next) => onRoadsChange?.(next)} />
+      )}
       {LANDMARKS.map((def) => {
         const at = layout[def.id];
         if (!at || hidden.has(def.id)) return null;
